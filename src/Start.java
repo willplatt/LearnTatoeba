@@ -8,6 +8,10 @@ public class Start {
         scanner = new Scanner(System.in);
         System.out.println("Welcome to spaced repetition!");
         AccountManager.loadAccounts();
+        mainMenu();
+    }
+    
+    private static void mainMenu() {
         int numberOfAccounts = AccountManager.getNumberOfAccounts();
         if (numberOfAccounts > 0) {
             System.out.println("Choose an account to practice with:");
@@ -20,7 +24,7 @@ public class Start {
             if (userChoice.equals("*")) {
                 createNewAccountMenu();
             } else {
-                System.out.println("This path is under development.");
+                System.out.println("This path is under development."); // TODO: Implement account selection
             }
         } else {
             System.out.println("No accounts could be found on this machine.");
@@ -47,12 +51,8 @@ public class Start {
         boolean accountCreationSuccessful = AccountManager.createNewAccount(newAccountName);
         if (accountCreationSuccessful) {
             System.out.println("Your new account has been created!");
-        } else {
-            System.out.println(
-                    "Your account couldn't be created :(\n" +
-                    "Perhaps that name is already taken, or perhaps this program does not have permission to write to the directory."
-            );
         }
+        mainMenu();
     }
     
     private static String giveUserAChoice(List<String> numberedOptions, List<List<String>> finalOptions) {
@@ -73,9 +73,8 @@ public class Start {
     
     private static List<String> validOptions(List<String> numberedOptions, List<List<String>> finalOptions) {
         List<String> validOptions = new ArrayList<>(numberedOptions.size() + finalOptions.size());
-        int optionNumber = 1;
-        for (String option: numberedOptions) {
-            validOptions.add(String.valueOf(optionNumber));
+        for (int i = 1; i < numberedOptions.size() + 1; i++) {
+            validOptions.add(String.valueOf(i));
         }
         for (List<String> finalOption : finalOptions) {
             validOptions.add(finalOption.get(0));
