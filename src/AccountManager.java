@@ -110,7 +110,9 @@ public class AccountManager {
 	private static String appendSuffixToDirNameIfNecessary(String accountDirName) {
 		int maxSuffix = 0;
 		for (String dirName : getAccountDirNames()) {
-			if (dirName.startsWith(accountDirName)) {
+			if (dirName.equals(accountDirName)) {
+				maxSuffix = Math.max(maxSuffix, 1);
+			} else if (dirName.startsWith(accountDirName)) {
 				String suffix = dirName.substring(accountDirName.length());
 				try {
 					maxSuffix = Math.max(maxSuffix, Integer.parseInt(suffix));
@@ -118,9 +120,10 @@ public class AccountManager {
 			}
 		}
 		if (maxSuffix > 0) {
-			accountDirName += String.valueOf(maxSuffix + 1);
+			return accountDirName + (maxSuffix + 1);
+		} else {
+			return accountDirName;
 		}
-		return accountDirName;
 	}
 	
 	private static List<String> getAccountDirNames() {
