@@ -15,12 +15,14 @@ public abstract class Menu {
 	protected static String giveUserAChoice(List<String> numberedOptions, List<List<String>> finalOptions) {
 		List<String> validOptions = validOptions(numberedOptions, finalOptions);
 		String formattedOptions = formatOptions(numberedOptions, finalOptions);
-		System.out.println(formattedOptions);
+		System.out.print(formattedOptions);
 		String userChoice = null;
 		boolean choiceIsValid = false;
 		while (!choiceIsValid) {
 			userChoice = getUserChoice();
-			choiceIsValid = validOptions.contains(userChoice);
+			choiceIsValid = validOptions.contains(userChoice) ||
+					userChoice.toLowerCase().equals("exit") ||
+					userChoice.toLowerCase().equals("back");
 			if (!choiceIsValid) {
 				System.out.println("Your choice was invalid. Please try again.");
 			}
