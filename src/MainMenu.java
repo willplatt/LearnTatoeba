@@ -23,7 +23,7 @@ public class MainMenu extends Menu {
 			System.out.println("You cannot go back from here.");
 			run();
 		} else if (userChoice.equals("*")) {
-			new CreateAccountMenu(this).run();
+			new NameNewAccountMenu(this).run();
 		} else {
 			int accountIndex = Integer.parseInt(userChoice) - 1;
 			String accountName = accountNames.get(accountIndex);

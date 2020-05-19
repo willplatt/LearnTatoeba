@@ -13,8 +13,8 @@ public class AccountMainMenu extends Menu {
 	@Override
 	void run() {
 		List<String> options = new ArrayList<>();
-		options.add("My courses");
-		options.add("Add new course");
+		options.add("Languages");
+		options.add("Add a new language");
 		options.add("Account settings");
 		String userChoice = giveUserAChoice(options);
 		if (userChoice.toLowerCase().equals("exit")) {

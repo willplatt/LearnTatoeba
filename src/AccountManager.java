@@ -42,6 +42,17 @@ public class AccountManager {
 		return true;
 	}
 	
+	public static boolean setVocabDir(Account account, String vocabDir) {
+		System.err.println(vocabDir);
+		File newVocabDir = new File(vocabDir);
+		boolean dirNowExists = createDirIfNecessary(newVocabDir);
+		if (!dirNowExists) {
+			return false;
+		}
+		changeVocabDirOfInfoFile(account, newVocabDir);
+		return true;
+	}
+	
 	public static Account getAccountFromName(String accountName) {
 		for (Account account : accounts) {
 			if (account.getName().equals(accountName)) {
@@ -157,7 +168,7 @@ public class AccountManager {
 		boolean dirCreationSuccessful = newAccountDir.mkdir();
 		if (!dirCreationSuccessful) {
 			System.out.println(
-					"For an unknown reason, the directory '" + newAccountDir.getPath() + "' could not be created." +
+					"For an unknown reason, the directory '" + newAccountDir.getPath() + "' could not be created. " +
 					"Try checking that the program has permission to write to '" + ACCOUNTS_DIR.getAbsolutePath() + "'."
 			);
 			return false;
@@ -168,9 +179,37 @@ public class AccountManager {
 	private static void writeInfoFile(String accountName, File newAccountDir) {
 		File infoFile = new File(newAccountDir, "info.txt");
 		try {
-			Files.write(infoFile.toPath(), accountName.getBytes());
+			String fileContents = accountName + "\n" + newAccountDir.getPath();
+			Files.write(infoFile.toPath(), fileContents.getBytes());
 		} catch (IOException e) {
 			System.err.println("Could not create info.txt for this account. Terminating program.");
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
+	private static boolean createDirIfNecessary(File dir) {
+		if (dir.exists()) {
+			return true;
+		}
+		boolean dirCreationSuccessful = dir.mkdir();
+		if (!dirCreationSuccessful) {
+			System.out.println(
+					"For an unknown reason, the directory '" + dir.getPath() + "' could not be created. " +
+							"Try checking that the program has permission to write to '" + dir.getAbsolutePath() + "'."
+			);
+			return false;
+		}
+		return true;
+	}
+	
+	private static void changeVocabDirOfInfoFile(Account account, File newVocabDir) {
+		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
+		try {
+			String fileContents = account.getName() + "\n" + newVocabDir;
+			Files.write(infoFile.toPath(), fileContents.getBytes());
+		} catch (IOException e) {
+			System.err.println("Could not write info.txt for this account. Terminating program.");
 			e.printStackTrace();
 			System.exit(0);
 		}

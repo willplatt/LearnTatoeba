@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public abstract class Menu {
-	private static Scanner scanner = new Scanner(System.in);
+	private static Scanner scanner = new Scanner(System.in).useDelimiter("\n");
 	
 	abstract void run();
 	

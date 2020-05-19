@@ -1,7 +1,7 @@
-public class CreateAccountMenu extends Menu {
+public class NameNewAccountMenu extends Menu {
 	private Menu previousMenu;
 	
-	public CreateAccountMenu(Menu previousMenu) {
+	public NameNewAccountMenu(Menu previousMenu) {
 		this.previousMenu = previousMenu;
 	}
 	
@@ -17,8 +17,11 @@ public class CreateAccountMenu extends Menu {
 			boolean accountCreationSuccessful = AccountManager.createNewAccount(newAccountName);
 			if (accountCreationSuccessful) {
 				System.out.println("Your new account has been created!");
+				new SetAccountVocabDirMenu(this, AccountManager.getAccountFromName(newAccountName)).run();
+			} else {
+				System.out.println("Something went wrong trying to create your new account. Returning to the main menu.");
+				new MainMenu().run();
 			}
-			new MainMenu().run();
 		}
 	}
 }
