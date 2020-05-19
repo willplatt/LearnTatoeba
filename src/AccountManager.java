@@ -42,6 +42,15 @@ public class AccountManager {
 		return true;
 	}
 	
+	public static Account getAccountFromName(String accountName) {
+		for (Account account : accounts) {
+			if (account.getName().equals(accountName)) {
+				return account;
+			}
+		}
+		return null;
+	}
+	
 	private static void createAccountsDirIfNecessary() {
 		if (!ACCOUNTS_DIR.exists() || !ACCOUNTS_DIR.isDirectory()) {
 			boolean dirCreationSuccessful = ACCOUNTS_DIR.mkdir();

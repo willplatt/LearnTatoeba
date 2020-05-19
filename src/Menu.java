@@ -12,6 +12,10 @@ public abstract class Menu {
 		return scanner.next();
 	}
 	
+	protected static String giveUserAChoice(List<String> numberedOptions) {
+		return giveUserAChoice(numberedOptions, new ArrayList<>());
+	}
+	
 	protected static String giveUserAChoice(List<String> numberedOptions, List<List<String>> finalOptions) {
 		List<String> validOptions = validOptions(numberedOptions, finalOptions);
 		String formattedOptions = formatOptions(numberedOptions, finalOptions);

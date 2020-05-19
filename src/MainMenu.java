@@ -15,7 +15,8 @@ public class MainMenu extends Menu {
 		createAccountOption.add("*");
 		createAccountOption.add("Create a new account");
 		finalOptions.add(createAccountOption);
-		String userChoice = giveUserAChoice(AccountManager.getAccountNames(), finalOptions);
+		List<String> accountNames = AccountManager.getAccountNames();
+		String userChoice = giveUserAChoice(accountNames, finalOptions);
 		if (userChoice.toLowerCase().equals("exit")) {
 			System.exit(0);
 		} else if (userChoice.toLowerCase().equals("back")) {
@@ -24,7 +25,11 @@ public class MainMenu extends Menu {
 		} else if (userChoice.equals("*")) {
 			new CreateAccountMenu(this).run();
 		} else {
-			System.out.println("This path is under development."); // TODO: Implement account selection
+			int accountIndex = Integer.parseInt(userChoice) - 1;
+			String accountName = accountNames.get(accountIndex);
+			System.out.println("Opening account " + accountName + ".");
+			Account account = AccountManager.getAccountFromName(accountName);
+			new AccountMainMenu(account, this).run();
 		}
 	}
 }
