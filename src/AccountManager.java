@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountManager {
-	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
 	private static final File ACCOUNTS_DIR = new File("accounts");
+	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
+	private static final FilenameFilter FILE_FILTER = (current, name) -> !new File(current, name).isDirectory();
 	
 	private static List<Account> accounts;
 	
@@ -43,7 +44,6 @@ public class AccountManager {
 	}
 	
 	public static boolean setVocabDir(Account account, String vocabDir) {
-		System.err.println(vocabDir);
 		File newVocabDir = new File(vocabDir);
 		boolean dirNowExists = createDirIfNecessary(newVocabDir);
 		if (!dirNowExists) {
@@ -63,6 +63,19 @@ public class AccountManager {
 		return null;
 	}
 	
+	public static List<String> getLanguagesForAccount(Account account) {
+		String[] fileNames = new File(account.getVocabDirectory()).list(FILE_FILTER);
+		List<String> languages = new ArrayList<>();
+		if (fileNames != null) {
+			for (String fileName : fileNames) {
+				if (fileName.endsWith("_Words.csv")) {
+					languages.add(fileName.substring(0, fileName.length() - "_Words.csv".length()));
+				}
+			}
+		}
+		return languages;
+	}
+	
 	private static void createAccountsDirIfNecessary() {
 		if (!ACCOUNTS_DIR.exists() || !ACCOUNTS_DIR.isDirectory()) {
 			boolean dirCreationSuccessful = ACCOUNTS_DIR.mkdir();
@@ -79,17 +92,26 @@ public class AccountManager {
 		accounts = new ArrayList<>(accountDirNames.length);
 		for (String accountDirName : accountDirNames) {
 			String accountName = readAccountName(accountDirName);
+			String vocabDir = readVocabDir(accountDirName);
 			if (isValidAccountName(accountName)) {
-				accounts.add(new Account(accountName, accountDirName, new File(ACCOUNTS_DIR, accountDirName).getPath()));
+				accounts.add(new Account(accountName, accountDirName, vocabDir));
 			}
 		}
 	}
 	
 	private static String readAccountName(String accountDirName) {
+		return readLineFromInfoFile(accountDirName, 0);
+	}
+	
+	private static String readVocabDir(String accountDirName) {
+		return readLineFromInfoFile(accountDirName, 1);
+	}
+	
+	private static String readLineFromInfoFile(String accountDirName, int lineNumber) {
 		File accountInfoFile = new File(ACCOUNTS_DIR, accountDirName + "/info.txt");
 		if (accountInfoFile.exists() && accountInfoFile.isFile()) {
 			try {
-				return Files.readAllLines(accountInfoFile.toPath()).get(0);
+				return Files.readAllLines(accountInfoFile.toPath()).get(lineNumber);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

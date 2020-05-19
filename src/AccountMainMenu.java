@@ -23,7 +23,7 @@ public class AccountMainMenu extends Menu {
 		} else if (userChoice.toLowerCase().equals("back")) {
 			previousMenu.run();
 		} else if (userChoice.equals("1")) {
-			// TODO: implement language chooser
+			new LanguageSelectionMenu(account, this).run();
 		} else if (userChoice.equals("2")) {
 			// TODO: implement adding new languages
 		} else {
