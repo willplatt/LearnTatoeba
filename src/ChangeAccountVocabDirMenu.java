@@ -29,7 +29,7 @@ public class ChangeAccountVocabDirMenu extends Menu {
 			boolean setDirSuccessful = AccountManager.setVocabDir(account, newVocabDir);
 			if (setDirSuccessful) {
 				System.out.println("Your account's vocab directory has been set!");
-				new MainMenu().run();
+				previousMenu.run();
 			} else {
 				System.out.println("Unfortunately, that directory could not be accessed or created. Please try again.");
 				run();

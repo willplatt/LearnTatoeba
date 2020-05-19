@@ -7,6 +7,10 @@ public abstract class Menu {
 	
 	abstract void run();
 	
+	protected static String getNextLine() {
+		return scanner.next();
+	}
+	
 	protected static String askUserAQuestion(String question) {
 		System.out.println(question);
 		return scanner.next();
