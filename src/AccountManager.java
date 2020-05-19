@@ -38,7 +38,7 @@ public class AccountManager {
 		if (!setUpAccountDirSuccessful) {
 			return false;
 		}
-		accounts.add(new Account(accountName, accountDirName));
+		accounts.add(new Account(accountName, accountDirName, new File(ACCOUNTS_DIR, accountDirName).getPath()));
 		return true;
 	}
 	
@@ -50,6 +50,7 @@ public class AccountManager {
 			return false;
 		}
 		changeVocabDirOfInfoFile(account, newVocabDir);
+		account.setVocabDirectory(vocabDir);
 		return true;
 	}
 	
@@ -79,7 +80,7 @@ public class AccountManager {
 		for (String accountDirName : accountDirNames) {
 			String accountName = readAccountName(accountDirName);
 			if (isValidAccountName(accountName)) {
-				accounts.add(new Account(accountName, accountDirName));
+				accounts.add(new Account(accountName, accountDirName, new File(ACCOUNTS_DIR, accountDirName).getPath()));
 			}
 		}
 	}
