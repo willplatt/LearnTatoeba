@@ -9,6 +9,7 @@ public class AccountManager {
 	private static final File ACCOUNTS_DIR = new File("accounts");
 	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
 	private static final FilenameFilter FILE_FILTER = (current, name) -> !new File(current, name).isDirectory();
+	private static final String DEFAULT_NATIVE_LANGUAGE = "English";
 	
 	private static List<Account> accounts;
 	
@@ -35,12 +36,17 @@ public class AccountManager {
 			return false;
 		}
 		String accountDirName = generateUniqueDirectoryName(accountName);
-		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, accountDirName);
+		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, DEFAULT_NATIVE_LANGUAGE, accountDirName);
 		if (!setUpAccountDirSuccessful) {
 			return false;
 		}
-		accounts.add(new Account(accountName, accountDirName, new File(ACCOUNTS_DIR, accountDirName).getPath()));
+		accounts.add(new Account(accountName, accountDirName, DEFAULT_NATIVE_LANGUAGE, new File(ACCOUNTS_DIR, accountDirName).getPath()));
 		return true;
+	}
+	
+	public static void setNativeLanguage(Account account, String newNativeLanguage) {
+		changeNativeLanguageOfInfoFile(account, newNativeLanguage);
+		account.setNativeLanguage(newNativeLanguage);
 	}
 	
 	public static boolean setVocabDir(Account account, String vocabDir) {
@@ -92,9 +98,10 @@ public class AccountManager {
 		accounts = new ArrayList<>(accountDirNames.length);
 		for (String accountDirName : accountDirNames) {
 			String accountName = readAccountName(accountDirName);
+			String nativeLanguage = readAccountNativeLanguage(accountDirName);
 			String vocabDir = readVocabDir(accountDirName);
 			if (isValidAccountName(accountName)) {
-				accounts.add(new Account(accountName, accountDirName, vocabDir));
+				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir));
 			}
 		}
 	}
@@ -103,8 +110,12 @@ public class AccountManager {
 		return readLineFromInfoFile(accountDirName, 0);
 	}
 	
-	private static String readVocabDir(String accountDirName) {
+	private static String readAccountNativeLanguage(String accountDirName) {
 		return readLineFromInfoFile(accountDirName, 1);
+	}
+	
+	private static String readVocabDir(String accountDirName) {
+		return readLineFromInfoFile(accountDirName, 2);
 	}
 	
 	private static String readLineFromInfoFile(String accountDirName, int lineNumber) {
@@ -177,13 +188,13 @@ public class AccountManager {
 		return accountDirNames;
 	}
 	
-	private static boolean setUpAccountDir(String accountName, String accountDirName) {
+	private static boolean setUpAccountDir(String accountName, String accountNativeLanguage, String accountDirName) {
 		File newAccountDir = new File(ACCOUNTS_DIR, accountDirName);
 		boolean dirCreationSuccessful = createAccountDir(newAccountDir);
 		if (!dirCreationSuccessful) {
 			return false;
 		}
-		writeInfoFile(accountName, newAccountDir);
+		writeInfoFile(accountName, accountNativeLanguage, newAccountDir);
 		return true;
 	}
 	
@@ -199,10 +210,10 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void writeInfoFile(String accountName, File newAccountDir) {
+	private static void writeInfoFile(String accountName, String accountNativeLanguage, File newAccountDir) {
 		File infoFile = new File(newAccountDir, "info.txt");
 		try {
-			String fileContents = accountName + "\n" + newAccountDir.getPath();
+			String fileContents = accountName + "\n" + accountNativeLanguage + "\n" + newAccountDir.getPath();
 			Files.write(infoFile.toPath(), fileContents.getBytes());
 		} catch (IOException e) {
 			System.err.println("Could not create info.txt for this account. Terminating program.");
@@ -226,10 +237,22 @@ public class AccountManager {
 		return true;
 	}
 	
+	private static void changeNativeLanguageOfInfoFile(Account account, String newNativeLanguage) {
+		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
+		try {
+			String fileContents = account.getName() + "\n" + newNativeLanguage + "\n" + account.getVocabDirectory();
+			Files.write(infoFile.toPath(), fileContents.getBytes());
+		} catch (IOException e) {
+			System.err.println("Could not write info.txt for this account. Terminating program.");
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
 	private static void changeVocabDirOfInfoFile(Account account, File newVocabDir) {
 		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
 		try {
-			String fileContents = account.getName() + "\n" + newVocabDir;
+			String fileContents = account.getName() + "\n" + account.getNativeLanguage() + "\n" + newVocabDir;
 			Files.write(infoFile.toPath(), fileContents.getBytes());
 		} catch (IOException e) {
 			System.err.println("Could not write info.txt for this account. Terminating program.");

@@ -14,6 +14,7 @@ public class AccountSettingsMenu extends Menu {
 	void run() {
 		System.out.println("\nModify account:");
 		List<String> options = new ArrayList<>();
+		options.add("Change native language");
 		options.add("Change vocab directory");
 		options.add("Delete account");
 		String userChoice = giveUserAChoice(options);
@@ -22,7 +23,9 @@ public class AccountSettingsMenu extends Menu {
 		} else if (userChoice.toLowerCase().equals("back")) {
 			previousMenu.run();
 		} else if (userChoice.equals("1")) {
-			new ChangeAccountVocabDirMenu(account, this).run();
+			new ChangeAccountNativeLanguageMenu(account, this, this).run();
+		} else if (userChoice.equals("2")) {
+			new ChangeAccountVocabDirMenu(account, this, this).run();
 		} else {
 			// TODO: implement account deletion
 			new MainMenu().run();

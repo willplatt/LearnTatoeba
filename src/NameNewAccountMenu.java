@@ -17,7 +17,10 @@ public class NameNewAccountMenu extends Menu {
 			boolean accountCreationSuccessful = AccountManager.createNewAccount(newAccountName);
 			if (accountCreationSuccessful) {
 				System.out.println("Your new account has been created!");
-				new ChangeAccountVocabDirMenu(AccountManager.getAccountFromName(newAccountName), new MainMenu()).run();
+				Account newAccount = AccountManager.getAccountFromName(newAccountName);
+				MainMenu mainMenu = new MainMenu();
+				Menu menuAfterSettingNativeLanguage = new ChangeAccountVocabDirMenu(newAccount, mainMenu, mainMenu);
+				new ChangeAccountNativeLanguageMenu(newAccount, mainMenu, menuAfterSettingNativeLanguage).run();
 			} else {
 				System.out.println("Something went wrong trying to create your new account. Returning to the main menu.");
 				new MainMenu().run();

@@ -1,16 +1,14 @@
-import java.io.File;
-
 public class Account {
 	private final String name;
-	private final String nativeLanguage;
 	private final String directoryName;
 	
+	private String nativeLanguage;
 	private String vocabDirectory;
 	
-	public Account(String name, String directoryName, String vocabDirectory) {
+	public Account(String name, String directoryName, String nativeLanguage, String vocabDirectory) {
 		this.name = name;
-		this.nativeLanguage = "English";
 		this.directoryName = directoryName;
+		this.nativeLanguage = nativeLanguage;
 		this.vocabDirectory = vocabDirectory;
 	}
 	
@@ -18,12 +16,16 @@ public class Account {
 		return name;
 	}
 	
+	public String getDirectoryName() {
+		return directoryName;
+	}
+	
 	public String getNativeLanguage() {
 		return nativeLanguage;
 	}
 	
-	public String getDirectoryName() {
-		return directoryName;
+	public void setNativeLanguage(String newNativeLanguage) {
+		nativeLanguage = newNativeLanguage;
 	}
 	
 	public String getVocabDirectory() {
