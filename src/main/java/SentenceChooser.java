@@ -5,8 +5,7 @@ import java.util.*;
 import static java.lang.Integer.parseInt;
 
 public class SentenceChooser {
-	public static final File SENTENCES_DIR = new File("sentences");
-	private static final File LINKS_FILE = new File(SENTENCES_DIR, "links.csv");
+	private static final File LINKS_FILE = new File(SentencesDirManager.SENTENCES_DIR, "links.csv");
 	private static final String SUFFIX_OF_SENTENCE_FILES = "_sentences.tsv";
 	
 	private List<String> nextSentences;
@@ -16,10 +15,10 @@ public class SentenceChooser {
 	private RandomAccessFile nativeTranslationReader;
 	
 	public SentenceChooser(Account account, String language) throws IOException {
-		File sentencesFile =  new File(SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(language) + SUFFIX_OF_SENTENCE_FILES);
+		File sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(language) + SUFFIX_OF_SENTENCE_FILES);
 		sentencesReader = Files.newBufferedReader(sentencesFile.toPath());
 		linksReader = new RandomAccessFile(LINKS_FILE.toString(), "r");
-		File translationsFile = new File(SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(account.getNativeLanguage()) + SUFFIX_OF_SENTENCE_FILES);
+		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(account.getNativeLanguage()) + SUFFIX_OF_SENTENCE_FILES);
 		nativeTranslationReader = new RandomAccessFile(translationsFile.toString(), "r");
 	}
 	

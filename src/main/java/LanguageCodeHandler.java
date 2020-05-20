@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class LanguageCodeHandler {
-	private static final File LANGUAGE_CODES_FILE = new File(SentenceChooser.SENTENCES_DIR, "language_codes.tsv");
+	private static final File LANGUAGE_CODES_FILE = new File("language_codes.tsv");
 	
 	public static String getCodeForLanguage(String language) throws IOException {
 		BufferedReader codesReader = Files.newBufferedReader(LANGUAGE_CODES_FILE.toPath());
