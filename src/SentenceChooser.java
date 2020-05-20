@@ -5,9 +5,8 @@ import java.util.*;
 import static java.lang.Integer.parseInt;
 
 public class SentenceChooser {
-	private static final File SENTENCES_DIR = new File("sentences");
+	public static final File SENTENCES_DIR = new File("sentences");
 	private static final File LINKS_FILE = new File(SENTENCES_DIR, "links.csv");
-	private static final File LANGUAGE_CODES_FILE = new File(SENTENCES_DIR, "language_codes.tsv");
 	private static final String SUFFIX_OF_SENTENCE_FILES = "_sentences.tsv";
 	
 	private List<String> nextSentences;
@@ -17,10 +16,10 @@ public class SentenceChooser {
 	private RandomAccessFile nativeTranslationReader;
 	
 	public SentenceChooser(Account account, String language) throws IOException {
-		File sentencesFile =  new File(SENTENCES_DIR, getCodeForLanguage(language) + SUFFIX_OF_SENTENCE_FILES);
+		File sentencesFile =  new File(SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(language) + SUFFIX_OF_SENTENCE_FILES);
 		sentencesReader = Files.newBufferedReader(sentencesFile.toPath());
 		linksReader = new RandomAccessFile(LINKS_FILE.toString(), "r");
-		File translationsFile = new File(SENTENCES_DIR, getCodeForLanguage(account.getNativeLanguage()) + SUFFIX_OF_SENTENCE_FILES);
+		File translationsFile = new File(SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(account.getNativeLanguage()) + SUFFIX_OF_SENTENCE_FILES);
 		nativeTranslationReader = new RandomAccessFile(translationsFile.toString(), "r");
 	}
 	
@@ -49,20 +48,6 @@ public class SentenceChooser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	private String getCodeForLanguage(String language) throws IOException {
-		BufferedReader codesReader = Files.newBufferedReader(LANGUAGE_CODES_FILE.toPath());
-		String line;
-		while ((line = codesReader.readLine()) != null) {
-			int indexOfTab = line.indexOf('\t');
-			if (language.equals(line.substring(indexOfTab + 1))) {
-				codesReader.close();
-				return line.substring(0, indexOfTab);
-			}
-		}
-		codesReader.close();
-		throw new IllegalArgumentException("Language '" + language + "' does not have a Tatoeba language code");
 	}
 	
 	private void computeNextSentences() throws IOException {

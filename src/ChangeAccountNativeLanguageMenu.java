@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.List;
 
 public class ChangeAccountNativeLanguageMenu extends Menu {
@@ -30,9 +31,20 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 			} else if (newNativeLanguage.toLowerCase().equals("back")) {
 				previousMenu.run();
 			} else {
-				AccountManager.setNativeLanguage(account, newNativeLanguage);
-				System.out.println("Your account's native language has been changed!");
-				nextMenu.run();
+				try {
+					LanguageCodeHandler.getCodeForLanguage(newNativeLanguage);
+					AccountManager.setNativeLanguage(account, newNativeLanguage);
+					System.out.println("Your account's native language has been changed!");
+					nextMenu.run();
+				} catch (IllegalArgumentException e) {
+					System.out.println(e.getMessage());
+					run();
+				} catch (IOException e) {
+					System.err.println("Could not access language codes file:");
+					e.printStackTrace();
+					System.out.println("Native language not changed.");
+					nextMenu.run();
+				}
 			}
 		}
 	}
