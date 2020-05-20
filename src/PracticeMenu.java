@@ -14,7 +14,7 @@ public class PracticeMenu extends Menu {
 	
 	@Override
 	void run() {
-		System.out.println("You will now be presented with sentences in " + language + " until you type 'back' or 'exit'.");
+		System.out.println("\nYou will now be presented with sentences in " + language + " until you type 'back' or 'exit'.");
 		System.out.println("After reading a sentence, you can just press enter to move on to the next, or type something before pressing enter and you will be shown the translation.");
 		SentenceChooser sentenceChooser = null;
 		try {

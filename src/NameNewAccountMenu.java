@@ -7,7 +7,7 @@ public class NameNewAccountMenu extends Menu {
 	
 	@Override
 	void run() {
-		System.out.println("Okay, let's create a new account.");
+		System.out.println("\nOkay, let's create a new account.");
 		String newAccountName = askUserAQuestion("What do you want to name it?");
 		if (newAccountName.toLowerCase().equals("exit")) {
 			System.exit(0);

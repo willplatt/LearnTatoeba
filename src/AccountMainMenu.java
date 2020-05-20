@@ -12,7 +12,7 @@ public class AccountMainMenu extends Menu {
 	
 	@Override
 	void run() {
-		System.out.println(account.getName() + "'s account:");
+		System.out.println("\n" + account.getName() + "'s account:");
 		List<String> options = new ArrayList<>();
 		options.add("Languages");
 		options.add("Add a new language");

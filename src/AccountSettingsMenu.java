@@ -12,7 +12,7 @@ public class AccountSettingsMenu extends Menu {
 	
 	@Override
 	void run() {
-		System.out.println("Modify account:");
+		System.out.println("\nModify account:");
 		List<String> options = new ArrayList<>();
 		options.add("Change vocab directory");
 		options.add("Delete account");

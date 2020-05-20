@@ -17,7 +17,7 @@ public class LanguageSelectionMenu extends Menu {
 			System.out.println("You don't haven't added any languages to practice with yet!");
 			previousMenu.run();
 		} else {
-			System.out.println("Choose a language to practice:");
+			System.out.println("\nChoose a language to practice:");
 			String userChoice = giveUserAChoice(languages);
 			if (userChoice.toLowerCase().equals("exit")) {
 				System.exit(0);

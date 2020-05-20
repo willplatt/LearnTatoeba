@@ -11,7 +11,7 @@ public class ChangeAccountVocabDirMenu extends Menu {
 	
 	@Override
 	void run() {
-		String continueChanging = askUserAQuestion("The current vocab directory for this account is '" + account.getVocabDirectory() + "'. Would you like to change it?");
+		String continueChanging = askUserAQuestion("\nThe current vocab directory for this account is '" + account.getVocabDirectory() + "'. Would you like to change it?");
 		if (continueChanging.toLowerCase().equals("exit")) {
 			System.exit(0);
 		} else if (List.of("back", "no", "n").contains(continueChanging.toLowerCase())) {

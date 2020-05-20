@@ -6,9 +6,9 @@ public class MainMenu extends Menu {
 	public void run() {
 		int numberOfAccounts = AccountManager.getNumberOfAccounts();
 		if (numberOfAccounts > 0) {
-			System.out.println("Choose an account to practice with:");
+			System.out.println("\nChoose an account to practice with:");
 		} else {
-			System.out.println("No accounts could be found on this machine.");
+			System.out.println("\nNo accounts could be found on this machine.");
 		}
 		List<List<String>> finalOptions = new ArrayList<>(1);
 		List<String> createAccountOption = new ArrayList<>(1);
