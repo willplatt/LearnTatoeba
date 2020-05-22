@@ -4,26 +4,44 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
 public class SentencesDirManager {
 	public static final File SENTENCES_DIR = new File("sentences");
+	public static final File LINKS_FILE = new File(SENTENCES_DIR, "links.csv");
 	
 	public static boolean hasFileForLanguage(String language) throws IOException {
 		File sentencesFile = new File(SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(language) + "_sentences.tsv");
 		return sentencesFile.exists();
 	}
 	
-	public static void downloadFileForLanguage(String language) throws IOException {
-		String languageCode = LanguageCodeHandler.getCodeForLanguage(language);
-		File compressedFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv.bz2");
-		downloadFile("https://downloads.tatoeba.org/exports/per_language/" + languageCode + "/" + languageCode + "_sentences.tsv.bz2", compressedFile);
-		File targetExtractionFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv");
-		extractBZip2(compressedFile, targetExtractionFile);
+	public static void downloadSentenceLinks() throws IOException {
+		File bZipFile = new File(SENTENCES_DIR, "links.tar.bz2");
+		downloadFile("https://downloads.tatoeba.org/exports/links.tar.bz2", bZipFile);
+		File targetTarFile = new File(SENTENCES_DIR, "links.tar");
+		extractBZip2(bZipFile, targetTarFile);
+		extractTarToLinksFile(targetTarFile);
 	}
 	
-	private static void extractBZip2(File compressedFile, File targetExtractionFile) throws IOException {
-		try (BZip2CompressorInputStream compressedInputStream = new BZip2CompressorInputStream(new BufferedInputStream(Files.newInputStream(compressedFile.toPath())));
+	public static void downloadFileForLanguage(String language) throws IOException {
+		String languageCode = LanguageCodeHandler.getCodeForLanguage(language);
+		File bZipFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv.bz2");
+		downloadFile("https://downloads.tatoeba.org/exports/per_language/" + languageCode + "/" + languageCode + "_sentences.tsv.bz2", bZipFile);
+		File targetExtractionFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv");
+		extractBZip2(bZipFile, targetExtractionFile);
+	}
+	
+	private static void downloadFile(String urlStr, File file) throws IOException {
+		URL url = new URL(urlStr);
+		try (ReadableByteChannel urlChannel = Channels.newChannel(url.openStream());
+		     FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+			fileOutputStream.getChannel().transferFrom(urlChannel, 0, Long.MAX_VALUE);
+		}
+	}
+	
+	private static void extractBZip2(File bZipFile, File targetExtractionFile) throws IOException {
+		try (BZip2CompressorInputStream compressedInputStream = new BZip2CompressorInputStream(new BufferedInputStream(Files.newInputStream(bZipFile.toPath())));
 		     OutputStream targetOutputStream = Files.newOutputStream(targetExtractionFile.toPath())) {
 			final byte[] buffer = new byte[1024];
 			int n;
@@ -33,11 +51,15 @@ public class SentencesDirManager {
 		}
 	}
 	
-	private static void downloadFile(String urlStr, File file) throws IOException {
-		URL url = new URL(urlStr);
-		try (ReadableByteChannel urlChannel = Channels.newChannel(url.openStream());
-		     FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-			fileOutputStream.getChannel().transferFrom(urlChannel, 0, Long.MAX_VALUE);
+	private static void extractTarToLinksFile(File tarFile) throws IOException {
+		try (TarArchiveInputStream tarInputStream = new TarArchiveInputStream(new BufferedInputStream(Files.newInputStream(tarFile.toPath())));
+		     OutputStream targetOutputStream = Files.newOutputStream(LINKS_FILE.toPath())) {
+			tarInputStream.getNextTarEntry();
+			byte[] buffer = new byte[1024];
+			int n;
+			while (-1 != (n = tarInputStream.read(buffer))) {
+				targetOutputStream.write(buffer, 0, n);
+			}
 		}
 	}
 }

@@ -1,10 +1,21 @@
+import java.io.IOException;
+
 public class Start {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println(
                 "Welcome to spaced repetition!\n" +
                 "If you ever want to go back to the previous menu or exit this program you can type 'back' or 'exit'."
         );
         AccountManager.loadAccounts();
-        new MainMenu().run();
+        String defaultLanguage = AccountManager.getDefaultLanguage();
+        if (defaultLanguage != null) {
+            if (SentencesDirManager.hasFileForLanguage(defaultLanguage)) {
+                new MainMenu().run();
+            } else {
+                new DownloadDefaultLanguageSentencesMenu().run();
+            }
+        } else {
+            new SetDefaultLanguageMenu().run();
+        }
     }
 }

@@ -7,15 +7,30 @@ import java.util.List;
 
 public class AccountManager {
 	private static final File ACCOUNTS_DIR = new File("accounts");
+	private static final File DEFAULT_LANGUAGE_FILE = new File(ACCOUNTS_DIR, "defaultLanguage.txt");
 	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
 	private static final FilenameFilter FILE_FILTER = (current, name) -> !new File(current, name).isDirectory();
-	private static final String DEFAULT_NATIVE_LANGUAGE = "English";
 	
+	private static String defaultNativeLanguage;
 	private static List<Account> accounts;
 	
 	public static void loadAccounts() {
 		createAccountsDirIfNecessary();
 		loadAccountsFromSubDirs();
+	}
+	
+	public static void setDefaultLanguage(String defaultLanguage) throws IOException {
+		LanguageCodeHandler.getCodeForLanguage(defaultLanguage);
+		createAccountsDirIfNecessary();
+		createDefaultLanguageFile(defaultLanguage);
+		defaultNativeLanguage = defaultLanguage;
+	}
+	
+	public static String getDefaultLanguage() {
+		if (defaultNativeLanguage == null) {
+			defaultNativeLanguage = readDefaultLanguage();
+		}
+		return defaultNativeLanguage;
 	}
 	
 	public static int getNumberOfAccounts() {
@@ -36,11 +51,11 @@ public class AccountManager {
 			return false;
 		}
 		String accountDirName = generateUniqueDirectoryName(accountName);
-		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, DEFAULT_NATIVE_LANGUAGE, accountDirName);
+		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, defaultNativeLanguage, accountDirName);
 		if (!setUpAccountDirSuccessful) {
 			return false;
 		}
-		accounts.add(new Account(accountName, accountDirName, DEFAULT_NATIVE_LANGUAGE, new File(ACCOUNTS_DIR, accountDirName).getPath()));
+		accounts.add(new Account(accountName, accountDirName, defaultNativeLanguage, new File(ACCOUNTS_DIR, accountDirName).getPath()));
 		return true;
 	}
 	
@@ -123,6 +138,27 @@ public class AccountManager {
 		if (accountInfoFile.exists() && accountInfoFile.isFile()) {
 			try {
 				return Files.readAllLines(accountInfoFile.toPath()).get(lineNumber);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private static void createDefaultLanguageFile(String defaultLanguage) {
+		try {
+			Files.write(DEFAULT_LANGUAGE_FILE.toPath(), defaultLanguage.getBytes());
+		} catch (IOException e) {
+			System.err.println("Could not create defaultLanguage.txt for this account. Terminating program.");
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
+	private static String readDefaultLanguage() {
+		if (DEFAULT_LANGUAGE_FILE.exists() && DEFAULT_LANGUAGE_FILE.isFile()) {
+			try {
+				return Files.readAllLines(DEFAULT_LANGUAGE_FILE.toPath()).get(0);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
