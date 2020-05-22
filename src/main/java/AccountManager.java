@@ -97,6 +97,11 @@ public class AccountManager {
 		return languages;
 	}
 	
+	public static void addPracticeLanguageToAccount(Account account, String newLanguage) throws IOException {
+		File newVocabFile = new File(account.getVocabDirectory(), newLanguage + "_Words.csv");
+		newVocabFile.createNewFile();
+	}
+	
 	private static void createAccountsDirIfNecessary() {
 		if (!ACCOUNTS_DIR.exists() || !ACCOUNTS_DIR.isDirectory()) {
 			boolean dirCreationSuccessful = ACCOUNTS_DIR.mkdir();

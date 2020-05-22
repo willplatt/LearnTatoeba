@@ -12,7 +12,7 @@ ara	Arabic
 arg	Aragonese
 hye	Armenian
 asm	Assamese
-aii	Assyrian Neo\u002dAramaic
+aii	Assyrian Neo-Aramaic
 ast	Asturian
 awa	Awadhi
 aym	Aymara
@@ -110,8 +110,8 @@ heb	Hebrew
 hil	Hiligaynon
 mrj	Hill Mari
 hin	Hindi
-mww	Hmong Daw \u0028White\u0029
-hnj	Hmong Njua \u0028Green\u0029
+mww	Hmong Daw (White)
+hnj	Hmong Njua (Green)
 hoc	Ho
 hun	Hungarian
 hrx	Hunsrik
@@ -135,20 +135,20 @@ jav	Javanese
 tmr	Jewish Babylonian Aramaic
 jpa	Jewish Palestinian Aramaic
 cjy	Jin Chinese
-jdt	Juhuri \u0028Judeo\u002dTat\u0029
-quc	K\u0027iche\u0027
+jdt	Juhuri (Judeo-Tat)
+quc	K'iche'
 kab	Kabyle
 xal	Kalmyk
 kam	Kamba
 kan	Kannada
 pam	Kapampangan
-krc	Karachay\u002dBalkar
+krc	Karachay-Balkar
 kaa	Karakalpak
 krl	Karelian
 kas	Kashmiri
 csb	Kashubian
 kaz	Kazakh
-kek	Kekchi \u0028Q\u0027eqchi\u0027\u0029
+kek	Kekchi (Q'eqchi')
 kxi	Keningau Murut
 kjh	Khakas
 kha	Khasi
@@ -156,17 +156,17 @@ khm	Khmer
 kin	Kinyarwanda
 run	Kirundi
 tlh	Klingon
-ksh	K\u00f6lsch
-koi	Komi\u002dPermyak
-kpv	Komi\u002dZyrian
-gom	Konkani \u0028Goan\u0029
+ksh	Kölsch
+koi	Komi-Permyak
+kpv	Komi-Zyrian
+gom	Konkani (Goan)
 kor	Korean
 avk	Kotava
 kum	Kumyk
 kur	Kurdish
 fkv	Kven Finnish
 kir	Kyrgyz
-ldn	L\u00e1adan
+ldn	Láadan
 lld	Ladin
 lad	Ladino
 lkt	Lakota
@@ -184,7 +184,7 @@ liv	Livonian
 jbo	Lojban
 lmo	Lombard
 lou	Louisiana Creole
-nds	Low German \u0028Low Saxon\u0029
+nds	Low German (Low Saxon)
 dsb	Lower Sorbian
 lug	Luganda
 ltz	Luxembourgish
@@ -193,7 +193,7 @@ mad	Madurese
 mai	Maithili
 mlg	Malagasy
 zsm	Malay
-zlm	Malay \u0028Vernacular\u0029
+zlm	Malay (Vernacular)
 mal	Malayalam
 mlt	Maltese
 mgm	Mambae
@@ -204,7 +204,7 @@ mri	Maori
 mar	Marathi
 mah	Marshallese
 mhr	Meadow Mari
-mic	Mi\u0027kmaq
+mic	Mi'kmaq
 enm	Middle English
 frm	Middle French
 nan	Min Nan Chinese
@@ -217,7 +217,7 @@ mnw	Mon
 mon	Mongolian
 mfe	Morisyen
 ary	Moroccan Arabic
-nst	Naga \u0028Tangshang\u0029
+nst	Naga (Tangshang)
 nah	Nahuatl
 nau	Nauruan
 nav	Navajo
@@ -231,12 +231,12 @@ frr	North Frisian
 apc	North Levantine Arabic
 max	North Moluccan Malay
 sme	Northern Sami
-nob	Norwegian Bokm\u00e5l
+nob	Norwegian Bokmål
 nno	Norwegian Nynorsk
 nov	Novial
 nys	Nyungar
 oci	Occitan
-ori	Odia \u0028Oriya\u0029
+ori	Odia (Oriya)
 oji	Ojibwe
 ryu	Okinawan
 oar	Old Aramaic
@@ -266,8 +266,8 @@ ppl	Pipil
 pol	Polish
 por	Portuguese
 fuc	Pulaar
-pan	Punjabi \u0028Eastern\u0029
-pnb	Punjabi \u0028Western\u0029
+pan	Punjabi (Eastern)
+pnb	Punjabi (Western)
 que	Quechua
 qya	Quenya
 rap	Rapa Nui
@@ -330,7 +330,7 @@ tir	Tigrinya
 tpi	Tok Pisin
 tkl	Tokelauan
 toki	Toki Pona
-toi	Tonga \u0028Zambezi\u0029
+toi	Tonga (Zambezi)
 ton	Tongan
 tso	Tsonga
 tur	Turkish
@@ -349,8 +349,8 @@ uzb	Uzbek
 vec	Venetian
 vep	Veps
 vie	Vietnamese
-vol	Volap\u00fck
-vro	V\u00f5ro
+vol	Volapük
+vro	Võro
 wln	Walloon
 war	Waray
 cym	Welsh

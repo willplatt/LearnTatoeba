@@ -36,16 +36,19 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 		} else if (newNativeLanguage.toLowerCase().equals("back")) {
 			previousMenu.run();
 		} else {
-			try {
-				setLanguageAndDownloadFilesIfNecessary(newNativeLanguage);
-			} catch (IllegalArgumentException e) {
-				System.out.println(e.getMessage());
-				run();
-			} catch (IOException e) {
-				System.err.println("Something went wrong:");
-				e.printStackTrace();
-				System.out.println("Native language not changed.");
-				nextMenu.run();
+			String canonicalLanguageName = LanguageCodeHandler.getCanonicalName(newNativeLanguage);
+			if (canonicalLanguageName == null) {
+				System.out.println("That language is not recognised. Make sure you typed it correctly.");
+				getAndSetNewLanguage();
+			} else {
+				try {
+					setLanguageAndDownloadFilesIfNecessary(canonicalLanguageName);
+				} catch (IOException e) {
+					System.err.println("Something went wrong:");
+					e.printStackTrace();
+					System.out.println("Native language not changed.");
+					nextMenu.run();
+				}
 			}
 		}
 	}
