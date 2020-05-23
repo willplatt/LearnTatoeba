@@ -31,30 +31,35 @@ public class PracticeMenu extends Menu {
 	
 	private void doAnotherSentence(SentenceChooser sentenceChooser) throws IOException {
 		String sentence = sentenceChooser.getNextSentence();
-		List<String> translations = sentenceChooser.getNextTranslations();
-		System.out.println("\n\t" + sentence);
-		String nextSentenceOrTranslate = getNextLine();
-		if (nextSentenceOrTranslate.toLowerCase().equals("exit")) {
-			sentenceChooser.close();
-			System.exit(0);
-		} else if (nextSentenceOrTranslate.toLowerCase().equals("back")) {
-			sentenceChooser.close();
+		if (sentence == null) {
+			System.out.println("Wow! You've been through all of the sentences! Take a well-deserved break.");
 			previousMenu.run();
-		} else if (nextSentenceOrTranslate.equals("")) {
-			doAnotherSentence(sentenceChooser);
 		} else {
-			for (String translation : translations) {
-				System.out.println("\t" + translation);
-			}
-			String userInput = getNextLine();
-			if (userInput.toLowerCase().equals("exit")) {
+			List<String> translations = sentenceChooser.getNextTranslations();
+			System.out.println("\n\t" + sentence);
+			String nextSentenceOrTranslate = getNextLine();
+			if (nextSentenceOrTranslate.toLowerCase().equals("exit")) {
 				sentenceChooser.close();
 				System.exit(0);
-			} else if (userInput.toLowerCase().equals("back")) {
+			} else if (nextSentenceOrTranslate.toLowerCase().equals("back")) {
 				sentenceChooser.close();
 				previousMenu.run();
-			} else {
+			} else if (nextSentenceOrTranslate.equals("")) {
 				doAnotherSentence(sentenceChooser);
+			} else {
+				for (String translation : translations) {
+					System.out.println("\t" + translation);
+				}
+				String userInput = getNextLine();
+				if (userInput.toLowerCase().equals("exit")) {
+					sentenceChooser.close();
+					System.exit(0);
+				} else if (userInput.toLowerCase().equals("back")) {
+					sentenceChooser.close();
+					previousMenu.run();
+				} else {
+					doAnotherSentence(sentenceChooser);
+				}
 			}
 		}
 	}

@@ -1,12 +1,12 @@
 import java.io.IOException;
 import java.util.List;
 
-public class addPracticeLanguageMenu extends Menu {
+public class AddPracticeLanguageMenu extends Menu {
 	private Account account;
 	private Menu previousMenu;
 	private Menu nextMenu;
 	
-	public addPracticeLanguageMenu(Account account, Menu previousMenu, Menu nextMenu) {
+	public AddPracticeLanguageMenu(Account account, Menu previousMenu, Menu nextMenu) {
 		this.account = account;
 		this.previousMenu = previousMenu;
 		this.nextMenu = nextMenu;
