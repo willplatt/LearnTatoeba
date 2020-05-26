@@ -1,50 +1,37 @@
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singleton;
 
 public class SentenceChooser {
 	private static final File LINKS_FILE = new File(SentencesDirManager.SENTENCES_DIR, "links.csv");
 	private static final String SUFFIX_OF_SENTENCE_FILES = "_sentences.tsv";
+	private static final int MAX_SCORE_UPPER_LIMIT = 100;
 	
-	private Map<Integer, List<String>> statusToWordsMap;
-	private int statusIndex = 5;
-	private int wordIndex = 0;
+	private VocabManager vocabManager;
 	private File sentencesFile;
 	private List<String> nextSentences = new ArrayList<>();
 	private List<List<String>> nextTranslations = new ArrayList<>();
 	private RandomAccessFile linksReader;
 	private RandomAccessFile nativeTranslationReader;
+	private int sentenceScoreUpperLimit;
 	
 	public SentenceChooser(Account account, String practiceLanguage) throws IOException {
-		this.statusToWordsMap = VocabDirManager.readVocab(account, practiceLanguage);
+		this.vocabManager =  new VocabManager(account, practiceLanguage);
 		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(practiceLanguage) + SUFFIX_OF_SENTENCE_FILES);
 		this.linksReader = new RandomAccessFile(LINKS_FILE.toString(), "r");
 		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(account.getNativeLanguage()) + SUFFIX_OF_SENTENCE_FILES);
 		this.nativeTranslationReader = new RandomAccessFile(translationsFile.toString(), "r");
+		this.sentenceScoreUpperLimit = 50;
 	}
 	
 	public String getNextSentence() throws IOException {
-		while (nextSentences.isEmpty() && statusIndex >= 1) {
-			List<String> wordsList = statusToWordsMap.get(statusIndex);
-			while (statusIndex <= 5 && wordsList.size() == wordIndex) {
-				statusIndex--;
-				wordsList = statusToWordsMap.get(statusIndex);
-				wordIndex = 0;
-			}
-			if (statusIndex >= 1) {
-				computeNextSentencesContaining(singleton(wordsList.get(wordIndex)));
-				wordIndex++;
-			}
-		}
-		if (statusIndex < 1) {
-			computeNextSentencesContaining(emptySet());
+		while (nextSentences.isEmpty() && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
+			computeNextSentencesWithScoresBetween(0, sentenceScoreUpperLimit);
+			sentenceScoreUpperLimit += 20;
 		}
 		if (nextSentences.isEmpty()) {
 			return null;
@@ -72,32 +59,19 @@ public class SentenceChooser {
 		}
 	}
 	
-	private void computeNextSentencesContaining(Collection<String> phrases) throws IOException {
+	private void computeNextSentencesWithScoresBetween(int minScore, int maxScore) throws IOException {
 		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath())) {
 			String line;
-			while (nextTranslations.size() < 10 && (line = sentencesReader.readLine()) != null) {
+			while ((line = sentencesReader.readLine()) != null) {
 				int indexOfFirstTab = line.indexOf('\t');
 				int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
 				String sentence = line.substring(indexOfSecondTab + 1);
-				boolean containsPhrases = true;
-				for (String phrase : phrases) {
-					int offsetIntoSentence = 0;
-					int lastIndexOfPhrase = sentence.lastIndexOf(phrase);
-					boolean foundOccurrence = false;
-					while (!foundOccurrence && offsetIntoSentence < lastIndexOfPhrase) {
-						offsetIntoSentence = sentence.indexOf(phrase, offsetIntoSentence + 1);
-						int endOffsetOfPhrase = offsetIntoSentence + phrase.length();
-						if ((offsetIntoSentence == 0 || !Character.isLetter(sentence.charAt(offsetIntoSentence - 1))) &&
-								(endOffsetOfPhrase == sentence.length() || !Character.isLetter(sentence.charAt(endOffsetOfPhrase)))) {
-							foundOccurrence = true;
-						}
-					}
-					if (!foundOccurrence) {
-						containsPhrases = false;
-						break;
-					}
+				int score = 0;
+				String[] wordsInSentence = sentence.split("(\\s+[^\\w]*\\s*)|(\\s*[^\\w]*\\s+)");
+				for (String word : wordsInSentence) {
+					score += getScoreForWord(word);
 				}
-				if (containsPhrases) {
+				if (score > minScore && score < maxScore) {
 					String sentenceId = line.substring(0, indexOfFirstTab);
 					List<String> translations = getNativeTranslations(sentenceId);
 					if (!translations.isEmpty()) {
@@ -107,6 +81,12 @@ public class SentenceChooser {
 				}
 			}
 		}
+	}
+	
+	private int getScoreForWord(String word) {
+		int difference = Math.max(0, 4 - vocabManager.getStatusOfWord(word));
+		int differenceSquared = difference * difference;
+		return 5 * differenceSquared;
 	}
 	
 	private List<String> getNativeTranslations(String sentenceId) throws IOException {
