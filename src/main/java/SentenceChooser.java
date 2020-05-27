@@ -1,10 +1,12 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SentenceChooser {
 	private static final File LINKS_FILE = new File(SentencesDirManager.SENTENCES_DIR, "links.csv");
@@ -22,9 +24,9 @@ public class SentenceChooser {
 	public SentenceChooser(Account account, String practiceLanguage) throws IOException {
 		this.vocabManager =  new VocabManager(account, practiceLanguage);
 		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(practiceLanguage) + SUFFIX_OF_SENTENCE_FILES);
-		this.linksReader = new RandomAccessFile(LINKS_FILE.toString(), "r");
+		this.linksReader = new RandomAccessFile(LINKS_FILE, "r");
 		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(account.getNativeLanguage()) + SUFFIX_OF_SENTENCE_FILES);
-		this.nativeTranslationReader = new RandomAccessFile(translationsFile.toString(), "r");
+		this.nativeTranslationReader = new RandomAccessFile(translationsFile, "r");
 		this.sentenceScoreUpperLimit = 50;
 	}
 	
@@ -48,6 +50,10 @@ public class SentenceChooser {
 		List<String> translations = nextTranslations.get(indexOfFinalTranslation);
 		nextTranslations.remove(indexOfFinalTranslation);
 		return translations;
+	}
+	
+	public boolean updateVocab(String updateCommand) throws IOException {
+		return vocabManager.updateVocab(updateCommand);
 	}
 	
 	public void close() {
@@ -167,15 +173,10 @@ public class SentenceChooser {
 		while (receedingIndex + lineLength > index && receedingIndex >= 3) {
 			receedingIndex -= 3;
 			reader.seek(receedingIndex);
-			String line = readUtf8Line(reader);
-			lineLength = line.getBytes().length + 1;
+			String line = reader.readLine();
+			lineLength = line.getBytes(ISO_8859_1).length + 1;
 		}
 		reader.seek(receedingIndex + lineLength);
-		return readUtf8Line(reader);
-	}
-	
-	private String readUtf8Line(RandomAccessFile reader) throws IOException {
-		String rawEncodedString = reader.readLine();
-		return new String(rawEncodedString.getBytes(ISO_8859_1), UTF_8);
+		return RandomAccessReaderHelper.readUtf8Line(reader);
 	}
 }
