@@ -52,11 +52,16 @@ public class SentenceChooser {
 		return translations;
 	}
 	
-	public boolean updateVocab(String updateCommand) throws IOException {
+	public boolean updateVocab(String updateCommand) {
 		return vocabManager.updateVocab(updateCommand);
 	}
 	
 	public void close() {
+		try {
+			vocabManager.pushUpdatesToFile();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 		try {
 			linksReader.close();
 			nativeTranslationReader.close();
@@ -90,7 +95,11 @@ public class SentenceChooser {
 	}
 	
 	private int getScoreForWord(String word) {
-		int difference = Math.max(0, 4 - vocabManager.getStatusOfWord(word));
+		int status = vocabManager.getStatusOfWord(word);
+		if (status == 98 || status == 99) {
+			status = 5;
+		}
+		int difference = Math.max(0, 4 - status);
 		int differenceSquared = difference * difference;
 		return 5 * differenceSquared;
 	}
