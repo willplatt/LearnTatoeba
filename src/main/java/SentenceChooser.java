@@ -12,6 +12,7 @@ public class SentenceChooser {
 	private static final File LINKS_FILE = new File(SentencesDirManager.SENTENCES_DIR, "links.csv");
 	private static final String SUFFIX_OF_SENTENCE_FILES = "_sentences.tsv";
 	private static final int MAX_SCORE_UPPER_LIMIT = 100;
+	private static final String WORD_SEPARATOR_REGEX = "(\\s+[^\\w]*\\s*)|(\\s*[^\\w]*\\s+)";
 	
 	private VocabManager vocabManager;
 	private File sentencesFile;
@@ -52,6 +53,29 @@ public class SentenceChooser {
 		return translations;
 	}
 	
+	public String getSentenceAnnotation(String sentence) {
+		StringBuilder stringBuilder = new StringBuilder();
+		String[] partition = sentence.split(WORD_SEPARATOR_REGEX, 2);
+		while (partition.length == 2) {
+			stringBuilder.append(getWordAnnotation(partition[0]));
+			int numberOfSpaces = sentence.indexOf(partition[1], stringBuilder.length()) - stringBuilder.length();
+			stringBuilder.append(" ".repeat(numberOfSpaces));
+			partition = partition[1].split(WORD_SEPARATOR_REGEX, 2);
+		}
+		if (partition.length == 1) {
+			stringBuilder.append(getWordAnnotation(partition[0]));
+		}
+		return stringBuilder.toString();
+	}
+	
+	private String getWordAnnotation(String word) {
+		String status = String.valueOf(vocabManager.getStatusOfWord(word));
+		if (status.equals("0")) {
+			status = "-";
+		}
+		return status + "-".repeat(Math.max(0, word.length() - status.length()));
+	}
+	
 	public boolean updateVocab(String updateCommand) {
 		return vocabManager.updateVocab(updateCommand);
 	}
@@ -78,7 +102,7 @@ public class SentenceChooser {
 				int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
 				String sentence = line.substring(indexOfSecondTab + 1);
 				int score = 0;
-				String[] wordsInSentence = sentence.split("(\\s+[^\\w]*\\s*)|(\\s*[^\\w]*\\s+)");
+				String[] wordsInSentence = sentence.split(WORD_SEPARATOR_REGEX);
 				for (String word : wordsInSentence) {
 					score += getScoreForWord(word);
 				}

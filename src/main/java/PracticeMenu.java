@@ -49,6 +49,7 @@ public class PracticeMenu extends Menu {
 		} else {
 			List<String> translations = sentenceChooser.getNextTranslations();
 			System.out.println("\n\t" + sentence);
+			System.out.println("\t" + sentenceChooser.getSentenceAnnotation(sentence));
 			askUserHowToProceed(sentenceChooser, translations);
 		}
 	}
