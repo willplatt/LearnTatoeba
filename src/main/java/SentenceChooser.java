@@ -55,7 +55,7 @@ public class SentenceChooser {
 	
 	public String getSentenceAnnotation(String sentence) {
 		StringBuilder stringBuilder = new StringBuilder();
-		String[] partition = sentence.split(WORD_SEPARATOR_REGEX, 2);
+		String[] partition = trimOuterPunctuation(sentence).split(WORD_SEPARATOR_REGEX, 2);
 		while (partition.length == 2) {
 			stringBuilder.append(getWordAnnotation(partition[0]));
 			int numberOfSpaces = sentence.indexOf(partition[1], stringBuilder.length()) - stringBuilder.length();
@@ -97,12 +97,12 @@ public class SentenceChooser {
 	private void computeNextSentencesWithScoresBetween(int minScore, int maxScore) throws IOException {
 		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath())) {
 			String line;
-			while ((line = sentencesReader.readLine()) != null) {
+			while (nextSentences.size() < 30 && (line = sentencesReader.readLine()) != null) {
 				int indexOfFirstTab = line.indexOf('\t');
 				int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
 				String sentence = line.substring(indexOfSecondTab + 1);
 				int score = 0;
-				String[] wordsInSentence = sentence.split(WORD_SEPARATOR_REGEX);
+				String[] wordsInSentence = trimOuterPunctuation(sentence).split(WORD_SEPARATOR_REGEX);
 				for (String word : wordsInSentence) {
 					score += getScoreForWord(word);
 				}
@@ -126,6 +126,18 @@ public class SentenceChooser {
 		int difference = Math.max(0, 4 - status);
 		int differenceSquared = difference * difference;
 		return 5 * differenceSquared;
+	}
+	
+	private String trimOuterPunctuation(String sentence) {
+		int start = 0;
+		int end = sentence.length();
+		while (!sentence.substring(start, start + 1).matches("\\w")) {
+			start++;
+		}
+		while (!sentence.substring(end - 1, end).matches("\\w")) {
+			end--;
+		}
+		return sentence.substring(start, end);
 	}
 	
 	private List<String> getNativeTranslations(String sentenceId) throws IOException {
