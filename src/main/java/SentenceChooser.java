@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
@@ -54,26 +56,22 @@ public class SentenceChooser {
 	}
 	
 	public String getSentenceAnnotation(String sentence) {
-		StringBuilder stringBuilder = new StringBuilder();
-		String[] partition = trimOuterPunctuation(sentence).split(WORD_SEPARATOR_REGEX, 2);
-		while (partition.length == 2) {
-			stringBuilder.append(getWordAnnotation(partition[0]));
-			int numberOfSpaces = sentence.indexOf(partition[1], stringBuilder.length()) - stringBuilder.length();
-			stringBuilder.append(" ".repeat(numberOfSpaces));
-			partition = partition[1].split(WORD_SEPARATOR_REGEX, 2);
+		String trimmedSentence = trimOuterPunctuation(sentence);
+		int charsTrimmedFromStart = sentence.indexOf(trimmedSentence);
+		String annotation = " ".repeat(charsTrimmedFromStart);
+		String remainingToAnnotate = trimmedSentence;
+		while (remainingToAnnotate.length() > 0) {
+			String phrase = getLongestPhrasePrefix(remainingToAnnotate);
+			String phraseAnnotation = getPhraseAnnotation(phrase);
+			annotation += phraseAnnotation;
+			remainingToAnnotate = remainingToAnnotate.substring(phrase.length());
+			int wordSeparatorLength = getLengthOfFirstWordSeparatorOrZero(remainingToAnnotate);
+			int annotationOverrun = phraseAnnotation.length() - phrase.length();
+			int numberOfSpaces = Math.max(0, wordSeparatorLength - annotationOverrun);
+			annotation += " ".repeat(numberOfSpaces);
+			remainingToAnnotate = remainingToAnnotate.substring(wordSeparatorLength);
 		}
-		if (partition.length == 1) {
-			stringBuilder.append(getWordAnnotation(partition[0]));
-		}
-		return stringBuilder.toString();
-	}
-	
-	private String getWordAnnotation(String word) {
-		String status = String.valueOf(vocabManager.getStatusOfWord(word));
-		if (status.equals("0")) {
-			status = "-";
-		}
-		return status + "-".repeat(Math.max(0, word.length() - status.length()));
+		return annotation;
 	}
 	
 	public boolean updateVocab(String updateCommand) {
@@ -101,11 +99,7 @@ public class SentenceChooser {
 				int indexOfFirstTab = line.indexOf('\t');
 				int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
 				String sentence = line.substring(indexOfSecondTab + 1);
-				int score = 0;
-				String[] wordsInSentence = trimOuterPunctuation(sentence).split(WORD_SEPARATOR_REGEX);
-				for (String word : wordsInSentence) {
-					score += getScoreForWord(word);
-				}
+				int score = getScoreForSentence(sentence);
 				if (score > minScore && score < maxScore) {
 					String sentenceId = line.substring(0, indexOfFirstTab);
 					List<String> translations = getNativeTranslations(sentenceId);
@@ -118,14 +112,18 @@ public class SentenceChooser {
 		}
 	}
 	
-	private int getScoreForWord(String word) {
-		int status = vocabManager.getStatusOfWord(word);
-		if (status == 98 || status == 99) {
-			status = 5;
+	private int getScoreForSentence(String sentence) {
+		String trimmedSentence = trimOuterPunctuation(sentence);
+		int score = 0;
+		String remainingToScore = trimmedSentence;
+		while (remainingToScore.length() > 0) {
+			String phrase = getLongestPhrasePrefix(remainingToScore);
+			score += getScoreForPhrase(phrase);
+			remainingToScore = remainingToScore.substring(phrase.length());
+			int wordSeparatorLength = getLengthOfFirstWordSeparatorOrZero(remainingToScore);
+			remainingToScore = remainingToScore.substring(wordSeparatorLength);
 		}
-		int difference = Math.max(0, 4 - status);
-		int differenceSquared = difference * difference;
-		return 5 * differenceSquared;
+		return score;
 	}
 	
 	private String trimOuterPunctuation(String sentence) {
@@ -138,6 +136,49 @@ public class SentenceChooser {
 			end--;
 		}
 		return sentence.substring(start, end);
+	}
+	
+	private String getLongestPhrasePrefix(String sentenceFragment) {
+		int wordLength = indexOfWordSeparatorOrEnd(sentenceFragment);
+		int phraseLength = sentenceFragment.length();
+		String phrase = sentenceFragment.substring(0, phraseLength);
+		while (phraseLength != wordLength && vocabManager.getStatusOfPhrase(phrase) == 0) {
+			phraseLength = lastIndexOfWordSeparator(phrase);
+			phrase = sentenceFragment.substring(0, phraseLength);
+		}
+		return phrase;
+	}
+	
+	private int getScoreForPhrase(String phrase) {
+		int status = vocabManager.getStatusOfPhrase(phrase);
+		if (status == 98 || status == 99) {
+			status = 5;
+		}
+		int difference = Math.max(0, 4 - status);
+		int differenceSquared = difference * difference;
+		return 5 * differenceSquared;
+	}
+	
+	private int indexOfWordSeparatorOrEnd(String str) {
+		Pattern pattern = Pattern.compile(SentenceChooser.WORD_SEPARATOR_REGEX);
+		Matcher matcher = pattern.matcher(str);
+		return matcher.find() ? matcher.start() : str.length();
+	}
+	
+	private int lastIndexOfWordSeparator(String str) {
+		Pattern pattern = Pattern.compile(SentenceChooser.WORD_SEPARATOR_REGEX);
+		Matcher matcher = pattern.matcher(str);
+		int index = -1;
+		while (matcher.find()) {
+			index = matcher.start();
+		}
+		return index;
+	}
+	
+	private int getLengthOfFirstWordSeparatorOrZero(String str) {
+		Pattern pattern = Pattern.compile(SentenceChooser.WORD_SEPARATOR_REGEX);
+		Matcher matcher = pattern.matcher(str);
+		return matcher.find() ? matcher.end() - matcher.start() : 0;
 	}
 	
 	private List<String> getNativeTranslations(String sentenceId) throws IOException {
@@ -223,5 +264,13 @@ public class SentenceChooser {
 		}
 		reader.seek(receedingIndex + lineLength);
 		return RandomAccessReaderHelper.readUtf8Line(reader);
+	}
+	
+	private String getPhraseAnnotation(String phrase) {
+		String status = String.valueOf(vocabManager.getStatusOfPhrase(phrase));
+		if (status.equals("0")) {
+			status = "-";
+		}
+		return status + "-".repeat(Math.max(0, phrase.length() - status.length()));
 	}
 }

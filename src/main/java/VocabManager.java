@@ -10,7 +10,7 @@ import static java.lang.Integer.parseInt;
 public class VocabManager {
 	private static final Set<String> VALID_STATUSES = Set.of("1", "2", "3", "4", "5", "98", "99");
 	
-	private Map<String, Integer> wordToStatusMap = new HashMap<>();
+	private Map<String, Integer> phraseToStatusMap = new HashMap<>();
 	private Map<String, Integer> statusUpdates = new HashMap<>();
 	private File vocabFile;
 	private File tempVocabFile;
@@ -21,12 +21,12 @@ public class VocabManager {
 		readVocab();
 	}
 	
-	public int getStatusOfWord(String word) {
-		Integer updatedStatus = statusUpdates.get(word);
+	public int getStatusOfPhrase(String phrase) {
+		Integer updatedStatus = statusUpdates.get(phrase);
 		if (updatedStatus != null) {
 			return updatedStatus;
 		}
-		return wordToStatusMap.getOrDefault(word, 0);
+		return phraseToStatusMap.getOrDefault(phrase, 0);
 	}
 	
 	public boolean updateVocab(String updateCommand) {
@@ -57,20 +57,20 @@ public class VocabManager {
 			String line;
 			while ((line = vocabReader.readLine()) != null) {
 				int indexOfLastTab = line.lastIndexOf('\t');
-				String word = line.substring(indexOfLastTab + 1);
-				Integer updatedStatus = statusUpdates.get(word);
+				String phrase = line.substring(indexOfLastTab + 1);
+				Integer updatedStatus = statusUpdates.get(phrase);
 				if (updatedStatus != null) {
 					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
 					line = line.substring(0, indexOfSecondToLastTab + 1) + updatedStatus + line.substring(indexOfLastTab);
-					statusUpdates.remove(word);
+					statusUpdates.remove(phrase);
 				}
 				bufferedTempWriter.write(line + "\n");
 			}
 			for (Map.Entry<String, Integer> entry : statusUpdates.entrySet()) {
-				String word = entry.getKey();
+				String phrase = entry.getKey();
 				int updatedStatus = entry.getValue();
-				String lineForWord = word + "\t\t\t\t" + updatedStatus + "\t" + word;
-				bufferedTempWriter.write(lineForWord + "\n");
+				String lineForPhrase = phrase + "\t\t\t\t" + updatedStatus + "\t" + phrase;
+				bufferedTempWriter.write(lineForPhrase + "\n");
 			}
 		}
 		Files.delete(vocabFile.toPath());
@@ -83,11 +83,11 @@ public class VocabManager {
 				String line;
 				while ((line = vocabReader.readLine()) != null) {
 					int indexOfLastTab = line.lastIndexOf('\t');
-					String word = line.substring(indexOfLastTab + 1);
+					String phrase = line.substring(indexOfLastTab + 1);
 					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
 					String status = line.substring(indexOfSecondToLastTab + 1, indexOfLastTab);
 					if (VALID_STATUSES.contains(status)) {
-						wordToStatusMap.put(word, parseInt(status));
+						phraseToStatusMap.put(phrase, parseInt(status));
 					}
 				}
 			}
