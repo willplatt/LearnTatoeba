@@ -18,7 +18,7 @@ public class PracticeMenu extends Menu {
 		System.out.println("After reading a sentence, you can do one of three things:\n" +
 				"1) Enter anything beginning with the '#' symbol. This will give you the translation(s) of the sentence into your native language. Then you can proceed by steps 2 or 3.\n" +
 				"2) Press enter without typing anything to move on to the next sentence.\n" +
-				"3) Enter a command to change the status of words in your vocabulary and move on to the next sentence. A command must be of the form \"word1 status1 word2 status2 ...\"." +
+				"3) Enter a command to change the status of phrases in your vocabulary and move on to the next sentence. A command must be of the form \"phrase1: status1, phrase2: status2, ... phraseN: statusN\"." +
 				" A status must be a whole number from 1 to 5, or 98 or 99. These have the following meanings:\n" +
 				"\t1: Unknown\n" +
 				"\t2: A bit better than unknown\n" +
@@ -27,7 +27,7 @@ public class PracticeMenu extends Menu {
 				"\t5: Known\n" +
 				"\t98: Ignored (this can be used for names)\n" +
 				"\t99: Well-known (this can be used for words that are the same in your native language)\n" +
-				"So for example, \"table 2 chair 3 stool 1\" will record that you recognise the word table (even if you don't know what it means), you are on your way to learning the word chair, and the word stool is unknown to you.");
+				"So for example, \"chair: 2, coffee table: 3, stool: 1\" will record that you recognise the word chair (even if you don't know what it means), you are on your way to learning the phrase coffee table, and the word stool is unknown to you.");
 		SentenceChooser sentenceChooser = null;
 		try {
 			sentenceChooser = new SentenceChooser(account, language);

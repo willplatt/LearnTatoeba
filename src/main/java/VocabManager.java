@@ -30,10 +30,11 @@ public class VocabManager {
 	}
 	
 	public boolean updateVocab(String updateCommand) {
-		String[] terms = updateCommand.toLowerCase().split(" ");
-		boolean hasCorrectFormat = terms.length % 2 == 0;
-		for (int i = 1; i < terms.length; i += 2) {
-			if (!VALID_STATUSES.contains(terms[i])) {
+		String[] subCommands = updateCommand.toLowerCase().split(", ");
+		boolean hasCorrectFormat = subCommands.length > 0;
+		for (String subCommand : subCommands) {
+			String[] terms = subCommand.split(": ");
+			if (terms.length != 2 || !VALID_STATUSES.contains(terms[1])) {
 				hasCorrectFormat = false;
 				break;
 			}
@@ -41,8 +42,9 @@ public class VocabManager {
 		if (!hasCorrectFormat) {
 			return false;
 		} else {
-			for (int i = 0; i < terms.length; i += 2) {
-				statusUpdates.put(terms[i], parseInt(terms[i+1]));
+			for (String subCommand : subCommands) {
+				String[] terms = subCommand.split(": ");
+				statusUpdates.put(terms[0], parseInt(terms[1]));
 			}
 			return true;
 		}
