@@ -27,8 +27,7 @@ public class AccountSettingsMenu extends Menu {
 		} else if (userChoice.equals("2")) {
 			new ChangeAccountVocabDirMenu(account, this, this).run();
 		} else {
-			// TODO: implement account deletion
-			new MainMenu().run();
+			new DeleteAccountMenu(account, this, new MainMenu()).run();
 		}
 	}
 }

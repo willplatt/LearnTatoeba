@@ -22,10 +22,10 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 			previousMenu.run();
 		} else if (List.of("no", "n").contains(continueChanging)) {
 			nextMenu.run();
-		} else if (!List.of("yes", "y").contains(continueChanging)) {
-			run();
-		} else {
+		} else if (List.of("yes", "y").contains(continueChanging)) {
 			getAndSetNewLanguage();
+		} else {
+			run();
 		}
 	}
 	

@@ -1,3 +1,5 @@
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -6,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountManager {
-	private static final File ACCOUNTS_DIR = new File("accounts");
+	public static final File ACCOUNTS_DIR = new File("accounts");
+	
 	private static final File DEFAULT_LANGUAGE_FILE = new File(ACCOUNTS_DIR, "defaultLanguage.txt");
 	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
 	private static final FilenameFilter FILE_FILTER = (current, name) -> !new File(current, name).isDirectory();
@@ -100,6 +103,11 @@ public class AccountManager {
 	public static void addPracticeLanguageToAccount(Account account, String newLanguage) throws IOException {
 		File newVocabFile = new File(account.getVocabDirectory(), newLanguage + "_Words.csv");
 		newVocabFile.createNewFile();
+	}
+	
+	public static void deleteAccount(Account account) throws IOException {
+		FileUtils.deleteDirectory(new File(ACCOUNTS_DIR, account.getDirectoryName()));
+		accounts.remove(account);
 	}
 	
 	private static void createAccountsDirIfNecessary() {
