@@ -14,22 +14,26 @@ public class DownloadDefaultLanguageSentencesMenu extends Menu {
 		} else if (List.of("no", "n").contains(downloadFile)) {
 			System.out.println("Okay! Come back when you're ready to download.");
 			System.exit(0);
-		} else if (!List.of("yes", "y").contains(downloadFile)) {
+		} else if (List.of("yes", "y").contains(downloadFile)) {
+			tryToDownloadAndExtractFiles();
+		} else {
 			System.out.println("Please type yes or no.");
 			run();
-		} else {
-			System.out.println("Downloading and extracting...");
-			try {
-				SentencesDirManager.downloadSentenceLinks();
-				SentencesDirManager.downloadFileForLanguage(AccountManager.getDefaultLanguage());
-				System.out.println("Completed!");
-				new MainMenu().run();
-			} catch (IOException e) {
-				System.err.println("Something went wrong:");
-				e.printStackTrace();
-				System.out.println("Terminating.");
-				System.exit(0);
-			}
+		}
+	}
+	
+	private void tryToDownloadAndExtractFiles() {
+		System.out.println("Downloading and extracting...");
+		try {
+			SentencesDirManager.downloadSentenceLinks();
+			SentencesDirManager.downloadFileForLanguage(AccountManager.getDefaultLanguage());
+			System.out.println("Completed!");
+			new MainMenu().run();
+		} catch (IOException e) {
+			System.err.println("Something went wrong:");
+			e.printStackTrace();
+			System.out.println("Terminating.");
+			System.exit(0);
 		}
 	}
 }

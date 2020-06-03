@@ -25,6 +25,7 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 		} else if (List.of("yes", "y").contains(continueChanging)) {
 			getAndSetNewLanguage();
 		} else {
+			System.out.println("Please type yes or no.");
 			run();
 		}
 	}
@@ -63,12 +64,13 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 				previousMenu.run();
 			} else if (List.of("no", "n").contains(downloadFile)) {
 				nextMenu.run();
-			} else if (!List.of("yes", "y").contains(downloadFile)) {
-				run();
-			} else {
+			} else if (List.of("yes", "y").contains(downloadFile)) {
 				System.out.println("Downloading and extracting...");
 				SentencesDirManager.downloadFileForLanguage(newNativeLanguage);
 				setNativeLanguageAndContinue(newNativeLanguage);
+			} else {
+				System.out.println("Please type yes or no.");
+				run();
 			}
 		} else {
 			setNativeLanguageAndContinue(newNativeLanguage);

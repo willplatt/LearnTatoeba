@@ -18,23 +18,28 @@ public class ChangeAccountVocabDirMenu extends Menu {
 			System.exit(0);
 		} else if (List.of("back", "no", "n").contains(continueChanging.toLowerCase())) {
 			nextMenu.run();
-		} else if (!List.of("yes", "y").contains(continueChanging.toLowerCase())) {
-			run();
+		} else if (List.of("yes", "y").contains(continueChanging.toLowerCase())) {
+			askUserToChangeVocabDir();
 		} else {
-			String newVocabDir = askUserAQuestion("Specify the new directory for storing this account's vocabulary:");
-			if (newVocabDir.toLowerCase().equals("exit")) {
-				System.exit(0);
-			} else if (newVocabDir.toLowerCase().equals("back")) {
-				previousMenu.run();
+			System.out.println("Please type yes or no.");
+			run();
+		}
+	}
+	
+	private void askUserToChangeVocabDir() {
+		String newVocabDir = askUserAQuestion("Specify the new directory for storing this account's vocabulary:");
+		if (newVocabDir.toLowerCase().equals("exit")) {
+			System.exit(0);
+		} else if (newVocabDir.toLowerCase().equals("back")) {
+			previousMenu.run();
+		} else {
+			boolean setDirSuccessful = AccountManager.setVocabDir(account, newVocabDir);
+			if (setDirSuccessful) {
+				System.out.println("Your account's vocab directory has been changed!");
+				nextMenu.run();
 			} else {
-				boolean setDirSuccessful = AccountManager.setVocabDir(account, newVocabDir);
-				if (setDirSuccessful) {
-					System.out.println("Your account's vocab directory has been changed!");
-					nextMenu.run();
-				} else {
-					System.out.println("Unfortunately, that directory could not be accessed or created. Please try again.");
-					run();
-				}
+				System.out.println("Unfortunately, that directory could not be accessed or created. Please try again.");
+				run();
 			}
 		}
 	}

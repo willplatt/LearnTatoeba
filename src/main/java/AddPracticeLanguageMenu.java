@@ -40,30 +40,34 @@ public class AddPracticeLanguageMenu extends Menu {
 	private void setLanguageAndDownloadFilesIfNecessary(String newLanguage) throws IOException {
 		newLanguage = LanguageCodeHandler.getCanonicalName(newLanguage);
 		if (!SentencesDirManager.hasFileForLanguage(newLanguage)) {
-			String downloadFile = askUserAQuestion("Looks like we need to download the " + newLanguage + " sentences for you. Do you still want to continue?");
-			downloadFile = downloadFile.toLowerCase();
-			if (downloadFile.equals("exit")) {
+			String shouldDownloadFile = askUserAQuestion("Looks like we need to download the " + newLanguage + " sentences for you. Do you still want to continue?");
+			shouldDownloadFile = shouldDownloadFile.toLowerCase();
+			if (shouldDownloadFile.equals("exit")) {
 				System.out.println("Language was not added.");
 				System.exit(0);
-			} else if (downloadFile.equals("back")) {
+			} else if (shouldDownloadFile.equals("back")) {
 				System.out.println("Language was not added.");
 				previousMenu.run();
-			} else if (List.of("no", "n").contains(downloadFile)) {
+			} else if (List.of("no", "n").contains(shouldDownloadFile)) {
 				System.out.println("Language was not added.");
 				nextMenu.run();
-			} else if (!List.of("yes", "y").contains(downloadFile)) {
-				setLanguageAndDownloadFilesIfNecessary(newLanguage);
-			} else {
-				System.out.println("Downloading and extracting...");
-				SentencesDirManager.downloadFileForLanguage(newLanguage);
-				System.out.println("Completed!");
-				AccountManager.addPracticeLanguageToAccount(account, newLanguage);
+			} else if (List.of("yes", "y").contains(shouldDownloadFile)) {
+				downloadFileAndAddLanguage(newLanguage);
 				nextMenu.run();
+			} else {
+				setLanguageAndDownloadFilesIfNecessary(newLanguage);
 			}
 		} else {
 			AccountManager.addPracticeLanguageToAccount(account, newLanguage);
 			System.out.println("You can now practice " + newLanguage + "!");
 			nextMenu.run();
 		}
+	}
+	
+	private void downloadFileAndAddLanguage(String newLanguage) throws IOException {
+		System.out.println("Downloading and extracting...");
+		SentencesDirManager.downloadFileForLanguage(newLanguage);
+		System.out.println("Completed!");
+		AccountManager.addPracticeLanguageToAccount(account, newLanguage);
 	}
 }

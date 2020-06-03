@@ -13,6 +13,7 @@ public class DeleteAccountMenu extends Menu {
 		this.nextMenu = nextMenu;
 	}
 	
+	@Override
 	void run() {
 		File accountDir = new File(AccountManager.ACCOUNTS_DIR, account.getDirectoryName());
 		File vocabDir = new File(account.getVocabDirectory());
@@ -33,6 +34,7 @@ public class DeleteAccountMenu extends Menu {
 			tryToDeleteAccount();
 			nextMenu.run();
 		} else {
+			System.out.println("Please type yes or no.");
 			run();
 		}
 	}
