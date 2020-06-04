@@ -14,7 +14,7 @@ public class AccountMainMenu extends Menu {
 	void run() {
 		System.out.println("\n" + account.getName() + "'s account:");
 		List<String> options = new ArrayList<>();
-		options.add("Languages");
+		options.add("Practice a language");
 		options.add("Add a new language");
 		options.add("Account settings");
 		String userChoice = giveUserAChoice(options);

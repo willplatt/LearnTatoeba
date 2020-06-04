@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Integer.parseInt;
-import static java.nio.charset.StandardCharsets.ISO_8859_1;
 
 public class SentenceChooser {
 	private static final File LINKS_FILE = new File(SentencesDirManager.SENTENCES_DIR, "links.csv");
@@ -187,16 +186,16 @@ public class SentenceChooser {
 	
 	private List<Integer> getTranslationIds(String sentenceId) throws IOException {
 		int desiredId = parseInt(sentenceId);
-		long middleIndex = binarySearchBetween(desiredId, 0, linksReader.length(), linksReader);
+		long middleIndex = FileIdSearcher.getByteIndexOnLineWithId(desiredId, 0, linksReader.length(), linksReader);
 		Set<Integer> translationIds = new HashSet<>();
 		long index = middleIndex;
-		while (desiredId == getFirstIdOfLineAt(index, linksReader) && index < linksReader.length()) {
-			translationIds.add(getSecondIdOfLineAt(index, linksReader));
+		while (desiredId == FileIdSearcher.getFirstIdOfLineAt(index, linksReader) && index < linksReader.length()) {
+			translationIds.add(FileIdSearcher.getSecondIdOfLineAt(index, linksReader));
 			index += 3;
 		}
 		index = middleIndex - 3;
-		while (desiredId == getFirstIdOfLineAt(index, linksReader) && index >= 0) {
-			translationIds.add(getSecondIdOfLineAt(index, linksReader));
+		while (desiredId == FileIdSearcher.getFirstIdOfLineAt(index, linksReader) && index >= 0) {
+			translationIds.add(FileIdSearcher.getSecondIdOfLineAt(index, linksReader));
 			index -= 3;
 		}
 		return new ArrayList<>(translationIds);
@@ -210,60 +209,13 @@ public class SentenceChooser {
 		int i = 0;
 		while (i < ids.size() && startIndex < fileLength - 1) {
 			int desiredId = ids.get(i);
-			startIndex = binarySearchBetween(desiredId, startIndex, fileLength, nativeTranslationReader);
-			if (desiredId == getFirstIdOfLineAt(startIndex, nativeTranslationReader)) {
-				translations.add(getTextAfterSecondTabOfLineAt(startIndex, nativeTranslationReader));
+			startIndex = FileIdSearcher.getByteIndexOnLineWithId(desiredId, startIndex, fileLength, nativeTranslationReader);
+			if (desiredId == FileIdSearcher.getFirstIdOfLineAt(startIndex, nativeTranslationReader)) {
+				translations.add(FileIdSearcher.getTextAfterSecondTabOfLineAt(startIndex, nativeTranslationReader));
 			}
 			i++;
 		}
 		return translations;
-	}
-	
-	private long binarySearchBetween(int desiredId, long startIndex, long endIndex, RandomAccessFile reader) throws IOException {
-		if (startIndex >= endIndex) {
-			return endIndex;
-		}
-		long middleIndex = (startIndex + endIndex) / 2;
-		int id = getFirstIdOfLineAt(middleIndex, reader);
-		if (id == desiredId) {
-			return middleIndex;
-		} else if (id > desiredId) {
-			return binarySearchBetween(desiredId, startIndex, middleIndex - 1, reader);
-		} else {
-			return binarySearchBetween(desiredId, middleIndex + 1, endIndex, reader);
-		}
-	}
-	
-	private int getFirstIdOfLineAt(long index, RandomAccessFile reader) throws IOException {
-		String line = readLineAt(index, reader);
-		int indexOfTab = line.indexOf('\t');
-		return parseInt(line.substring(0, indexOfTab));
-	}
-	
-	private int getSecondIdOfLineAt(long index, RandomAccessFile reader) throws IOException {
-		String line = readLineAt(index, reader);
-		int indexOfTab = line.indexOf('\t');
-		return parseInt(line.substring(indexOfTab + 1));
-	}
-	
-	private String getTextAfterSecondTabOfLineAt(long index, RandomAccessFile reader) throws IOException {
-		String line = readLineAt(index, reader);
-		int indexOfFirstTab = line.indexOf('\t');
-		int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
-		return line.substring(indexOfSecondTab + 1);
-	}
-	
-	private String readLineAt(long index, RandomAccessFile reader) throws IOException {
-		long receedingIndex = index;
-		int lineLength = 1;
-		while (receedingIndex + lineLength > index && receedingIndex >= 3) {
-			receedingIndex -= 3;
-			reader.seek(receedingIndex);
-			String line = reader.readLine();
-			lineLength = line.getBytes(ISO_8859_1).length + 1;
-		}
-		reader.seek(receedingIndex + lineLength);
-		return RandomAccessReaderHelper.readUtf8Line(reader);
 	}
 	
 	private String getPhraseAnnotation(String phrase) {
