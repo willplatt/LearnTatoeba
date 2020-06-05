@@ -16,6 +16,27 @@ public abstract class Menu {
 		return scanner.next();
 	}
 	
+	protected static void askUserAYesNoQuestion(String question, Runnable procedureIfNo, Runnable procedureIfYes) {
+		askUserAYesNoQuestion(question, procedureIfNo, procedureIfNo, procedureIfYes);
+	}
+	
+	protected static void askUserAYesNoQuestion(String question, Runnable procedureIfBack, Runnable procedureIfNo, Runnable procedureIfYes) {
+		System.out.println(question);
+		String answer = scanner.next().toLowerCase();
+		if (answer.equals("exit")) {
+			System.exit(0);
+		} else if (answer.equals("back")) {
+			procedureIfBack.run();
+		} else if (List.of("no", "n").contains(answer)) {
+			procedureIfNo.run();
+		} else if (List.of("yes", "y").contains(answer)) {
+			procedureIfYes.run();
+		} else {
+			System.out.println("Please type yes or no.");
+			askUserAYesNoQuestion(question, procedureIfNo, procedureIfYes);
+		}
+	}
+	
 	protected static String giveUserAChoice(List<String> numberedOptions) {
 		return giveUserAChoice(numberedOptions, new ArrayList<>());
 	}

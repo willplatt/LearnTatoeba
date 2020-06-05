@@ -13,20 +13,11 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 	
 	@Override
 	void run() {
-		String continueChanging = askUserAQuestion("\nThe current native language of this account is '" + account.getNativeLanguage() + "'. Would you like to change it?");
-		continueChanging = continueChanging.toLowerCase();
-		if (continueChanging.equals("exit")) {
-			System.exit(0);
-		} else if (continueChanging.equals("back")) {
-			previousMenu.run();
-		} else if (List.of("no", "n").contains(continueChanging)) {
-			nextMenu.run();
-		} else if (List.of("yes", "y").contains(continueChanging)) {
-			getAndSetNewLanguage();
-		} else {
-			System.out.println("Please type yes or no.");
-			run();
-		}
+		askUserAYesNoQuestion("\nThe current native language of this account is '" + account.getNativeLanguage() + "'. Would you like to change it?",
+				previousMenu::run,
+				nextMenu::run,
+				this::getAndSetNewLanguage
+		);
 	}
 	
 	private void getAndSetNewLanguage() {

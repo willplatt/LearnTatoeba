@@ -13,17 +13,10 @@ public class ChangeAccountVocabDirMenu extends Menu {
 	
 	@Override
 	void run() {
-		String continueChanging = askUserAQuestion("\nThe current vocab directory for this account is '" + account.getVocabDirectory() + "'. Would you like to change it?");
-		if (continueChanging.toLowerCase().equals("exit")) {
-			System.exit(0);
-		} else if (List.of("back", "no", "n").contains(continueChanging.toLowerCase())) {
-			nextMenu.run();
-		} else if (List.of("yes", "y").contains(continueChanging.toLowerCase())) {
-			askUserToChangeVocabDir();
-		} else {
-			System.out.println("Please type yes or no.");
-			run();
-		}
+		askUserAYesNoQuestion("\nThe current vocab directory for this account is '" + account.getVocabDirectory() + "'. Would you like to change it?",
+				nextMenu::run,
+				this::askUserToChangeVocabDir
+		);
 	}
 	
 	private void askUserToChangeVocabDir() {

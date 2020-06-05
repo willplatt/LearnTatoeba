@@ -22,21 +22,13 @@ public class DeleteAccountMenu extends Menu {
 		} else {
 			System.out.println("\nThis account's vocab directory is \"" + vocabDir + "\" and will not be affected by deleting the account.");
 		}
-		String answer = askUserAQuestion("Are you sure you would like to delete this account?");
-		answer = answer.toLowerCase();
-		if (answer.equals("exit")) {
-			System.exit(0);
-		} else if (answer.equals("back")) {
-			previousMenu.run();
-		} else if (List.of("no", "n").contains(answer)) {
-			previousMenu.run();
-		} else if (List.of("yes", "y").contains(answer)) {
-			tryToDeleteAccount();
-			nextMenu.run();
-		} else {
-			System.out.println("Please type yes or no.");
-			run();
-		}
+		askUserAYesNoQuestion("Are you sure you would like to delete this account?",
+				previousMenu::run,
+				() -> {
+					tryToDeleteAccount();
+					nextMenu.run();
+				}
+		);
 	}
 	
 	private void tryToDeleteAccount() {
