@@ -30,6 +30,7 @@ public class SentencesDirManager {
 		downloadFile("https://downloads.tatoeba.org/exports/per_language/" + languageCode + "/" + languageCode + "_sentences.tsv.bz2", bZipFile);
 		File targetExtractionFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv");
 		extractBZip2(bZipFile, targetExtractionFile);
+		addLinkedIdsToSentences(targetExtractionFile);
 	}
 	
 	private static void downloadFile(String urlStr, File file) throws IOException {
@@ -61,5 +62,49 @@ public class SentencesDirManager {
 				targetOutputStream.write(buffer, 0, n);
 			}
 		}
+	}
+	
+	private static void addLinkedIdsToSentences(File sentencesFile) throws IOException {
+		File tempSentencesFile = new File(SENTENCES_DIR, "temp.tsv");
+		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath());
+		     BufferedReader linksReader = Files.newBufferedReader(SentencesDirManager.LINKS_FILE.toPath());
+		     BufferedWriter bufferedTempWriter = Files.newBufferedWriter(tempSentencesFile.toPath())) {
+			String sentenceLine;
+			int linkId = 0;
+			while ((sentenceLine = sentencesReader.readLine()) != null) {
+				int sentenceId = getIdAtStartOfLine(sentenceLine);
+				String linkLine = null;
+				while (linkId < sentenceId && (linkLine = linksReader.readLine()) != null) {
+					linkId = getIdAtStartOfLine(linkLine);
+				}
+				String lineAppendage = getTabSeparatedLinkedIds(sentenceId, linkId, linkLine, linksReader);
+				bufferedTempWriter.write(sentenceLine + lineAppendage + "\n");
+			}
+		}
+		Files.delete(sentencesFile.toPath());
+		Files.move(tempSentencesFile.toPath(), sentencesFile.toPath());
+	}
+	
+	private static int getIdAtStartOfLine(String line) {
+		int indexOfFirstTab = line.indexOf('\t');
+		return Integer.parseInt(line.substring(0, indexOfFirstTab));
+	}
+	
+	private static String getTabSeparatedLinkedIds(int sentenceId, int linkId, String linkLine, BufferedReader linksReader) throws IOException {
+		String linkedIds = "";
+		while (linkId == sentenceId && linkLine != null) {
+			int linkedId = getIdAtEndOfLine(linkLine);
+			linkedIds += "\t" + linkedId;
+			linkLine = linksReader.readLine();
+			if (linkLine != null) {
+				linkId = getIdAtStartOfLine(linkLine);
+			}
+		}
+		return linkedIds;
+	}
+	
+	private static int getIdAtEndOfLine(String line) {
+		int indexOfLastTab = line.lastIndexOf('\t');
+		return Integer.parseInt(line.substring(indexOfLastTab + 1));
 	}
 }

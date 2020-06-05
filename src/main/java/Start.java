@@ -3,7 +3,7 @@ import java.io.IOException;
 public class Start {
     public static void main(String[] args) throws IOException {
         System.out.println(
-                "Welcome to spaced repetition!\n" +
+                "Welcome to Learn Tatoeba!\n" +
                 "If you ever want to go back to the previous menu or exit this program you can type 'back' or 'exit'."
         );
         AccountManager.loadAccounts();

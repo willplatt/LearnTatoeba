@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import static java.lang.Integer.parseInt;
 
 public class SentenceChooser {
-	private static final File LINKS_FILE = new File(SentencesDirManager.SENTENCES_DIR, "links.csv");
 	private static final String SUFFIX_OF_SENTENCE_FILES = "_sentences.tsv";
 	private static final int MAX_SCORE_UPPER_LIMIT = 100;
 	private static final String WORD_SEPARATOR_REGEX = "(\\s+[^\\w]*\\s*)|(\\s*[^\\w]*\\s+)";
@@ -19,14 +18,12 @@ public class SentenceChooser {
 	private File sentencesFile;
 	private List<String> nextSentences = new ArrayList<>();
 	private List<List<String>> nextTranslations = new ArrayList<>();
-	private RandomAccessFile linksReader;
 	private RandomAccessFile nativeTranslationReader;
 	private int sentenceScoreUpperLimit;
 	
 	public SentenceChooser(Account account, String practiceLanguage) throws IOException {
 		this.vocabManager =  new VocabManager(account, practiceLanguage);
 		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(practiceLanguage) + SUFFIX_OF_SENTENCE_FILES);
-		this.linksReader = new RandomAccessFile(LINKS_FILE, "r");
 		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(account.getNativeLanguage()) + SUFFIX_OF_SENTENCE_FILES);
 		this.nativeTranslationReader = new RandomAccessFile(translationsFile, "r");
 		this.sentenceScoreUpperLimit = 50;
@@ -34,6 +31,7 @@ public class SentenceChooser {
 	
 	public String getNextSentence() throws IOException {
 		while (nextSentences.isEmpty() && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
+			System.out.println("Computing more sentences...");
 			computeNextSentencesWithScoresBetween(0, sentenceScoreUpperLimit);
 			sentenceScoreUpperLimit += 20;
 		}
@@ -84,7 +82,6 @@ public class SentenceChooser {
 			e.printStackTrace();
 		}
 		try {
-			linksReader.close();
 			nativeTranslationReader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -97,11 +94,12 @@ public class SentenceChooser {
 			while (nextSentences.size() < 30 && (line = sentencesReader.readLine()) != null) {
 				int indexOfFirstTab = line.indexOf('\t');
 				int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
-				String sentence = line.substring(indexOfSecondTab + 1);
+				int indexOfThirdTab = line.indexOf('\t', indexOfSecondTab + 1);
+				int indexOfThirdTabOrEndOfLine = indexOfThirdTab == -1 ? line.length() : indexOfThirdTab;
+				String sentence = line.substring(indexOfSecondTab + 1, indexOfThirdTabOrEndOfLine);
 				int score = getScoreForSentence(sentence);
 				if (score > minScore && score < maxScore) {
-					String sentenceId = line.substring(0, indexOfFirstTab);
-					List<String> translations = getNativeTranslations(sentenceId);
+					List<String> translations = getNativeTranslations(line);
 					if (!translations.isEmpty()) {
 						nextSentences.add(sentence);
 						nextTranslations.add(translations);
@@ -128,10 +126,10 @@ public class SentenceChooser {
 	private String trimOuterPunctuation(String sentence) {
 		int start = 0;
 		int end = sentence.length();
-		while (!sentence.substring(start, start + 1).matches("\\w")) {
+		while (start < end && !sentence.substring(start, start + 1).matches("\\w")) {
 			start++;
 		}
-		while (!sentence.substring(end - 1, end).matches("\\w")) {
+		while (start < end && !sentence.substring(end - 1, end).matches("\\w")) {
 			end--;
 		}
 		return sentence.substring(start, end);
@@ -180,25 +178,17 @@ public class SentenceChooser {
 		return matcher.find() ? matcher.end() - matcher.start() : 0;
 	}
 	
-	private List<String> getNativeTranslations(String sentenceId) throws IOException {
-		return getNativeTranslationsForIds(getTranslationIds(sentenceId));
+	private List<String> getNativeTranslations(String sentenceLine) throws IOException {
+		return getNativeTranslationsForIds(getTranslationIds(sentenceLine));
 	}
 	
-	private List<Integer> getTranslationIds(String sentenceId) throws IOException {
-		int desiredId = parseInt(sentenceId);
-		long middleIndex = FileIdSearcher.getByteIndexOnLineWithId(desiredId, 0, linksReader.length(), linksReader);
-		Set<Integer> translationIds = new HashSet<>();
-		long index = middleIndex;
-		while (desiredId == FileIdSearcher.getFirstIdOfLineAt(index, linksReader) && index < linksReader.length()) {
-			translationIds.add(FileIdSearcher.getSecondIdOfLineAt(index, linksReader));
-			index += 3;
+	private List<Integer> getTranslationIds(String sentenceLine) {
+		String[] ids = sentenceLine.split("\t");
+		List<Integer> translationIds = new ArrayList<>();
+		for (int i = 3; i < ids.length; i++) {
+			translationIds.add(parseInt(ids[i]));
 		}
-		index = middleIndex - 3;
-		while (desiredId == FileIdSearcher.getFirstIdOfLineAt(index, linksReader) && index >= 0) {
-			translationIds.add(FileIdSearcher.getSecondIdOfLineAt(index, linksReader));
-			index -= 3;
-		}
-		return new ArrayList<>(translationIds);
+		return translationIds;
 	}
 	
 	private List<String> getNativeTranslationsForIds(List<Integer> ids) throws IOException {

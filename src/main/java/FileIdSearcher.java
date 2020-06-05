@@ -26,20 +26,16 @@ public class FileIdSearcher {
 		return parseInt(line.substring(0, indexOfTab));
 	}
 	
-	public static int getSecondIdOfLineAt(long index, RandomAccessFile reader) throws IOException {
-		String line = readLineAt(index, reader);
-		int indexOfTab = line.indexOf('\t');
-		return parseInt(line.substring(indexOfTab + 1));
-	}
-	
 	public static String getTextAfterSecondTabOfLineAt(long index, RandomAccessFile reader) throws IOException {
 		String line = readLineAt(index, reader);
 		int indexOfFirstTab = line.indexOf('\t');
 		int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
-		return line.substring(indexOfSecondTab + 1);
+		int indexOfThirdTab = line.indexOf('\t', indexOfSecondTab + 1);
+		int indexOfThirdTabOrEndOfLine = indexOfThirdTab == -1 ? line.length() : indexOfThirdTab;
+		return line.substring(indexOfSecondTab + 1, indexOfThirdTabOrEndOfLine);
 	}
 	
-	public static String readLineAt(long index, RandomAccessFile reader) throws IOException {
+	private static String readLineAt(long index, RandomAccessFile reader) throws IOException {
 		long recedingIndex = index;
 		int lineLength = 1;
 		while (recedingIndex + lineLength > index && recedingIndex >= 3) {
