@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class LanguageSelectionMenu extends Menu {
@@ -25,7 +24,12 @@ public class LanguageSelectionMenu extends Menu {
 				previousMenu.run();
 			} else {
 				int languageIndex = Integer.parseInt(userChoice) - 1;
-				new PracticeMenu(account, languages.get(languageIndex), this).run();
+				String language = languages.get(languageIndex);
+				PracticeMenu practiceMenu = new PracticeMenu(account, language, this);
+				IfNecessaryDownloadSentencesMenu ifNecessaryDownloadNativeSentencesMenu = new IfNecessaryDownloadSentencesMenu(
+						account.getNativeLanguage(), this, practiceMenu
+				);
+				new IfNecessaryDownloadSentencesMenu(language, this, ifNecessaryDownloadNativeSentencesMenu).run();
 			}
 		}
 	}

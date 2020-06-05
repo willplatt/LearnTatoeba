@@ -25,6 +25,9 @@ public class SentencesDirManager {
 	}
 	
 	public static void downloadFileForLanguage(String language) throws IOException {
+		if (!LINKS_FILE.exists()) {
+			downloadSentenceLinks();
+		}
 		String languageCode = LanguageCodeHandler.getCodeForLanguage(language);
 		File bZipFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv.bz2");
 		downloadFile("https://downloads.tatoeba.org/exports/per_language/" + languageCode + "/" + languageCode + "_sentences.tsv.bz2", bZipFile);
