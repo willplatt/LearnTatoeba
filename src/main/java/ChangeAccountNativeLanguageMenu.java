@@ -22,9 +22,7 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 	
 	private void getAndSetNewLanguage() {
 		String newNativeLanguage = askUserAQuestion("Specify the new native language for this account:");
-		if (newNativeLanguage.toLowerCase().equals("exit")) {
-			System.exit(0);
-		} else if (newNativeLanguage.toLowerCase().equals("back")) {
+		if (newNativeLanguage.toLowerCase().equals("back")) {
 			previousMenu.run();
 		} else {
 			String canonicalLanguageName = LanguageCodeHandler.getCanonicalName(newNativeLanguage);

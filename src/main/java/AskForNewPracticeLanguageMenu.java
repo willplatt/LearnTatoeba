@@ -12,9 +12,7 @@ public class AskForNewPracticeLanguageMenu extends Menu {
 	@Override
 	void run() {
 		String newLanguage = askUserAQuestion("\nSpecify the new language you would like to practice:");
-		if (newLanguage.toLowerCase().equals("exit")) {
-			System.exit(0);
-		} else if (newLanguage.toLowerCase().equals("back")) {
+		if (newLanguage.toLowerCase().equals("back")) {
 			previousMenu.run();
 		} else {
 			String canonicalLanguageName = LanguageCodeHandler.getCanonicalName(newLanguage);

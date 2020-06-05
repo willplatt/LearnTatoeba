@@ -4,9 +4,7 @@ public class SetDefaultLanguageMenu extends Menu {
 	@Override
 	void run() {
 		String defaultLanguage = askUserAQuestion("\nSpecify the native language for accounts on this machine. The native language can be set independently for each account, but this will be the default:");
-		if (defaultLanguage.toLowerCase().equals("exit")) {
-			System.exit(0);
-		} else if (defaultLanguage.toLowerCase().equals("back")) {
+		if (defaultLanguage.toLowerCase().equals("back")) {
 			System.out.println("You can't go back from here!");
 			run();
 		} else {

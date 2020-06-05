@@ -17,9 +17,7 @@ public class MainMenu extends Menu {
 		finalOptions.add(createAccountOption);
 		List<String> accountNames = AccountManager.getAccountNames();
 		String userChoice = giveUserAChoice(accountNames, finalOptions);
-		if (userChoice.toLowerCase().equals("exit")) {
-			System.exit(0);
-		} else if (userChoice.toLowerCase().equals("back")) {
+		if (userChoice.toLowerCase().equals("back")) {
 			System.out.println("You cannot go back from here.");
 			run();
 		} else if (userChoice.equals("*")) {

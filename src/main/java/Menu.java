@@ -13,7 +13,11 @@ public abstract class Menu {
 	
 	protected static String askUserAQuestion(String question) {
 		System.out.println(question);
-		return scanner.next();
+		String answer = scanner.next();
+		if (answer.toLowerCase().equals("exit")) {
+			System.exit(0);
+		}
+		return answer;
 	}
 	
 	protected static void askUserAYesNoQuestion(String question, Runnable procedureIfNo, Runnable procedureIfYes) {
@@ -55,6 +59,9 @@ public abstract class Menu {
 			if (!choiceIsValid) {
 				System.out.println("Your choice was invalid. Please try again.");
 			}
+		}
+		if (userChoice.toLowerCase().equals("exit")) {
+			System.exit(0);
 		}
 		return userChoice;
 	}

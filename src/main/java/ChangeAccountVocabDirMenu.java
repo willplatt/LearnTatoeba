@@ -21,9 +21,7 @@ public class ChangeAccountVocabDirMenu extends Menu {
 	
 	private void askUserToChangeVocabDir() {
 		String newVocabDir = askUserAQuestion("Specify the new directory for storing this account's vocabulary:");
-		if (newVocabDir.toLowerCase().equals("exit")) {
-			System.exit(0);
-		} else if (newVocabDir.toLowerCase().equals("back")) {
+		if (newVocabDir.toLowerCase().equals("back")) {
 			previousMenu.run();
 		} else {
 			boolean setDirSuccessful = AccountManager.setVocabDir(account, newVocabDir);

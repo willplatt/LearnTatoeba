@@ -18,9 +18,7 @@ public class AccountSettingsMenu extends Menu {
 		options.add("Change vocab directory");
 		options.add("Delete account");
 		String userChoice = giveUserAChoice(options);
-		if (userChoice.toLowerCase().equals("exit")) {
-			System.exit(0);
-		} else if (userChoice.toLowerCase().equals("back")) {
+		if (userChoice.toLowerCase().equals("back")) {
 			previousMenu.run();
 		} else if (userChoice.equals("1")) {
 			new ChangeAccountNativeLanguageMenu(account, this, this).run();

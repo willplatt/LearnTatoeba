@@ -18,9 +18,7 @@ public class LanguageSelectionMenu extends Menu {
 		} else {
 			System.out.println("\nChoose a language to practice:");
 			String userChoice = giveUserAChoice(languages);
-			if (userChoice.toLowerCase().equals("exit")) {
-				System.exit(0);
-			} else if (userChoice.toLowerCase().equals("back")) {
+			if (userChoice.toLowerCase().equals("back")) {
 				previousMenu.run();
 			} else {
 				int languageIndex = Integer.parseInt(userChoice) - 1;

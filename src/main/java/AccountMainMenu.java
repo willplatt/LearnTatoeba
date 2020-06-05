@@ -18,9 +18,7 @@ public class AccountMainMenu extends Menu {
 		options.add("Add a new language");
 		options.add("Account settings");
 		String userChoice = giveUserAChoice(options);
-		if (userChoice.toLowerCase().equals("exit")) {
-			System.exit(0);
-		} else if (userChoice.toLowerCase().equals("back")) {
+		if (userChoice.toLowerCase().equals("back")) {
 			previousMenu.run();
 		} else if (userChoice.equals("1")) {
 			new LanguageSelectionMenu(account, this).run();

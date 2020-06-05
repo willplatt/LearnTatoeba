@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.List;
 
 public class DownloadDefaultLanguageSentencesMenu extends Menu {
 	@Override
