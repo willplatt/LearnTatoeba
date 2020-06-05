@@ -20,18 +20,18 @@ public class ChangeAccountVocabDirMenu extends Menu {
 	}
 	
 	private void askUserToChangeVocabDir() {
-		String newVocabDir = askUserAQuestion("Specify the new directory for storing this account's vocabulary:");
-		if (newVocabDir.toLowerCase().equals("back")) {
-			previousMenu.run();
-		} else {
-			boolean setDirSuccessful = AccountManager.setVocabDir(account, newVocabDir);
-			if (setDirSuccessful) {
-				System.out.println("Your account's vocab directory has been changed!");
-				nextMenu.run();
-			} else {
-				System.out.println("Unfortunately, that directory could not be accessed or created. Please try again.");
-				run();
-			}
-		}
+		askUserAQuestion("Specify the new directory for storing this account's vocabulary:",
+				previousMenu::run,
+				newVocabDir -> {
+					boolean setDirSuccessful = AccountManager.setVocabDir(account, newVocabDir);
+					if (setDirSuccessful) {
+						System.out.println("Your account's vocab directory has been changed!");
+						nextMenu.run();
+					} else {
+						System.out.println("Unfortunately, that directory could not be accessed or created. Please try again.");
+						run();
+					}
+				}
+		);
 	}
 }

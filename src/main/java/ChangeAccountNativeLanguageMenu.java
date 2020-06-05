@@ -21,18 +21,18 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 	}
 	
 	private void getAndSetNewLanguage() {
-		String newNativeLanguage = askUserAQuestion("Specify the new native language for this account:");
-		if (newNativeLanguage.toLowerCase().equals("back")) {
-			previousMenu.run();
-		} else {
-			String canonicalLanguageName = LanguageCodeHandler.getCanonicalName(newNativeLanguage);
-			if (canonicalLanguageName == null) {
-				System.out.println("That language is not recognised. Make sure you typed it correctly.");
-				getAndSetNewLanguage();
-			} else {
-				SetNativeLanguageMenu setLanguageMenu = new SetNativeLanguageMenu(account, canonicalLanguageName, nextMenu);
-				new IfNecessaryDownloadSentencesMenu(canonicalLanguageName, this, setLanguageMenu).run();
-			}
-		}
+		askUserAQuestion("Specify the new native language for this account:",
+				previousMenu::run,
+				newNativeLanguage -> {
+					String canonicalLanguageName = LanguageCodeHandler.getCanonicalName(newNativeLanguage);
+					if (canonicalLanguageName == null) {
+						System.out.println("That language is not recognised. Make sure you typed it correctly.");
+						getAndSetNewLanguage();
+					} else {
+						SetNativeLanguageMenu setLanguageMenu = new SetNativeLanguageMenu(account, canonicalLanguageName, nextMenu);
+						new IfNecessaryDownloadSentencesMenu(canonicalLanguageName, this, setLanguageMenu).run();
+					}
+				}
+		);
 	}
 }

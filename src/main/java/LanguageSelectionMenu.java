@@ -13,22 +13,22 @@ public class LanguageSelectionMenu extends Menu {
 	void run() {
 		List<String> languages = AccountManager.getLanguagesForAccount(account);
 		if (languages.isEmpty()) {
-			System.out.println("You don't haven't added any languages to practice with yet!");
+			System.out.println("You haven't added any languages to practice with yet!");
 			previousMenu.run();
 		} else {
 			System.out.println("\nChoose a language to practice:");
-			String userChoice = giveUserAChoice(languages);
-			if (userChoice.toLowerCase().equals("back")) {
-				previousMenu.run();
-			} else {
-				int languageIndex = Integer.parseInt(userChoice) - 1;
-				String language = languages.get(languageIndex);
-				PracticeMenu practiceMenu = new PracticeMenu(account, language, this);
-				IfNecessaryDownloadSentencesMenu ifNecessaryDownloadNativeSentencesMenu = new IfNecessaryDownloadSentencesMenu(
-						account.getNativeLanguage(), this, practiceMenu
-				);
-				new IfNecessaryDownloadSentencesMenu(language, this, ifNecessaryDownloadNativeSentencesMenu).run();
-			}
+			giveUserAChoice(languages,
+					previousMenu::run,
+					userChoice -> {
+						int languageIndex = Integer.parseInt(userChoice) - 1;
+						String language = languages.get(languageIndex);
+						PracticeMenu practiceMenu = new PracticeMenu(account, language, this);
+						IfNecessaryDownloadSentencesMenu ifNecessaryDownloadNativeSentencesMenu = new IfNecessaryDownloadSentencesMenu(
+								account.getNativeLanguage(), this, practiceMenu
+						);
+						new IfNecessaryDownloadSentencesMenu(language, this, ifNecessaryDownloadNativeSentencesMenu).run();
+					}
+			);
 		}
 	}
 }

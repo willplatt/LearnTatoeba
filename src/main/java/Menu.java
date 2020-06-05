@@ -1,23 +1,29 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public abstract class Menu {
-	private static Scanner scanner = new Scanner(System.in).useDelimiter("\n");
+	private static final String EXIT_COMMAND = "exit";
+	private static final String BACK_COMMAND = "back";
+	private static final Scanner SCANNER = new Scanner(System.in).useDelimiter("\n");
 	
 	abstract void run();
 	
 	protected static String getNextLine() {
-		return scanner.next();
+		return SCANNER.next();
 	}
 	
-	protected static String askUserAQuestion(String question) {
+	protected static void askUserAQuestion(String question, Runnable procedureIfBack, Consumer<String> continueProcedure) {
 		System.out.println(question);
-		String answer = scanner.next();
-		if (answer.toLowerCase().equals("exit")) {
+		String answer = SCANNER.next();
+		if (answer.toLowerCase().equals(EXIT_COMMAND)) {
 			System.exit(0);
+		} else if (answer.toLowerCase().equals(BACK_COMMAND)) {
+			procedureIfBack.run();
+		} else {
+			continueProcedure.accept(answer);
 		}
-		return answer;
 	}
 	
 	protected static void askUserAYesNoQuestion(String question, Runnable procedureIfNo, Runnable procedureIfYes) {
@@ -26,10 +32,10 @@ public abstract class Menu {
 	
 	protected static void askUserAYesNoQuestion(String question, Runnable procedureIfBack, Runnable procedureIfNo, Runnable procedureIfYes) {
 		System.out.println(question);
-		String answer = scanner.next().toLowerCase();
-		if (answer.equals("exit")) {
+		String answer = SCANNER.next().toLowerCase();
+		if (answer.equals(EXIT_COMMAND)) {
 			System.exit(0);
-		} else if (answer.equals("back")) {
+		} else if (answer.equals(BACK_COMMAND)) {
 			procedureIfBack.run();
 		} else if (List.of("no", "n").contains(answer)) {
 			procedureIfNo.run();
@@ -41,11 +47,11 @@ public abstract class Menu {
 		}
 	}
 	
-	protected static String giveUserAChoice(List<String> numberedOptions) {
-		return giveUserAChoice(numberedOptions, new ArrayList<>());
+	protected static void giveUserAChoice(List<String> numberedOptions, Runnable procedureIfBack, Consumer<String> continueProcedure) {
+		giveUserAChoice(numberedOptions, new ArrayList<>(), procedureIfBack, continueProcedure);
 	}
 	
-	protected static String giveUserAChoice(List<String> numberedOptions, List<List<String>> finalOptions) {
+	protected static void giveUserAChoice(List<String> numberedOptions, List<List<String>> finalOptions, Runnable procedureIfBack, Consumer<String> continueProcedure) {
 		List<String> validOptions = validOptions(numberedOptions, finalOptions);
 		String formattedOptions = formatOptions(numberedOptions, finalOptions);
 		System.out.print(formattedOptions);
@@ -54,16 +60,19 @@ public abstract class Menu {
 		while (!choiceIsValid) {
 			userChoice = getUserChoice();
 			choiceIsValid = validOptions.contains(userChoice) ||
-					userChoice.toLowerCase().equals("exit") ||
-					userChoice.toLowerCase().equals("back");
+					userChoice.toLowerCase().equals(EXIT_COMMAND) ||
+					userChoice.toLowerCase().equals(BACK_COMMAND);
 			if (!choiceIsValid) {
 				System.out.println("Your choice was invalid. Please try again.");
 			}
 		}
-		if (userChoice.toLowerCase().equals("exit")) {
+		if (userChoice.toLowerCase().equals(EXIT_COMMAND)) {
 			System.exit(0);
+		} else if (userChoice.toLowerCase().equals(BACK_COMMAND)) {
+			procedureIfBack.run();
+		} else {
+			continueProcedure.accept(userChoice);
 		}
-		return userChoice;
 	}
 	
 	private static List<String> validOptions(List<String> numberedOptions, List<List<String>> finalOptions) {
@@ -92,6 +101,6 @@ public abstract class Menu {
 	
 	private static String getUserChoice() {
 		System.out.print("Your choice: ");
-		return scanner.next();
+		return SCANNER.next();
 	}
 }

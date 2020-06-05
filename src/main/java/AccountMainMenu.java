@@ -13,19 +13,18 @@ public class AccountMainMenu extends Menu {
 	@Override
 	void run() {
 		System.out.println("\n" + account.getName() + "'s account:");
-		List<String> options = new ArrayList<>();
-		options.add("Practice a language");
-		options.add("Add a new language");
-		options.add("Account settings");
-		String userChoice = giveUserAChoice(options);
-		if (userChoice.toLowerCase().equals("back")) {
-			previousMenu.run();
-		} else if (userChoice.equals("1")) {
-			new LanguageSelectionMenu(account, this).run();
-		} else if (userChoice.equals("2")) {
-			new AskForNewPracticeLanguageMenu(account, this, this).run();
-		} else {
-			new AccountSettingsMenu(account, this).run();
-		}
+		List<String> options = List.of("Practice a language", "Add a new language", "Account settings");
+		giveUserAChoice(options,
+				previousMenu::run,
+				userChoice -> {
+					if (userChoice.equals("1")) {
+						new LanguageSelectionMenu(account, this).run();
+					} else if (userChoice.equals("2")) {
+						new AskForNewPracticeLanguageMenu(account, this, this).run();
+					} else {
+						new AccountSettingsMenu(account, this).run();
+					}
+				}
+		);
 	}
 }
