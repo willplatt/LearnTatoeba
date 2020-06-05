@@ -1,4 +1,8 @@
-import java.util.List;
+package Menu;
+
+import Account.Account;
+
+import static Language.LanguageCodeHandler.getCanonicalName;
 
 public class ChangeAccountNativeLanguageMenu extends Menu {
 	private Account account;
@@ -12,7 +16,7 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		askUserAYesNoQuestion("\nThe current native language of this account is '" + account.getNativeLanguage() + "'. Would you like to change it?",
 				previousMenu::run,
 				nextMenu::run,
@@ -24,7 +28,7 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 		askUserAQuestion("Specify the new native language for this account:",
 				previousMenu::run,
 				newNativeLanguage -> {
-					String canonicalLanguageName = LanguageCodeHandler.getCanonicalName(newNativeLanguage);
+					String canonicalLanguageName = getCanonicalName(newNativeLanguage);
 					if (canonicalLanguageName == null) {
 						System.out.println("That language is not recognised. Make sure you typed it correctly.");
 						getAndSetNewLanguage();

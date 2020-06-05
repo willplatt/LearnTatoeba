@@ -1,3 +1,5 @@
+package Account;
+
 public class Account {
 	private final String name;
 	private final String directoryName;

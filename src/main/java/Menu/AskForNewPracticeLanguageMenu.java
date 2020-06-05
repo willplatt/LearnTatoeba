@@ -1,3 +1,9 @@
+package Menu;
+
+import Account.Account;
+
+import static Language.LanguageCodeHandler.getCanonicalName;
+
 public class AskForNewPracticeLanguageMenu extends Menu {
 	private Account account;
 	private Menu previousMenu;
@@ -10,11 +16,11 @@ public class AskForNewPracticeLanguageMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		askUserAQuestion("\nSpecify the new language you would like to practice:",
 				previousMenu::run,
 				newLanguage -> {
-					String canonicalLanguageName = LanguageCodeHandler.getCanonicalName(newLanguage);
+					String canonicalLanguageName = getCanonicalName(newLanguage);
 					if (canonicalLanguageName == null) {
 						System.out.println("That language is not recognised. Make sure you typed it correctly.");
 						run();

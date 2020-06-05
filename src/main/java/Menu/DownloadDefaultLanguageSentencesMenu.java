@@ -1,8 +1,15 @@
+package Menu;
+
+import Account.AccountManager;
+
 import java.io.IOException;
+
+import static Language.SentencesDirManager.downloadFileForLanguage;
+import static Language.SentencesDirManager.downloadSentenceLinks;
 
 public class DownloadDefaultLanguageSentencesMenu extends Menu {
 	@Override
-	void run() {
+	public void run() {
 		askUserAYesNoQuestion("\nLooks like we need to download the " + AccountManager.getDefaultLanguage() + " sentences and the Tatoeba links file for you. Do you want to continue?",
 				() -> {
 					System.out.println("You can't go back from here!");
@@ -19,8 +26,8 @@ public class DownloadDefaultLanguageSentencesMenu extends Menu {
 	private void tryToDownloadAndExtractFiles() {
 		System.out.println("Downloading and extracting...");
 		try {
-			SentencesDirManager.downloadSentenceLinks();
-			SentencesDirManager.downloadFileForLanguage(AccountManager.getDefaultLanguage());
+			downloadSentenceLinks();
+			downloadFileForLanguage(AccountManager.getDefaultLanguage());
 			System.out.println("Completed!");
 			new MainMenu().run();
 		} catch (IOException e) {

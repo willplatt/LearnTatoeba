@@ -1,4 +1,7 @@
-import java.util.ArrayList;
+package Menu;
+
+import Account.Account;
+
 import java.util.List;
 
 public class AccountSettingsMenu extends Menu {
@@ -11,7 +14,7 @@ public class AccountSettingsMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		System.out.println("\nModify account:");
 		List<String> options = List.of("Change native language", "Change vocab directory", "Delete account");
 		giveUserAChoice(options,

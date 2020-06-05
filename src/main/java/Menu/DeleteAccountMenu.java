@@ -1,6 +1,10 @@
+package Menu;
+
+import Account.Account;
+import Account.AccountManager;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class DeleteAccountMenu extends Menu {
 	private Account account;
@@ -14,7 +18,7 @@ public class DeleteAccountMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		File accountDir = new File(AccountManager.ACCOUNTS_DIR, account.getDirectoryName());
 		File vocabDir = new File(account.getVocabDirectory());
 		if (accountDir.equals(vocabDir)) {

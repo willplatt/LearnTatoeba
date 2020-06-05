@@ -1,3 +1,8 @@
+package Menu;
+
+import Account.Account;
+import Account.AccountManager;
+
 public class NameNewAccountMenu extends Menu {
 	private Menu previousMenu;
 	
@@ -6,7 +11,7 @@ public class NameNewAccountMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		System.out.println("\nOkay, let's create a new account.");
 		askUserAQuestion("What do you want to name it?",
 				previousMenu::run,

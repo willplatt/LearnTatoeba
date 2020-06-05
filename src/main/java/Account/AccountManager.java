@@ -1,3 +1,5 @@
+package Account;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -6,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+
+import static Language.LanguageCodeHandler.getCodeForLanguage;
 
 public class AccountManager {
 	public static final File ACCOUNTS_DIR = new File("accounts");
@@ -23,7 +27,7 @@ public class AccountManager {
 	}
 	
 	public static void setDefaultLanguage(String defaultLanguage) throws IOException {
-		LanguageCodeHandler.getCodeForLanguage(defaultLanguage);
+		getCodeForLanguage(defaultLanguage);
 		createAccountsDirIfNecessary();
 		createDefaultLanguageFile(defaultLanguage);
 		defaultNativeLanguage = defaultLanguage;

@@ -1,3 +1,8 @@
+package Menu;
+
+import Account.Account;
+import Language.SentenceChooser;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -13,7 +18,7 @@ public class PracticeMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		System.out.println("\nYou will now be presented with sentences in " + language + " until you type 'back' or 'exit'.");
 		System.out.println("After reading a sentence, you can do one of three things:\n" +
 				"1) Enter anything beginning with the '#' symbol. This will give you the translation(s) of the sentence into your native language. Then you can proceed by steps 2 or 3.\n" +

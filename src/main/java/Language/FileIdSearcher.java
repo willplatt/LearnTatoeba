@@ -1,8 +1,11 @@
+package Language;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class FileIdSearcher {
 	public static long getByteIndexOnLineWithId(int desiredId, long startIndex, long endIndex, RandomAccessFile reader) throws IOException {
@@ -45,6 +48,14 @@ public class FileIdSearcher {
 			lineLength = line.getBytes(ISO_8859_1).length + 1;
 		}
 		reader.seek(recedingIndex + lineLength);
-		return RandomAccessReaderHelper.readUtf8Line(reader);
+		return readUtf8Line(reader);
+	}
+	
+	private static String readUtf8Line(RandomAccessFile reader) throws IOException {
+		String rawEncodedString = reader.readLine();
+		if (rawEncodedString == null) {
+			return null;
+		}
+		return new String(rawEncodedString.getBytes(ISO_8859_1), UTF_8);
 	}
 }

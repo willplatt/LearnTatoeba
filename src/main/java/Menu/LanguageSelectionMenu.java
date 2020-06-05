@@ -1,3 +1,8 @@
+package Menu;
+
+import Account.Account;
+import Account.AccountManager;
+
 import java.util.List;
 
 public class LanguageSelectionMenu extends Menu {
@@ -10,7 +15,7 @@ public class LanguageSelectionMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		List<String> languages = AccountManager.getLanguagesForAccount(account);
 		if (languages.isEmpty()) {
 			System.out.println("You haven't added any languages to practice with yet!");

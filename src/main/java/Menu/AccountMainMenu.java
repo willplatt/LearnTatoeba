@@ -1,4 +1,7 @@
-import java.util.ArrayList;
+package Menu;
+
+import Account.Account;
+
 import java.util.List;
 
 public class AccountMainMenu extends Menu {
@@ -11,7 +14,7 @@ public class AccountMainMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		System.out.println("\n" + account.getName() + "'s account:");
 		List<String> options = List.of("Practice a language", "Add a new language", "Account settings");
 		giveUserAChoice(options,

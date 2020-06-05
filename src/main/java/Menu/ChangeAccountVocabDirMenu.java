@@ -1,4 +1,7 @@
-import java.util.List;
+package Menu;
+
+import Account.Account;
+import Account.AccountManager;
 
 public class ChangeAccountVocabDirMenu extends Menu {
 	private Account account;
@@ -12,7 +15,7 @@ public class ChangeAccountVocabDirMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		askUserAYesNoQuestion("\nThe current vocab directory for this account is '" + account.getVocabDirectory() + "'. Would you like to change it?",
 				nextMenu::run,
 				this::askUserToChangeVocabDir

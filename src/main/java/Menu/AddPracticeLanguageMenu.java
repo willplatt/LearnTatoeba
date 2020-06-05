@@ -1,3 +1,8 @@
+package Menu;
+
+import Account.Account;
+import Account.AccountManager;
+
 import java.io.IOException;
 
 public class AddPracticeLanguageMenu extends Menu {
@@ -12,7 +17,7 @@ public class AddPracticeLanguageMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		try {
 			AccountManager.addPracticeLanguageToAccount(account, newPracticeLanguage);
 			System.out.println("You can now practice " + newPracticeLanguage + "!");

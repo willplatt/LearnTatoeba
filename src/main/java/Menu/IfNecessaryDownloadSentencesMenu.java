@@ -1,5 +1,9 @@
+package Menu;
+
 import java.io.IOException;
-import java.util.List;
+
+import static Language.SentencesDirManager.downloadFileForLanguage;
+import static Language.SentencesDirManager.hasFileForLanguage;
 
 public class IfNecessaryDownloadSentencesMenu extends Menu {
 	private String language;
@@ -13,9 +17,9 @@ public class IfNecessaryDownloadSentencesMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		try {
-			if (SentencesDirManager.hasFileForLanguage(language)) {
+			if (hasFileForLanguage(language)) {
 				nextMenu.run();
 			} else {
 				askToDownloadAndContinue();
@@ -28,13 +32,13 @@ public class IfNecessaryDownloadSentencesMenu extends Menu {
 		}
 	}
 	
-	void askToDownloadAndContinue() {
+	private void askToDownloadAndContinue() {
 		askUserAYesNoQuestion("\nIt looks like you don't have the sentences for " + language + ". If you wish to continue, they will be downloaded now. The links file will also be downloaded if you do not have it. Continue?",
 				previousMenu::run,
 				() -> {
 					try {
 						System.out.println("Downloading and extracting...");
-						SentencesDirManager.downloadFileForLanguage(language);
+						downloadFileForLanguage(language);
 						System.out.println("Completed!");
 						nextMenu.run();
 					} catch (IOException e) {

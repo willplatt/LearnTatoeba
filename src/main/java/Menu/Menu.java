@@ -1,3 +1,5 @@
+package Menu;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,7 +10,7 @@ public abstract class Menu {
 	private static final String BACK_COMMAND = "back";
 	private static final Scanner SCANNER = new Scanner(System.in).useDelimiter("\n");
 	
-	abstract void run();
+	public abstract void run();
 	
 	protected static String getNextLine() {
 		return SCANNER.next();

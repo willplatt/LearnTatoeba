@@ -1,3 +1,8 @@
+package Menu;
+
+import Account.Account;
+import Account.AccountManager;
+
 public class SetNativeLanguageMenu extends Menu {
 	private Account account;
 	private String newNativeLanguage;
@@ -10,7 +15,7 @@ public class SetNativeLanguageMenu extends Menu {
 	}
 	
 	@Override
-	void run() {
+	public void run() {
 		AccountManager.setNativeLanguage(account, newNativeLanguage);
 		System.out.println("Your account's native language has been changed!");
 		nextMenu.run();
