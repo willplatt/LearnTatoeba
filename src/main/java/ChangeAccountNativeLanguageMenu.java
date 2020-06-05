@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.List;
 
 public class ChangeAccountNativeLanguageMenu extends Menu {
@@ -42,44 +41,9 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 				System.out.println("That language is not recognised. Make sure you typed it correctly.");
 				getAndSetNewLanguage();
 			} else {
-				try {
-					setLanguageAndDownloadFilesIfNecessary(canonicalLanguageName);
-				} catch (IOException e) {
-					System.err.println("Something went wrong:");
-					e.printStackTrace();
-					System.out.println("Native language not changed.");
-					nextMenu.run();
-				}
+				SetNativeLanguageMenu setLanguageMenu = new SetNativeLanguageMenu(account, canonicalLanguageName, nextMenu);
+				new IfNecessaryDownloadSentencesMenu(canonicalLanguageName, this, setLanguageMenu).run();
 			}
 		}
-	}
-	
-	private void setLanguageAndDownloadFilesIfNecessary(String newNativeLanguage) throws IOException {
-		if (!SentencesDirManager.hasFileForLanguage(newNativeLanguage)) {
-			String downloadFile = askUserAQuestion("Looks like we need to download the " + newNativeLanguage + " sentences for you. Do you still want to continue?");
-			downloadFile = downloadFile.toLowerCase();
-			if (downloadFile.equals("exit")) {
-				System.exit(0);
-			} else if (downloadFile.equals("back")) {
-				previousMenu.run();
-			} else if (List.of("no", "n").contains(downloadFile)) {
-				nextMenu.run();
-			} else if (List.of("yes", "y").contains(downloadFile)) {
-				System.out.println("Downloading and extracting...");
-				SentencesDirManager.downloadFileForLanguage(newNativeLanguage);
-				setNativeLanguageAndContinue(newNativeLanguage);
-			} else {
-				System.out.println("Please type yes or no.");
-				run();
-			}
-		} else {
-			setNativeLanguageAndContinue(newNativeLanguage);
-		}
-	}
-	
-	private void setNativeLanguageAndContinue(String newNativeLanguage) {
-		AccountManager.setNativeLanguage(account, newNativeLanguage);
-		System.out.println("Your account's native language has been changed!");
-		nextMenu.run();
 	}
 }

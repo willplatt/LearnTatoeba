@@ -25,7 +25,7 @@ public class AccountMainMenu extends Menu {
 		} else if (userChoice.equals("1")) {
 			new LanguageSelectionMenu(account, this).run();
 		} else if (userChoice.equals("2")) {
-			new AddPracticeLanguageMenu(account, this, this).run();
+			new AskForNewPracticeLanguageMenu(account, this, this).run();
 		} else {
 			new AccountSettingsMenu(account, this).run();
 		}

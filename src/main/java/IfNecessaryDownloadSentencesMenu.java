@@ -29,7 +29,7 @@ public class IfNecessaryDownloadSentencesMenu extends Menu {
 	}
 	
 	void askToDownloadAndContinue() {
-		String shouldContinue = askUserAQuestion("\nIt looks like you don't have the sentences for " + language + " for some reason." +
+		String shouldContinue = askUserAQuestion("\nIt looks like you don't have the sentences for " + language + "." +
 				" If you wish to continue, they will be downloaded now. The links file will also be downloaded if you do not have it. Continue?");
 		if (shouldContinue.equals("exit")) {
 			System.exit(0);
