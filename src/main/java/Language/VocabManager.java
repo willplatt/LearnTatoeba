@@ -25,6 +25,10 @@ public class VocabManager {
 		readVocab();
 	}
 	
+	public boolean isEmpty() {
+		return phraseToStatusMap.isEmpty() && statusUpdates.isEmpty();
+	}
+	
 	public int getStatusOfPhrase(String phrase) {
 		Integer updatedStatus = statusUpdates.get(phrase);
 		if (updatedStatus != null) {

@@ -33,6 +33,10 @@ public class SentenceChooser {
 		this.sentenceScoreUpperLimit = 50;
 	}
 	
+	public boolean vocabIsEmpty() {
+		return vocabManager.isEmpty();
+	}
+	
 	public String getNextSentence() throws IOException {
 		while (nextSentences.isEmpty() && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
 			System.out.println("Computing more sentences...");

@@ -37,7 +37,12 @@ public class PracticeMenu extends Menu {
 		SentenceChooser sentenceChooser = null;
 		try {
 			sentenceChooser = new SentenceChooser(account, language);
-			doAnotherSentence(sentenceChooser);
+			if (sentenceChooser.vocabIsEmpty()) {
+				System.out.println("\nIt looks like you don't have any " + language.getName() + " vocab yet, so you might want to enter some commands now to add words you know (or partly know). When you're done and want to start practicing, just press enter a blank line.");
+				processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank(sentenceChooser);
+			} else {
+				doAnotherSentence(sentenceChooser);
+			}
 		} catch (IOException e) {
 			if (sentenceChooser != null) {
 				sentenceChooser.close();
@@ -73,23 +78,48 @@ public class PracticeMenu extends Menu {
 		}
 	}
 	
-	private void processVocabUpdateAndGoToNextSentence(String nextSentenceOrTranslate, SentenceChooser sentenceChooser, List<String> translations) throws IOException {
-		if (nextSentenceOrTranslate.toLowerCase().equals("exit")) {
+	private void processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank(SentenceChooser sentenceChooser) throws IOException {
+		String userInput = getNextLine();
+		doAnotherSentenceOrDoSomethingElse(userInput, sentenceChooser,
+				() -> {
+					boolean updateVocabSuccessful = sentenceChooser.updateVocab(userInput);
+					if (!updateVocabSuccessful) {
+						System.out.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
+					}
+					processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank(sentenceChooser);
+				}
+		);
+	}
+	
+	private void processVocabUpdateAndGoToNextSentence(String updateCommand, SentenceChooser sentenceChooser, List<String> translations) throws IOException {
+		doAnotherSentenceOrDoSomethingElse(updateCommand, sentenceChooser,
+				() -> {
+					boolean updateVocabSuccessful = sentenceChooser.updateVocab(updateCommand);
+					if (updateVocabSuccessful) {
+						doAnotherSentence(sentenceChooser);
+					} else {
+						System.out.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
+						askUserHowToProceed(sentenceChooser, translations);
+					}
+				}
+		);
+	}
+	
+	private void doAnotherSentenceOrDoSomethingElse(String userInput, SentenceChooser sentenceChooser, RunnableWithIOException somethingElseProcedure) throws IOException {
+		if (userInput.toLowerCase().equals("exit")) {
 			sentenceChooser.close();
 			System.exit(0);
-		} else if (nextSentenceOrTranslate.toLowerCase().equals("back")) {
+		} else if (userInput.toLowerCase().equals("back")) {
 			sentenceChooser.close();
 			previousMenu.run();
-		} else if (nextSentenceOrTranslate.equals("")){
+		} else if (userInput.equals("")){
 			doAnotherSentence(sentenceChooser);
 		} else {
-			boolean updateVocabSuccessful = sentenceChooser.updateVocab(nextSentenceOrTranslate);
-			if (updateVocabSuccessful) {
-				doAnotherSentence(sentenceChooser);
-			} else {
-				System.out.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
-				askUserHowToProceed(sentenceChooser, translations);
-			}
+			somethingElseProcedure.run();
 		}
+	}
+	
+	private interface RunnableWithIOException {
+		void run() throws IOException;
 	}
 }
