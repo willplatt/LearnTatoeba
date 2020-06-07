@@ -1,4 +1,5 @@
 import Account.AccountManager;
+import Language.Language;
 import Language.SentencesDirManager;
 import Menu.DownloadDefaultLanguageSentencesMenu;
 import Menu.MainMenu;
@@ -13,7 +14,7 @@ public class Start {
                 "If you ever want to go back to the previous menu or exit this program you can type 'back' or 'exit'."
         );
         AccountManager.loadAccounts();
-        String defaultLanguage = AccountManager.getDefaultLanguage();
+        Language defaultLanguage = AccountManager.getDefaultLanguage();
         if (defaultLanguage != null) {
             if (SentencesDirManager.hasFileForLanguage(defaultLanguage)) {
                 new MainMenu().run();

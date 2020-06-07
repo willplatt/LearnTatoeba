@@ -1,13 +1,15 @@
 package Account;
 
+import Language.Language;
+
 public class Account {
 	private final String name;
 	private final String directoryName;
 	
-	private String nativeLanguage;
+	private Language nativeLanguage;
 	private String vocabDirectory;
 	
-	public Account(String name, String directoryName, String nativeLanguage, String vocabDirectory) {
+	public Account(String name, String directoryName, Language nativeLanguage, String vocabDirectory) {
 		this.name = name;
 		this.directoryName = directoryName;
 		this.nativeLanguage = nativeLanguage;
@@ -22,11 +24,11 @@ public class Account {
 		return directoryName;
 	}
 	
-	public String getNativeLanguage() {
+	public Language getNativeLanguage() {
 		return nativeLanguage;
 	}
 	
-	public void setNativeLanguage(String newNativeLanguage) {
+	public void setNativeLanguage(Language newNativeLanguage) {
 		nativeLanguage = newNativeLanguage;
 	}
 	

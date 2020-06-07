@@ -1,8 +1,11 @@
 package Menu;
 
 import Account.Account;
+import Language.Language;
 
-import static Language.LanguageCodeHandler.getCanonicalName;
+import java.io.IOException;
+
+import static Language.LanguageManager.getLanguage;
 
 public class ChangeAccountNativeLanguageMenu extends Menu {
 	private Account account;
@@ -17,7 +20,7 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 	
 	@Override
 	public void run() {
-		askUserAYesNoQuestion("\nThe current native language of this account is '" + account.getNativeLanguage() + "'. Would you like to change it?",
+		askUserAYesNoQuestion("\nThe current native language of this account is '" + account.getNativeLanguage().getName() + "'. Would you like to change it?",
 				previousMenu::run,
 				nextMenu::run,
 				this::getAndSetNewLanguage
@@ -27,14 +30,17 @@ public class ChangeAccountNativeLanguageMenu extends Menu {
 	private void getAndSetNewLanguage() {
 		askUserAQuestion("Specify the new native language for this account:",
 				previousMenu::run,
-				newNativeLanguage -> {
-					String canonicalLanguageName = getCanonicalName(newNativeLanguage);
-					if (canonicalLanguageName == null) {
-						System.out.println("That language is not recognised. Make sure you typed it correctly.");
+				languageName -> {
+					try {
+						Language newNativeLanguage = getLanguage(languageName);
+						SetNativeLanguageMenu setLanguageMenu = new SetNativeLanguageMenu(account, newNativeLanguage, nextMenu);
+						new IfNecessaryDownloadSentencesMenu(newNativeLanguage, this, setLanguageMenu).run();
+					} catch (IllegalArgumentException e) {
+						System.err.println(e.getMessage());
 						getAndSetNewLanguage();
-					} else {
-						SetNativeLanguageMenu setLanguageMenu = new SetNativeLanguageMenu(account, canonicalLanguageName, nextMenu);
-						new IfNecessaryDownloadSentencesMenu(canonicalLanguageName, this, setLanguageMenu).run();
+					} catch (IOException e) {
+						e.printStackTrace();
+						previousMenu.run();
 					}
 				}
 		);

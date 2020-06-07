@@ -1,10 +1,11 @@
 package Menu;
 
 import Account.AccountManager;
+import Language.Language;
 
 import java.io.IOException;
 
-import static Language.LanguageCodeHandler.getCanonicalName;
+import static Language.LanguageManager.getLanguage;
 import static Language.SentencesDirManager.hasFileForLanguage;
 
 public class SetDefaultLanguageMenu extends Menu {
@@ -15,25 +16,23 @@ public class SetDefaultLanguageMenu extends Menu {
 					System.out.println("You can't go back from here!");
 					run();
 				},
-				defaultLanguage -> {
-					String canonicalLanguageName = getCanonicalName(defaultLanguage);
-					if (canonicalLanguageName == null) {
-						System.out.println("That language is not recognised. Make sure you typed it correctly.");
-						run();
-					} else {
-						try {
-							AccountManager.setDefaultLanguage(canonicalLanguageName);
-							if (hasFileForLanguage(canonicalLanguageName)) {
-								new MainMenu().run();
-							} else {
-								new DownloadDefaultLanguageSentencesMenu().run();
-							}
-						} catch (IOException e) {
-							System.err.println("Something went wrong:");
-							e.printStackTrace();
-							System.out.println("Default language not set. Terminating.");
-							System.exit(0);
+				languageName -> {
+					try {
+						Language language = getLanguage(languageName);
+						AccountManager.setDefaultLanguage(language);
+						if (hasFileForLanguage(language)) {
+							new MainMenu().run();
+						} else {
+							new DownloadDefaultLanguageSentencesMenu().run();
 						}
+					} catch (IllegalArgumentException e) {
+						System.err.println(e.getMessage());
+						run();
+					} catch (IOException e) {
+						System.err.println("Something went wrong:");
+						e.printStackTrace();
+						System.out.println("Default language not set. Terminating.");
+						System.exit(0);
 					}
 				}
 		);

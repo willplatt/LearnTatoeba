@@ -13,8 +13,8 @@ public class SentencesDirManager {
 	public static final File SENTENCES_DIR = new File("sentences");
 	public static final File LINKS_FILE = new File(SENTENCES_DIR, "links.csv");
 	
-	public static boolean hasFileForLanguage(String language) throws IOException {
-		File sentencesFile = new File(SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(language) + "_sentences.tsv");
+	public static boolean hasFileForLanguage(Language language) {
+		File sentencesFile = new File(SENTENCES_DIR, language.getTatoebaCode() + "_sentences.tsv");
 		return sentencesFile.exists();
 	}
 	
@@ -26,11 +26,11 @@ public class SentencesDirManager {
 		extractTarToLinksFile(targetTarFile);
 	}
 	
-	public static void downloadFileForLanguage(String language) throws IOException {
+	public static void downloadFileForLanguage(Language language) throws IOException {
 		if (!LINKS_FILE.exists()) {
 			downloadSentenceLinks();
 		}
-		String languageCode = LanguageCodeHandler.getCodeForLanguage(language);
+		String languageCode = language.getTatoebaCode();
 		File bZipFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv.bz2");
 		downloadFile("https://downloads.tatoeba.org/exports/per_language/" + languageCode + "/" + languageCode + "_sentences.tsv.bz2", bZipFile);
 		File targetExtractionFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv");

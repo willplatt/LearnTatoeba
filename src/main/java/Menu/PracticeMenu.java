@@ -1,6 +1,7 @@
 package Menu;
 
 import Account.Account;
+import Language.Language;
 import Language.SentenceChooser;
 
 import java.io.IOException;
@@ -8,10 +9,10 @@ import java.util.List;
 
 public class PracticeMenu extends Menu {
 	private Account account;
-	private String language;
+	private Language language;
 	private Menu previousMenu;
 	
-	public PracticeMenu(Account account, String language, Menu previousMenu) {
+	public PracticeMenu(Account account, Language language, Menu previousMenu) {
 		this.account = account;
 		this.language = language;
 		this.previousMenu = previousMenu;
@@ -19,7 +20,7 @@ public class PracticeMenu extends Menu {
 	
 	@Override
 	public void run() {
-		System.out.println("\nYou will now be presented with sentences in " + language + " until you type 'back' or 'exit'.");
+		System.out.println("\nYou will now be presented with sentences in " + language.getName() + " until you type 'back' or 'exit'.");
 		System.out.println("After reading a sentence, you can do one of three things:\n" +
 				"1) Enter anything beginning with the '#' symbol. This will give you the translation(s) of the sentence into your native language. Then you can proceed by steps 2 or 3.\n" +
 				"2) Press enter without typing anything to move on to the next sentence.\n" +

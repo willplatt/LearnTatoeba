@@ -5,26 +5,30 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class LanguageCodeHandler {
-	private static final File LANGUAGE_CODES_FILE = new File("language_codes.tsv");
+public class LanguageManager {
+	private static final File LANGUAGES_FILE = new File("languages.tsv");
 	
-	public static String getCodeForLanguage(String language) throws IOException {
-		BufferedReader codesReader = Files.newBufferedReader(LANGUAGE_CODES_FILE.toPath());
-		String line;
-		while ((line = codesReader.readLine()) != null) {
-			int indexOfTab = line.indexOf('\t');
-			if (language.toLowerCase().equals(line.substring(indexOfTab + 1).toLowerCase())) {
-				codesReader.close();
-				return line.substring(0, indexOfTab);
+	public static Language getLanguage(String languageName) throws IOException {
+		String canonicalLanguageName = getCanonicalName(languageName);
+		if (canonicalLanguageName == null) {
+			canonicalLanguageName = languageName;
+		}
+		try (BufferedReader propertiesReader = Files.newBufferedReader(LANGUAGES_FILE.toPath())) {
+			String line;
+			while ((line = propertiesReader.readLine()) != null) {
+				int indexOfFirstTab = line.indexOf('\t');
+				if (line.substring(0, indexOfFirstTab).equals(canonicalLanguageName)) {
+					return new Language(line);
+				}
 			}
 		}
-		codesReader.close();
-		throw new IllegalArgumentException("Language '" + language + "' does not have a Tatoeba language code");
+		throw new IllegalArgumentException("Language '" + languageName + "' is not recognised.");
 	}
 	
-	public static String getCanonicalName(String language) {
-		switch(language.toLowerCase()) {
+	private static String getCanonicalName(String languageName) {
+		switch(languageName.toLowerCase()) {
 			case "abkhaz":
+			case "abkhazian":
 				return "Abkhaz";
 			case "adyghe":
 				return "Adyghe";
@@ -102,10 +106,13 @@ public class LanguageCodeHandler {
 			case "burmese":
 				return "Burmese";
 			case "buryat":
+			case "buriat":
 				return "Buryat";
 			case "cantonese":
+			case "yue chinese":
 				return "Cantonese";
 			case "catalan":
+			case "valencian":
 				return "Catalan";
 			case "cayuga":
 				return "Cayuga";
@@ -132,6 +139,9 @@ public class LanguageCodeHandler {
 			case "chinese pidgin english":
 				return "Chinese Pidgin English";
 			case "chinyanja":
+			case "chichewa":
+			case "chewa":
+			case "nyanja":
 				return "Chinyanja";
 			case "choctaw":
 				return "Choctaw";
@@ -159,10 +169,13 @@ public class LanguageCodeHandler {
 			case "danish":
 				return "Danish";
 			case "dhivehi":
+			case "divehi":
+			case "maldivian":
 				return "Dhivehi";
 			case "dungan":
 				return "Dungan";
 			case "dutch":
+			case "flemish":
 				return "Dutch";
 			case "dutton world speedwords":
 			case "dutton speedwords":
@@ -226,6 +239,7 @@ public class LanguageCodeHandler {
 			case "greek":
 				return "Greek";
 			case "greenlandic":
+			case "kalaallisut":
 				return "Greenlandic";
 			case "gronings":
 				return "Gronings";
@@ -253,6 +267,7 @@ public class LanguageCodeHandler {
 			case "hiligaynon":
 				return "Hiligaynon";
 			case "hill mari":
+			case "western mari":
 				return "Hill Mari";
 			case "hindi":
 				return "Hindi";
@@ -288,10 +303,12 @@ public class LanguageCodeHandler {
 			case "interlingua":
 				return "Interlingua";
 			case "interlingue":
+			case "occidental":
 				return "Interlingue";
 			case "inuktitut":
 				return "Inuktitut";
 			case "iraqi arabic":
+			case "mesopotamian arabic":
 				return "Iraqi Arabic";
 			case "irish":
 				return "Irish";
@@ -385,6 +402,7 @@ public class LanguageCodeHandler {
 			case "kven finnish":
 				return "Kven Finnish";
 			case "kyrgyz":
+			case "kirghiz":
 				return "Kyrgyz";
 			case "l\u00e1adan":
 			case "laaden":
@@ -575,6 +593,7 @@ public class LanguageCodeHandler {
 			case "orizaba nahuatl":
 				return "Orizaba Nahuatl";
 			case "ossetian":
+			case "ossetic":
 				return "Ossetian";
 			case "ottoman turkish":
 				return "Ottoman Turkish";
@@ -587,6 +606,7 @@ public class LanguageCodeHandler {
 			case "papiamento":
 				return "Papiamento";
 			case "pashto":
+			case "pushto":
 				return "Pashto";
 			case "pennsylvania german":
 				return "Pennsylvania German";
@@ -623,6 +643,8 @@ public class LanguageCodeHandler {
 			case "romani":
 				return "Romani";
 			case "romanian":
+			case "moldavian":
+			case "moldovan":
 				return "Romanian";
 			case "romansh":
 				return "Romansh";
@@ -654,6 +676,7 @@ public class LanguageCodeHandler {
 			case "seychellois creole":
 				return "Seychellois Creole";
 			case "shanghainese":
+			case "wu chinese":
 				return "Shanghainese";
 			case "shona":
 				return "Shona";
@@ -666,6 +689,7 @@ public class LanguageCodeHandler {
 			case "sindhi":
 				return "Sindhi";
 			case "sinhala":
+			case "sinhalese":
 				return "Sinhala";
 			case "slovak":
 				return "Slovak";
@@ -690,6 +714,8 @@ public class LanguageCodeHandler {
 			case "swahili":
 				return "Swahili";
 			case "swazi":
+			case "swati":
+			case "siswati":
 				return "Swazi";
 			case "swedish":
 				return "Swedish";

@@ -1,8 +1,11 @@
 package Menu;
 
 import Account.Account;
+import Language.Language;
 
-import static Language.LanguageCodeHandler.getCanonicalName;
+import java.io.IOException;
+
+import static Language.LanguageManager.getLanguage;
 
 public class AskForNewPracticeLanguageMenu extends Menu {
 	private Account account;
@@ -19,14 +22,17 @@ public class AskForNewPracticeLanguageMenu extends Menu {
 	public void run() {
 		askUserAQuestion("\nSpecify the new language you would like to practice:",
 				previousMenu::run,
-				newLanguage -> {
-					String canonicalLanguageName = getCanonicalName(newLanguage);
-					if (canonicalLanguageName == null) {
-						System.out.println("That language is not recognised. Make sure you typed it correctly.");
+				languageName -> {
+					try {
+						Language newLanguage = getLanguage(languageName);
+						AddPracticeLanguageMenu addPracticeLanguageMenu = new AddPracticeLanguageMenu(account, newLanguage, nextMenu);
+						new IfNecessaryDownloadSentencesMenu(newLanguage, this, addPracticeLanguageMenu).run();
+					} catch (IllegalArgumentException e) {
+						System.err.println(e.getMessage());
 						run();
-					} else {
-						AddPracticeLanguageMenu addPracticeLanguageMenu = new AddPracticeLanguageMenu(account, canonicalLanguageName, nextMenu);
-						new IfNecessaryDownloadSentencesMenu(canonicalLanguageName, this, addPracticeLanguageMenu).run();
+					} catch (IOException e) {
+						e.printStackTrace();
+						previousMenu.run();
 					}
 				}
 		);

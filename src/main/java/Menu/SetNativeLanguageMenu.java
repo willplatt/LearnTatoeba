@@ -2,13 +2,14 @@ package Menu;
 
 import Account.Account;
 import Account.AccountManager;
+import Language.Language;
 
 public class SetNativeLanguageMenu extends Menu {
 	private Account account;
-	private String newNativeLanguage;
+	private Language newNativeLanguage;
 	private Menu nextMenu;
 	
-	public SetNativeLanguageMenu(Account account, String newNativeLanguage, Menu nextMenu) {
+	public SetNativeLanguageMenu(Account account, Language newNativeLanguage, Menu nextMenu) {
 		this.account = account;
 		this.newNativeLanguage = newNativeLanguage;
 		this.nextMenu = nextMenu;

@@ -1,7 +1,9 @@
 package Account;
 
+import Language.Language;
 import org.apache.commons.io.FileUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -9,7 +11,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Language.LanguageCodeHandler.getCodeForLanguage;
+import static Language.LanguageManager.getLanguage;
 
 public class AccountManager {
 	public static final File ACCOUNTS_DIR = new File("accounts");
@@ -18,22 +20,21 @@ public class AccountManager {
 	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
 	private static final FilenameFilter FILE_FILTER = (current, name) -> !new File(current, name).isDirectory();
 	
-	private static String defaultNativeLanguage;
+	private static Language defaultNativeLanguage;
 	private static List<Account> accounts;
 	
-	public static void loadAccounts() {
+	public static void loadAccounts() throws IOException {
 		createAccountsDirIfNecessary();
 		loadAccountsFromSubDirs();
 	}
 	
-	public static void setDefaultLanguage(String defaultLanguage) throws IOException {
-		getCodeForLanguage(defaultLanguage);
+	public static void setDefaultLanguage(Language newDefaultLanguage) {
 		createAccountsDirIfNecessary();
-		createDefaultLanguageFile(defaultLanguage);
-		defaultNativeLanguage = defaultLanguage;
+		createDefaultLanguageFile(newDefaultLanguage);
+		defaultNativeLanguage = newDefaultLanguage;
 	}
 	
-	public static String getDefaultLanguage() {
+	public static Language getDefaultLanguage() {
 		if (defaultNativeLanguage == null) {
 			defaultNativeLanguage = readDefaultLanguage();
 		}
@@ -66,7 +67,7 @@ public class AccountManager {
 		return true;
 	}
 	
-	public static void setNativeLanguage(Account account, String newNativeLanguage) {
+	public static void setNativeLanguage(Account account, Language newNativeLanguage) {
 		changeNativeLanguageOfInfoFile(account, newNativeLanguage);
 		account.setNativeLanguage(newNativeLanguage);
 	}
@@ -91,22 +92,54 @@ public class AccountManager {
 		return null;
 	}
 	
-	public static List<String> getLanguagesForAccount(Account account) {
+	public static List<Language> getLanguagesForAccount(Account account) throws IOException {
 		String[] fileNames = new File(account.getVocabDirectory()).list(FILE_FILTER);
-		List<String> languages = new ArrayList<>();
+		List<Language> languages = new ArrayList<>();
 		if (fileNames != null) {
 			for (String fileName : fileNames) {
 				if (fileName.endsWith("_Words.csv")) {
-					languages.add(fileName.substring(0, fileName.length() - "_Words.csv".length()));
+					String languageName = fileName.substring(0, fileName.length() - "_Words.csv".length());
+					try {
+						languages.add(getLanguage(languageName));
+					} catch (IllegalArgumentException e) {
+						System.err.println(e.getMessage());
+					}
 				}
 			}
 		}
 		return languages;
 	}
 	
-	public static void addPracticeLanguageToAccount(Account account, String newLanguage) throws IOException {
-		File newVocabFile = new File(account.getVocabDirectory(), newLanguage + "_Words.csv");
+	public static void addPracticeLanguageToAccount(Account account, Language newLanguage) throws IOException {
+		File newVocabFile = new File(account.getVocabDirectory(), newLanguage.getName() + "_Words.csv");
 		newVocabFile.createNewFile();
+		File newLanguageSettingsFile = new File(account.getVocabDirectory(), newLanguage.getName() + "_Settings.csv");
+		Language nativeLanguage = account.getNativeLanguage();
+		try (BufferedWriter settingsWriter = Files.newBufferedWriter(newLanguageSettingsFile.toPath())) {
+			settingsWriter.write(
+					"FLTRLANGPREFS\n" +
+					"charSubstitutions\t´='|`='|’='|‘='|′='|‵='\n" +
+					"wordCharRegExp\t" + newLanguage.getWordCharRegExp() + "\n" +
+					"makeCharacterWord\t0\n" +
+					"removeSpaces\t0\n" +
+					"rightToLeft\t0\n" +
+					"fontName\tDialog\n" +
+					"fontSize\t20\n" +
+					"statusFontName\tDialog\n" +
+					"statusFontSize\t15\n" +
+					"dictionaryURL1\thttps://translate.google.com/?ie=UTF-8&sl=" + getGoogleTranslateCode(newLanguage) + "&tl=" + getGoogleTranslateCode(nativeLanguage) + "&text=###\n" +
+					"wordEncodingURL1\tUTF-8\n" +
+					"openAutomaticallyURL1\t1\n" +
+					"dictionaryURL2\thttps://glosbe.com/" + newLanguage.getTatoebaCode() + "/" + nativeLanguage.getTatoebaCode() + "/###\n" +
+					"wordEncodingURL2\tUTF-8\n" +
+					"openAutomaticallyURL2\t0\n" +
+					"dictionaryURL3\t\n" +
+					"wordEncodingURL3\tUTF-8\n" +
+					"openAutomaticallyURL3\t0\n" +
+					"exportTemplate\t$w\\t$t\\t$s\\t$r\\t$a\\t$k\n" +
+					"exportStatuses\t1|2|3|4\n" +
+					"doExport\t1\n");
+		}
 	}
 	
 	public static void deleteAccount(Account account) throws IOException {
@@ -124,13 +157,13 @@ public class AccountManager {
 		}
 	}
 	
-	private static void loadAccountsFromSubDirs() {
+	private static void loadAccountsFromSubDirs() throws IOException {
 		String[] accountDirNames = ACCOUNTS_DIR.list(DIRECTORY_FILTER);
 		assert(accountDirNames != null);
 		accounts = new ArrayList<>(accountDirNames.length);
 		for (String accountDirName : accountDirNames) {
 			String accountName = readAccountName(accountDirName);
-			String nativeLanguage = readAccountNativeLanguage(accountDirName);
+			Language nativeLanguage = readAccountNativeLanguage(accountDirName);
 			String vocabDir = readVocabDir(accountDirName);
 			if (isValidAccountName(accountName)) {
 				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir));
@@ -142,8 +175,8 @@ public class AccountManager {
 		return readLineFromInfoFile(accountDirName, 0);
 	}
 	
-	private static String readAccountNativeLanguage(String accountDirName) {
-		return readLineFromInfoFile(accountDirName, 1);
+	private static Language readAccountNativeLanguage(String accountDirName) throws IOException {
+		return getLanguage(readLineFromInfoFile(accountDirName, 1));
 	}
 	
 	private static String readVocabDir(String accountDirName) {
@@ -162,9 +195,9 @@ public class AccountManager {
 		return null;
 	}
 	
-	private static void createDefaultLanguageFile(String defaultLanguage) {
+	private static void createDefaultLanguageFile(Language defaultLanguage) {
 		try {
-			Files.write(DEFAULT_LANGUAGE_FILE.toPath(), defaultLanguage.getBytes());
+			Files.write(DEFAULT_LANGUAGE_FILE.toPath(), defaultLanguage.getName().getBytes());
 		} catch (IOException e) {
 			System.err.println("Could not create defaultLanguage.txt for this account. Terminating program.");
 			e.printStackTrace();
@@ -172,10 +205,10 @@ public class AccountManager {
 		}
 	}
 	
-	private static String readDefaultLanguage() {
+	private static Language readDefaultLanguage() {
 		if (DEFAULT_LANGUAGE_FILE.exists() && DEFAULT_LANGUAGE_FILE.isFile()) {
 			try {
-				return Files.readAllLines(DEFAULT_LANGUAGE_FILE.toPath()).get(0);
+				return getLanguage(Files.readAllLines(DEFAULT_LANGUAGE_FILE.toPath()).get(0));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -241,7 +274,7 @@ public class AccountManager {
 		return accountDirNames;
 	}
 	
-	private static boolean setUpAccountDir(String accountName, String accountNativeLanguage, String accountDirName) {
+	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName) {
 		File newAccountDir = new File(ACCOUNTS_DIR, accountDirName);
 		boolean dirCreationSuccessful = createAccountDir(newAccountDir);
 		if (!dirCreationSuccessful) {
@@ -263,10 +296,10 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void writeInfoFile(String accountName, String accountNativeLanguage, File newAccountDir) {
+	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir) {
 		File infoFile = new File(newAccountDir, "info.txt");
 		try {
-			String fileContents = accountName + "\n" + accountNativeLanguage + "\n" + newAccountDir.getPath();
+			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath();
 			Files.write(infoFile.toPath(), fileContents.getBytes());
 		} catch (IOException e) {
 			System.err.println("Could not create info.txt for this account. Terminating program.");
@@ -290,10 +323,10 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void changeNativeLanguageOfInfoFile(Account account, String newNativeLanguage) {
+	private static void changeNativeLanguageOfInfoFile(Account account, Language newNativeLanguage) {
 		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
 		try {
-			String fileContents = account.getName() + "\n" + newNativeLanguage + "\n" + account.getVocabDirectory();
+			String fileContents = account.getName() + "\n" + newNativeLanguage.getName() + "\n" + account.getVocabDirectory();
 			Files.write(infoFile.toPath(), fileContents.getBytes());
 		} catch (IOException e) {
 			System.err.println("Could not write info.txt for this account. Terminating program.");
@@ -305,12 +338,17 @@ public class AccountManager {
 	private static void changeVocabDirOfInfoFile(Account account, File newVocabDir) {
 		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
 		try {
-			String fileContents = account.getName() + "\n" + account.getNativeLanguage() + "\n" + newVocabDir;
+			String fileContents = account.getName() + "\n" + account.getNativeLanguage().getName() + "\n" + newVocabDir;
 			Files.write(infoFile.toPath(), fileContents.getBytes());
 		} catch (IOException e) {
 			System.err.println("Could not write info.txt for this account. Terminating program.");
 			e.printStackTrace();
 			System.exit(0);
 		}
+	}
+	
+	private static String getGoogleTranslateCode(Language language) {
+		String twoCharCode = language.getTwoCharCode();
+		return twoCharCode.equals("") ? language.getTatoebaCode() : twoCharCode;
 	}
 }

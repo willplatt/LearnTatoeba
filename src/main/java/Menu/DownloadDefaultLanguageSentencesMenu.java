@@ -10,7 +10,7 @@ import static Language.SentencesDirManager.downloadSentenceLinks;
 public class DownloadDefaultLanguageSentencesMenu extends Menu {
 	@Override
 	public void run() {
-		askUserAYesNoQuestion("\nLooks like we need to download the " + AccountManager.getDefaultLanguage() + " sentences and the Tatoeba links file for you. Do you want to continue?",
+		askUserAYesNoQuestion("\nLooks like we need to download the " + AccountManager.getDefaultLanguage().getName() + " sentences and the Tatoeba links file for you. Do you want to continue?",
 				() -> {
 					System.out.println("You can't go back from here!");
 					run();

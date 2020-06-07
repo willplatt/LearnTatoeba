@@ -19,9 +19,9 @@ public class VocabManager {
 	private File vocabFile;
 	private File tempVocabFile;
 	
-	public VocabManager(Account account, String practiceLanguage) throws IOException {
-		vocabFile = new File(account.getVocabDirectory(), practiceLanguage + "_Words.csv");
-		tempVocabFile = new File(account.getVocabDirectory(), practiceLanguage + "_Words.temp");
+	public VocabManager(Account account, Language practiceLanguage) throws IOException {
+		vocabFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Words.csv");
+		tempVocabFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Words.temp");
 		readVocab();
 	}
 	

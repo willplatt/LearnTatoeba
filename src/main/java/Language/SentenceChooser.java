@@ -25,10 +25,10 @@ public class SentenceChooser {
 	private RandomAccessFile nativeTranslationReader;
 	private int sentenceScoreUpperLimit;
 	
-	public SentenceChooser(Account account, String practiceLanguage) throws IOException {
+	public SentenceChooser(Account account, Language practiceLanguage) throws IOException {
 		this.vocabManager =  new VocabManager(account, practiceLanguage);
-		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(practiceLanguage) + SUFFIX_OF_SENTENCE_FILES);
-		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, LanguageCodeHandler.getCodeForLanguage(account.getNativeLanguage()) + SUFFIX_OF_SENTENCE_FILES);
+		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, practiceLanguage.getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
+		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, account.getNativeLanguage().getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		this.nativeTranslationReader = new RandomAccessFile(translationsFile, "r");
 		this.sentenceScoreUpperLimit = 50;
 	}
