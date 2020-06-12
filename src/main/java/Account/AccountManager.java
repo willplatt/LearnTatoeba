@@ -111,6 +111,13 @@ public class AccountManager {
 	}
 	
 	public static void addPracticeLanguageToAccount(Account account, Language newLanguage) throws IOException {
+		File newTextsDir = new File(account.getVocabDirectory(), newLanguage.getName() + "_Texts");
+		if (!newTextsDir.exists() || !newTextsDir.isDirectory()) {
+			boolean dirCreationSuccessful = newTextsDir.mkdir();
+			if (!dirCreationSuccessful) {
+				throw new IOException("Directory \"" + newTextsDir + "\" could not be created.");
+			}
+		}
 		File newVocabFile = new File(account.getVocabDirectory(), newLanguage.getName() + "_Words.csv");
 		newVocabFile.createNewFile();
 		File newLanguageSettingsFile = new File(account.getVocabDirectory(), newLanguage.getName() + "_Settings.csv");
