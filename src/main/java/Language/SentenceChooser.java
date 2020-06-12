@@ -25,6 +25,7 @@ public class SentenceChooser {
 	private final List<List<String>> nextTranslations = new ArrayList<>();
 	private final RandomAccessFile nativeTranslationReader;
 	private final String wordCharRegex;
+	private final boolean isRightToLeft;
 	
 	public SentenceChooser(Account account, Language practiceLanguage) throws IOException {
 		this.vocabManager =  new VocabManager(account, practiceLanguage);
@@ -32,6 +33,7 @@ public class SentenceChooser {
 		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, account.getNativeLanguage().getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		this.nativeTranslationReader = new RandomAccessFile(translationsFile, "r");
 		this.wordCharRegex = "[" + unescapeJava(practiceLanguage.getWordCharRegExp()) + "]";
+		this.isRightToLeft = practiceLanguage.isRightToLeft();
 	}
 	
 	public boolean vocabIsEmpty() {
@@ -62,22 +64,11 @@ public class SentenceChooser {
 	}
 	
 	public String getSentenceAnnotation(String sentence) {
-		String trimmedSentence = trimOuterPunctuation(sentence);
-		int charsTrimmedFromStart = sentence.indexOf(trimmedSentence);
-		String annotation = " ".repeat(charsTrimmedFromStart);
-		String remainingToAnnotate = trimmedSentence;
-		while (remainingToAnnotate.length() > 0) {
-			String phrase = getLongestPhrasePrefix(remainingToAnnotate);
-			String phraseAnnotation = getPhraseAnnotation(phrase);
-			annotation += phraseAnnotation;
-			remainingToAnnotate = remainingToAnnotate.substring(phrase.length());
-			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToAnnotate);
-			int annotationOverrun = phraseAnnotation.length() - phrase.length();
-			int numberOfSpaces = Math.max(0, wordSeparatorLength - annotationOverrun);
-			annotation += " ".repeat(numberOfSpaces);
-			remainingToAnnotate = remainingToAnnotate.substring(wordSeparatorLength);
+		if (isRightToLeft) {
+			return getRightToLeftSentenceAnnotation(sentence);
+		} else {
+			return getLeftToRightSentenceAnnotation(sentence);
 		}
-		return annotation;
 	}
 	
 	public boolean updateVocab(String updateCommand) {
@@ -100,7 +91,7 @@ public class SentenceChooser {
 	private void computeNextSentencesWithScoresBetween(int minScore, int maxScore) throws IOException {
 		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath())) {
 			String line;
-			while (nextSentences.size() < 30 && (line = sentencesReader.readLine()) != null) {
+			while (nextSentences.size() < 15 && (line = sentencesReader.readLine()) != null) {
 				int indexOfFirstTab = line.indexOf('\t');
 				int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
 				int indexOfThirdTab = line.indexOf('\t', indexOfSecondTab + 1);
@@ -130,6 +121,31 @@ public class SentenceChooser {
 			remainingToScore = remainingToScore.substring(wordSeparatorLength);
 		}
 		return score;
+	}
+	
+	private String getRightToLeftSentenceAnnotation(String sentence) {
+		String reversedLeftToRightAnnotation = new StringBuilder(getLeftToRightSentenceAnnotation(sentence)).reverse().toString();
+		return reversedLeftToRightAnnotation.replace("89", "98");
+	}
+	
+	private String getLeftToRightSentenceAnnotation(String sentence) {
+		String trimmedSentence = trimOuterPunctuation(sentence);
+		int charsTrimmedFromStart = sentence.indexOf(trimmedSentence);
+		String annotation = " ".repeat(charsTrimmedFromStart);
+		String remainingToAnnotate = trimmedSentence;
+		while (remainingToAnnotate.length() > 0) {
+			String phrase = getLongestPhrasePrefix(remainingToAnnotate);
+			String phraseAnnotation = getPhraseAnnotation(phrase);
+			annotation += phraseAnnotation;
+			remainingToAnnotate = remainingToAnnotate.substring(phrase.length());
+			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToAnnotate);
+			int annotationOverrun = phraseAnnotation.length() - phrase.length();
+			int numberOfSpaces = Math.max(0, wordSeparatorLength - annotationOverrun);
+			annotation += " ".repeat(numberOfSpaces);
+			remainingToAnnotate = remainingToAnnotate.substring(wordSeparatorLength);
+		}
+		annotation += " ".repeat(Math.max(0, sentence.length() - annotation.length()));
+		return annotation;
 	}
 	
 	private String trimOuterPunctuation(String sentence) {
