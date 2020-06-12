@@ -8,17 +8,17 @@ import java.util.function.Consumer;
 public abstract class Menu {
 	private static final String EXIT_COMMAND = "exit";
 	private static final String BACK_COMMAND = "back";
-	private static final Scanner SCANNER = new Scanner(System.in).useDelimiter("\n");
+	private static final Scanner SCANNER = new Scanner(System.in);
 	
 	public abstract void run();
 	
 	protected static String getNextLine() {
-		return SCANNER.next();
+		return SCANNER.nextLine();
 	}
 	
 	protected static void askUserAQuestion(String question, Runnable procedureIfBack, Consumer<String> continueProcedure) {
 		System.out.println(question);
-		String answer = SCANNER.next();
+		String answer = SCANNER.nextLine();
 		if (answer.toLowerCase().equals(EXIT_COMMAND)) {
 			System.exit(0);
 		} else if (answer.toLowerCase().equals(BACK_COMMAND)) {
@@ -34,7 +34,7 @@ public abstract class Menu {
 	
 	protected static void askUserAYesNoQuestion(String question, Runnable procedureIfBack, Runnable procedureIfNo, Runnable procedureIfYes) {
 		System.out.println(question);
-		String answer = SCANNER.next().toLowerCase();
+		String answer = SCANNER.nextLine().toLowerCase();
 		if (answer.equals(EXIT_COMMAND)) {
 			System.exit(0);
 		} else if (answer.equals(BACK_COMMAND)) {
@@ -103,6 +103,6 @@ public abstract class Menu {
 	
 	private static String getUserChoice() {
 		System.out.print("Your choice: ");
-		return SCANNER.next();
+		return SCANNER.nextLine();
 	}
 }
