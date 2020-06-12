@@ -12,25 +12,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Integer.parseInt;
+import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
 
 public class SentenceChooser {
 	private static final String SUFFIX_OF_SENTENCE_FILES = "_sentences.tsv";
 	private static final int MAX_SCORE_UPPER_LIMIT = 100;
-	private static final String WORD_SEPARATOR_REGEX = "(\\s+[^\\w]*\\s*)|(\\s*[^\\w]*\\s+)";
 	
-	private VocabManager vocabManager;
-	private File sentencesFile;
-	private List<String> nextSentences = new ArrayList<>();
-	private List<List<String>> nextTranslations = new ArrayList<>();
-	private RandomAccessFile nativeTranslationReader;
-	private int sentenceScoreUpperLimit;
+	private int sentenceScoreUpperLimit = 50;
+	private final VocabManager vocabManager;
+	private final File sentencesFile;
+	private final List<String> nextSentences = new ArrayList<>();
+	private final List<List<String>> nextTranslations = new ArrayList<>();
+	private final RandomAccessFile nativeTranslationReader;
+	private final String wordCharRegex;
 	
 	public SentenceChooser(Account account, Language practiceLanguage) throws IOException {
 		this.vocabManager =  new VocabManager(account, practiceLanguage);
 		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, practiceLanguage.getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, account.getNativeLanguage().getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		this.nativeTranslationReader = new RandomAccessFile(translationsFile, "r");
-		this.sentenceScoreUpperLimit = 50;
+		this.wordCharRegex = "[" + unescapeJava(practiceLanguage.getWordCharRegExp()) + "]";
 	}
 	
 	public boolean vocabIsEmpty() {
@@ -70,7 +71,7 @@ public class SentenceChooser {
 			String phraseAnnotation = getPhraseAnnotation(phrase);
 			annotation += phraseAnnotation;
 			remainingToAnnotate = remainingToAnnotate.substring(phrase.length());
-			int wordSeparatorLength = getLengthOfFirstWordSeparatorOrZero(remainingToAnnotate);
+			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToAnnotate);
 			int annotationOverrun = phraseAnnotation.length() - phrase.length();
 			int numberOfSpaces = Math.max(0, wordSeparatorLength - annotationOverrun);
 			annotation += " ".repeat(numberOfSpaces);
@@ -125,7 +126,7 @@ public class SentenceChooser {
 			String phrase = getLongestPhrasePrefix(remainingToScore);
 			score += getScoreForPhrase(phrase);
 			remainingToScore = remainingToScore.substring(phrase.length());
-			int wordSeparatorLength = getLengthOfFirstWordSeparatorOrZero(remainingToScore);
+			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToScore);
 			remainingToScore = remainingToScore.substring(wordSeparatorLength);
 		}
 		return score;
@@ -134,22 +135,20 @@ public class SentenceChooser {
 	private String trimOuterPunctuation(String sentence) {
 		int start = 0;
 		int end = sentence.length();
-		while (start < end && !sentence.substring(start, start + 1).matches("\\w")) {
+		while (start < end && !sentence.substring(start, start + 1).matches(wordCharRegex)) {
 			start++;
 		}
-		while (start < end && !sentence.substring(end - 1, end).matches("\\w")) {
+		while (start < end && !sentence.substring(end - 1, end).matches(wordCharRegex)) {
 			end--;
 		}
 		return sentence.substring(start, end);
 	}
 	
 	private String getLongestPhrasePrefix(String sentenceFragment) {
-		int wordLength = indexOfWordSeparatorOrEnd(sentenceFragment);
-		int phraseLength = sentenceFragment.length();
-		String phrase = sentenceFragment.substring(0, phraseLength);
-		while (phraseLength != wordLength && vocabManager.getStatusOfPhrase(phrase) == 0) {
-			phraseLength = lastIndexOfWordSeparator(phrase);
-			phrase = sentenceFragment.substring(0, phraseLength);
+		int wordLength = lengthOfFirstWordIn(sentenceFragment);
+		String phrase = sentenceFragment;
+		while (phrase.length() != wordLength && vocabManager.getStatusOfPhrase(phrase) == 0) {
+			phrase = removeLastWordFrom(phrase);
 		}
 		return phrase;
 	}
@@ -164,26 +163,29 @@ public class SentenceChooser {
 		return 5 * differenceSquared;
 	}
 	
-	private int indexOfWordSeparatorOrEnd(String str) {
-		Pattern pattern = Pattern.compile(SentenceChooser.WORD_SEPARATOR_REGEX);
-		Matcher matcher = pattern.matcher(str);
-		return matcher.find() ? matcher.start() : str.length();
-	}
-	
-	private int lastIndexOfWordSeparator(String str) {
-		Pattern pattern = Pattern.compile(SentenceChooser.WORD_SEPARATOR_REGEX);
-		Matcher matcher = pattern.matcher(str);
-		int index = -1;
-		while (matcher.find()) {
-			index = matcher.start();
+	private int lengthOfFirstWordIn(String phrase) {
+		int index = 0;
+		while (index < phrase.length() && phrase.substring(index, index + 1).matches(wordCharRegex)) {
+			index++;
 		}
 		return index;
 	}
 	
-	private int getLengthOfFirstWordSeparatorOrZero(String str) {
-		Pattern pattern = Pattern.compile(SentenceChooser.WORD_SEPARATOR_REGEX);
+	private String removeLastWordFrom(String phrase) {
+		int index = phrase.length();
+		while (index > 0 && phrase.substring(index - 1, index).matches(wordCharRegex)) {
+			index--;
+		}
+		while (index > 0 && !phrase.substring(index - 1, index).matches(wordCharRegex)) {
+			index--;
+		}
+		return phrase.substring(0, index);
+	}
+	
+	private int indexOfFirstWordCharOrZero(String str) {
+		Pattern pattern = Pattern.compile(wordCharRegex);
 		Matcher matcher = pattern.matcher(str);
-		return matcher.find() ? matcher.end() - matcher.start() : 0;
+		return matcher.find() ? matcher.start() : 0;
 	}
 	
 	private List<String> getNativeTranslations(String sentenceLine) throws IOException {

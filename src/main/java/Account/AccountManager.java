@@ -119,7 +119,7 @@ public class AccountManager {
 			settingsWriter.write(
 					"FLTRLANGPREFS\n" +
 					"charSubstitutions\t´='|`='|’='|‘='|′='|‵='\n" +
-					"wordCharRegExp\t" + newLanguage.getWordCharRegExp() + "\n" +
+					"wordCharRegExp\t" + newLanguage.getWordCharRegExp().replace("\\\\-", "\\-") + "\n" +
 					"makeCharacterWord\t0\n" +
 					"removeSpaces\t0\n" +
 					"rightToLeft\t0\n" +
