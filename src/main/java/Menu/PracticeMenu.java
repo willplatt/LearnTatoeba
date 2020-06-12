@@ -56,6 +56,7 @@ public class PracticeMenu extends Menu {
 		String sentence = sentenceChooser.getNextSentence();
 		if (sentence == null) {
 			System.out.println("Wow! You've been through all of the sentences! Take a well-deserved break.");
+			sentenceChooser.close();
 			previousMenu.run();
 		} else {
 			List<String> translations = sentenceChooser.getNextTranslations();
