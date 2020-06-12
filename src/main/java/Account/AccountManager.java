@@ -122,7 +122,7 @@ public class AccountManager {
 					"wordCharRegExp\t" + newLanguage.getWordCharRegExp().replace("\\\\-", "\\-") + "\n" +
 					"makeCharacterWord\t0\n" +
 					"removeSpaces\t0\n" +
-					"rightToLeft\t0\n" +
+					"rightToLeft\t" + (newLanguage.isRightToLeft() ? "1" : "0") + "\n" +
 					"fontName\tDialog\n" +
 					"fontSize\t20\n" +
 					"statusFontName\tDialog\n" +
