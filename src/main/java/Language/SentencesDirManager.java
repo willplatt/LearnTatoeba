@@ -9,8 +9,10 @@ import java.nio.file.Files;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
+import static Constants.Paths.INSTALL_DIR;
+
 public class SentencesDirManager {
-	public static final File SENTENCES_DIR = new File("sentences");
+	public static final File SENTENCES_DIR = new File(INSTALL_DIR, "sentences");
 	public static final File LINKS_FILE = new File(SENTENCES_DIR, "links.csv");
 	
 	public static boolean hasFileForLanguage(Language language) {

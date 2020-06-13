@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static Constants.Paths.INSTALL_DIR;
+
 public class LanguageManager {
-	private static final File LANGUAGES_FILE = new File("languages.tsv");
+	private static final File LANGUAGES_FILE = new File(INSTALL_DIR, "languages.tsv");
 	
 	public static Language getLanguage(String languageName) throws IOException {
 		String canonicalLanguageName = getCanonicalName(languageName);

@@ -11,10 +11,11 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Constants.Paths.INSTALL_DIR;
 import static Language.LanguageManager.getLanguage;
 
 public class AccountManager {
-	public static final File ACCOUNTS_DIR = new File("accounts");
+	public static final File ACCOUNTS_DIR = new File(INSTALL_DIR, "accounts");
 	
 	private static final File DEFAULT_LANGUAGE_FILE = new File(ACCOUNTS_DIR, "defaultLanguage.txt");
 	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
