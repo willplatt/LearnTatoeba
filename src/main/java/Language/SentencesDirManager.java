@@ -19,6 +19,12 @@ public class SentencesDirManager {
 	}
 	
 	public static void downloadSentenceLinks() throws IOException {
+		if (!SENTENCES_DIR.exists() || !SENTENCES_DIR.isDirectory()) {
+			boolean dirCreationSuccessful = SENTENCES_DIR.mkdir();
+			if (!dirCreationSuccessful) {
+				throw new IOException("Directory \"" + SENTENCES_DIR + "\" could not be created.");
+			}
+		}
 		File bZipFile = new File(SENTENCES_DIR, "links.tar.bz2");
 		downloadFile("https://downloads.tatoeba.org/exports/links.tar.bz2", bZipFile);
 		File targetTarFile = new File(SENTENCES_DIR, "links.tar");
