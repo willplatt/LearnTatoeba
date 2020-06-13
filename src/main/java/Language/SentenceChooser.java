@@ -43,7 +43,7 @@ public class SentenceChooser {
 	public String getNextSentence() throws IOException {
 		while (nextSentences.isEmpty() && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
 			System.out.println("Computing more sentences...");
-			computeNextSentencesWithScoresBetween(0, sentenceScoreUpperLimit);
+			computeNextSentencesWithScoresBetween(Math.max(1, sentenceScoreUpperLimit - 20), sentenceScoreUpperLimit);
 			sentenceScoreUpperLimit += 20;
 		}
 		if (nextSentences.isEmpty()) {
@@ -98,7 +98,7 @@ public class SentenceChooser {
 				int indexOfThirdTabOrEndOfLine = indexOfThirdTab == -1 ? line.length() : indexOfThirdTab;
 				String sentence = line.substring(indexOfSecondTab + 1, indexOfThirdTabOrEndOfLine);
 				int score = getScoreForSentence(sentence);
-				if (score > minScore && score < maxScore) {
+				if (score >= minScore && score < maxScore) {
 					List<String> translations = getNativeTranslations(line);
 					if (!translations.isEmpty()) {
 						nextSentences.add(sentence);
