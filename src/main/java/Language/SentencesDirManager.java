@@ -10,6 +10,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
 import static Constants.Paths.INSTALL_DIR;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SentencesDirManager {
 	public static final File SENTENCES_DIR = new File(INSTALL_DIR, "sentences");
@@ -79,9 +80,9 @@ public class SentencesDirManager {
 	
 	private static void addLinkedIdsToSentences(File sentencesFile) throws IOException {
 		File tempSentencesFile = new File(SENTENCES_DIR, "temp.tsv");
-		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath());
-		     BufferedReader linksReader = Files.newBufferedReader(SentencesDirManager.LINKS_FILE.toPath());
-		     BufferedWriter bufferedTempWriter = Files.newBufferedWriter(tempSentencesFile.toPath())) {
+		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8);
+		     BufferedReader linksReader = Files.newBufferedReader(SentencesDirManager.LINKS_FILE.toPath(), UTF_8);
+		     BufferedWriter bufferedTempWriter = Files.newBufferedWriter(tempSentencesFile.toPath(), UTF_8)) {
 			String sentenceLine;
 			int linkId = 0;
 			while ((sentenceLine = sentencesReader.readLine()) != null) {

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import static Constants.Paths.INSTALL_DIR;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class LanguageManager {
 	private static final File LANGUAGES_FILE = new File(INSTALL_DIR, "languages.tsv");
@@ -15,7 +16,7 @@ public class LanguageManager {
 		if (canonicalLanguageName == null) {
 			canonicalLanguageName = languageName;
 		}
-		try (BufferedReader propertiesReader = Files.newBufferedReader(LANGUAGES_FILE.toPath())) {
+		try (BufferedReader propertiesReader = Files.newBufferedReader(LANGUAGES_FILE.toPath(), UTF_8)) {
 			String line;
 			while ((line = propertiesReader.readLine()) != null) {
 				int indexOfFirstTab = line.indexOf('\t');

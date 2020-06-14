@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class VocabManager {
 	private static final Set<String> VALID_STATUSES = Set.of("1", "2", "3", "4", "5", "98", "99");
@@ -62,8 +63,8 @@ public class VocabManager {
 		if (!vocabFile.exists()) {
 			vocabFile.createNewFile();
 		}
-		try (BufferedReader vocabReader = Files.newBufferedReader(vocabFile.toPath());
-		     BufferedWriter bufferedTempWriter = Files.newBufferedWriter(tempVocabFile.toPath())) {
+		try (BufferedReader vocabReader = Files.newBufferedReader(vocabFile.toPath(), UTF_8);
+		     BufferedWriter bufferedTempWriter = Files.newBufferedWriter(tempVocabFile.toPath(), UTF_8)) {
 			String line;
 			while ((line = vocabReader.readLine()) != null) {
 				int indexOfLastTab = line.lastIndexOf('\t');
@@ -89,7 +90,7 @@ public class VocabManager {
 	
 	private void readVocab() throws IOException {
 		if (vocabFile.exists()) {
-			try (BufferedReader vocabReader = Files.newBufferedReader(vocabFile.toPath())) {
+			try (BufferedReader vocabReader = Files.newBufferedReader(vocabFile.toPath(), UTF_8)) {
 				String line;
 				while ((line = vocabReader.readLine()) != null) {
 					int indexOfLastTab = line.lastIndexOf('\t');

@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Integer.parseInt;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
 
 public class SentenceChooser {
@@ -89,7 +90,7 @@ public class SentenceChooser {
 	}
 	
 	private void computeNextSentencesWithScoresBetween(int minScore, int maxScore) throws IOException {
-		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath())) {
+		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8)) {
 			String line;
 			while (nextSentences.size() < 15 && (line = sentencesReader.readLine()) != null) {
 				int indexOfFirstTab = line.indexOf('\t');

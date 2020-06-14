@@ -13,6 +13,7 @@ import java.util.List;
 
 import static Constants.Paths.INSTALL_DIR;
 import static Language.LanguageManager.getLanguage;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AccountManager {
 	public static final File ACCOUNTS_DIR = new File(INSTALL_DIR, "accounts");
@@ -123,7 +124,7 @@ public class AccountManager {
 		newVocabFile.createNewFile();
 		File newLanguageSettingsFile = new File(account.getVocabDirectory(), newLanguage.getName() + "_Settings.csv");
 		Language nativeLanguage = account.getNativeLanguage();
-		try (BufferedWriter settingsWriter = Files.newBufferedWriter(newLanguageSettingsFile.toPath())) {
+		try (BufferedWriter settingsWriter = Files.newBufferedWriter(newLanguageSettingsFile.toPath(), UTF_8)) {
 			settingsWriter.write(
 					"FLTRLANGPREFS\n" +
 					"charSubstitutions\t´='|`='|’='|‘='|′='|‵='\n" +
@@ -195,7 +196,7 @@ public class AccountManager {
 		File accountInfoFile = new File(ACCOUNTS_DIR, accountDirName + "/info.txt");
 		if (accountInfoFile.exists() && accountInfoFile.isFile()) {
 			try {
-				return Files.readAllLines(accountInfoFile.toPath()).get(lineNumber);
+				return Files.readAllLines(accountInfoFile.toPath(), UTF_8).get(lineNumber);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -205,7 +206,7 @@ public class AccountManager {
 	
 	private static void createDefaultLanguageFile(Language defaultLanguage) {
 		try {
-			Files.write(DEFAULT_LANGUAGE_FILE.toPath(), defaultLanguage.getName().getBytes());
+			Files.write(DEFAULT_LANGUAGE_FILE.toPath(), defaultLanguage.getName().getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not create defaultLanguage.txt for this account. Terminating program.");
 			e.printStackTrace();
@@ -216,7 +217,7 @@ public class AccountManager {
 	private static Language readDefaultLanguage() {
 		if (DEFAULT_LANGUAGE_FILE.exists() && DEFAULT_LANGUAGE_FILE.isFile()) {
 			try {
-				return getLanguage(Files.readAllLines(DEFAULT_LANGUAGE_FILE.toPath()).get(0));
+				return getLanguage(Files.readAllLines(DEFAULT_LANGUAGE_FILE.toPath(), UTF_8).get(0));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -308,7 +309,7 @@ public class AccountManager {
 		File infoFile = new File(newAccountDir, "info.txt");
 		try {
 			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath();
-			Files.write(infoFile.toPath(), fileContents.getBytes());
+			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not create info.txt for this account. Terminating program.");
 			e.printStackTrace();
@@ -335,7 +336,7 @@ public class AccountManager {
 		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
 		try {
 			String fileContents = account.getName() + "\n" + newNativeLanguage.getName() + "\n" + account.getVocabDirectory();
-			Files.write(infoFile.toPath(), fileContents.getBytes());
+			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not write info.txt for this account. Terminating program.");
 			e.printStackTrace();
@@ -347,7 +348,7 @@ public class AccountManager {
 		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
 		try {
 			String fileContents = account.getName() + "\n" + account.getNativeLanguage().getName() + "\n" + newVocabDir;
-			Files.write(infoFile.toPath(), fileContents.getBytes());
+			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not write info.txt for this account. Terminating program.");
 			e.printStackTrace();
