@@ -3,6 +3,7 @@ package Menu;
 import Account.Account;
 import Account.AccountManager;
 import Language.Language;
+import Terminal.Terminal;
 
 import java.io.IOException;
 
@@ -21,12 +22,12 @@ public class AddPracticeLanguageMenu extends Menu {
 	public void run() {
 		try {
 			AccountManager.addPracticeLanguageToAccount(account, newPracticeLanguage);
-			System.out.println("You can now practice " + newPracticeLanguage.getName() + "!");
+			Terminal.println("You can now practice " + newPracticeLanguage.getName() + "!");
 			nextMenu.run();
 		} catch (IOException e) {
-			System.out.println("Something went wrong:");
+			Terminal.println("Something went wrong:");
 			e.printStackTrace();
-			System.out.println("Terminating.");
+			Terminal.println("Terminating.");
 			System.exit(0);
 		}
 	}

@@ -1,6 +1,7 @@
 package Language;
 
 import Account.Account;
+import Terminal.Terminal;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,7 +44,7 @@ public class SentenceChooser {
 	
 	public String getNextSentence() throws IOException {
 		while (nextSentences.isEmpty() && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
-			System.out.println("Computing more sentences...");
+			Terminal.println("Computing more sentences...");
 			computeNextSentencesWithScoresBetween(Math.max(1, sentenceScoreUpperLimit - 20), sentenceScoreUpperLimit);
 			sentenceScoreUpperLimit += 20;
 		}
@@ -125,8 +126,12 @@ public class SentenceChooser {
 	}
 	
 	private String getRightToLeftSentenceAnnotation(String sentence) {
-		String reversedLeftToRightAnnotation = new StringBuilder(getLeftToRightSentenceAnnotation(sentence)).reverse().toString();
-		return reversedLeftToRightAnnotation.replace("89", "98");
+		if (Terminal.isEmulatingBidi()) {
+			String reversedLeftToRightAnnotation = new StringBuilder(getLeftToRightSentenceAnnotation(sentence)).reverse().toString();
+			return reversedLeftToRightAnnotation.replace("89", "98");
+		} else {
+			return "\u200F" + getLeftToRightSentenceAnnotation(sentence) + "\u200F";
+		}
 	}
 	
 	private String getLeftToRightSentenceAnnotation(String sentence) {

@@ -2,6 +2,7 @@ package Menu;
 
 import Account.Account;
 import Account.AccountManager;
+import Terminal.Terminal;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +23,9 @@ public class DeleteAccountMenu extends Menu {
 		File accountDir = new File(AccountManager.ACCOUNTS_DIR, account.getDirectoryName());
 		File vocabDir = new File(account.getVocabDirectory());
 		if (accountDir.equals(vocabDir)) {
-			System.out.println("\nThis account's vocab directory is \"" + vocabDir + "\"; which is also the account directory. If you continue the vocab data will be deleted.");
+			Terminal.println("\nThis account's vocab directory is \"" + vocabDir + "\"; which is also the account directory. If you continue the vocab data will be deleted.");
 		} else {
-			System.out.println("\nThis account's vocab directory is \"" + vocabDir + "\" and will not be affected by deleting the account.");
+			Terminal.println("\nThis account's vocab directory is \"" + vocabDir + "\" and will not be affected by deleting the account.");
 		}
 		askUserAYesNoQuestion("Are you sure you would like to delete this account?",
 				previousMenu::run,
@@ -38,9 +39,9 @@ public class DeleteAccountMenu extends Menu {
 	private void tryToDeleteAccount() {
 		try {
 			AccountManager.deleteAccount(account);
-			System.out.println("Account successfully deleted.");
+			Terminal.println("Account successfully deleted.");
 		} catch (IOException e) {
-			System.out.println("Something went wrong trying to delete the account directory:");
+			Terminal.println("Something went wrong trying to delete the account directory:");
 			e.printStackTrace();
 		}
 	}

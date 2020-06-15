@@ -3,6 +3,7 @@ package Menu;
 import Account.Account;
 import Language.Language;
 import Language.SentenceChooser;
+import Terminal.Terminal;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,8 +21,8 @@ public class PracticeMenu extends Menu {
 	
 	@Override
 	public void run() {
-		System.out.println("\nYou will now be presented with sentences in " + language.getName() + " until you type 'back' or 'exit'.");
-		System.out.println("After reading a sentence, you can do one of three things:\n" +
+		Terminal.println("\nYou will now be presented with sentences in " + language.getName() + " until you type 'back' or 'exit'.");
+		Terminal.println("After reading a sentence, you can do one of three things:\n" +
 				"1) Enter anything beginning with the '#' symbol. This will give you the translation(s) of the sentence into your native language. Then you can proceed by steps 2 or 3.\n" +
 				"2) Press enter without typing anything to move on to the next sentence.\n" +
 				"3) Enter a command to change the status of phrases in your vocabulary and move on to the next sentence. A command must be of the form \"phrase1: status1, phrase2: status2, ... phraseN: statusN\"." +
@@ -38,7 +39,7 @@ public class PracticeMenu extends Menu {
 		try {
 			sentenceChooser = new SentenceChooser(account, language);
 			if (sentenceChooser.vocabIsEmpty()) {
-				System.out.println("\nIt looks like you don't have any " + language.getName() + " vocab yet, so you might want to enter some commands now to add words you know (or partly know). When you're done and want to start practicing, just press enter a blank line.");
+				Terminal.println("\nIt looks like you don't have any " + language.getName() + " vocab yet, so you might want to enter some commands now to add words you know (or partly know). When you're done and want to start practicing, just press enter a blank line.");
 				processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank(sentenceChooser);
 			} else {
 				doAnotherSentence(sentenceChooser);
@@ -55,14 +56,23 @@ public class PracticeMenu extends Menu {
 	private void doAnotherSentence(SentenceChooser sentenceChooser) throws IOException {
 		String sentence = sentenceChooser.getNextSentence();
 		if (sentence == null) {
-			System.out.println("Wow! You've been through all of the sentences! Take a well-deserved break.");
+			Terminal.println("Wow! You've been through all of the sentences! Take a well-deserved break.");
 			sentenceChooser.close();
 			previousMenu.run();
 		} else {
 			List<String> translations = sentenceChooser.getNextTranslations();
-			System.out.println("\n\t" + sentence);
-			System.out.println("\t" + sentenceChooser.getSentenceAnnotation(sentence));
+			printSentence(sentence);
+			Terminal.println("\t" + sentenceChooser.getSentenceAnnotation(sentence));
 			askUserHowToProceed(sentenceChooser, translations);
+		}
+	}
+	
+	private void printSentence(String sentence) {
+		Terminal.print("\n\t");
+		if (language.isRightToLeft()) {
+			Terminal.printlnRtl(sentence);
+		} else {
+			Terminal.println(sentence);
 		}
 	}
 	
@@ -70,12 +80,21 @@ public class PracticeMenu extends Menu {
 		String nextSentenceOrTranslate = getNextLine();
 		if (nextSentenceOrTranslate.startsWith("#")) {
 			for (String translation : translations) {
-				System.out.println("\t" + translation);
+				printTranslation(translation);
 			}
 			String userInput = getNextLine();
 			processVocabUpdateAndGoToNextSentence(userInput, sentenceChooser, translations);
 		} else {
 			processVocabUpdateAndGoToNextSentence(nextSentenceOrTranslate, sentenceChooser, translations);
+		}
+	}
+	
+	private void printTranslation(String translation) {
+		Terminal.print("\t");
+		if (account.getNativeLanguage().isRightToLeft()) {
+			Terminal.printlnRtl(translation);
+		} else {
+			Terminal.println(translation);
 		}
 	}
 	
@@ -85,7 +104,7 @@ public class PracticeMenu extends Menu {
 				() -> {
 					boolean updateVocabSuccessful = sentenceChooser.updateVocab(userInput);
 					if (!updateVocabSuccessful) {
-						System.out.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
+						Terminal.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
 					}
 					processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank(sentenceChooser);
 				}
@@ -99,7 +118,7 @@ public class PracticeMenu extends Menu {
 					if (updateVocabSuccessful) {
 						doAnotherSentence(sentenceChooser);
 					} else {
-						System.out.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
+						Terminal.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
 						askUserHowToProceed(sentenceChooser, translations);
 					}
 				}

@@ -1,6 +1,7 @@
 package Menu;
 
 import Language.Language;
+import Terminal.Terminal;
 
 import java.io.IOException;
 
@@ -32,14 +33,14 @@ public class IfNecessaryDownloadSentencesMenu extends Menu {
 				previousMenu::run,
 				() -> {
 					try {
-						System.out.println("Downloading and extracting...");
+						Terminal.println("Downloading and extracting...");
 						downloadFileForLanguage(language);
-						System.out.println("Completed!");
+						Terminal.println("Completed!");
 						nextMenu.run();
 					} catch (IOException e) {
-						System.out.println("Something went wrong:");
+						Terminal.println("Something went wrong:");
 						e.printStackTrace();
-						System.out.println("Returning to the previous menu.");
+						Terminal.println("Returning to the previous menu.");
 						previousMenu.run();
 					}
 				}

@@ -1,6 +1,7 @@
 package Menu;
 
 import Account.AccountManager;
+import Terminal.Terminal;
 
 import java.io.IOException;
 
@@ -12,11 +13,11 @@ public class DownloadDefaultLanguageSentencesMenu extends Menu {
 	public void run() {
 		askUserAYesNoQuestion("\nLooks like we need to download the " + AccountManager.getDefaultLanguage().getName() + " sentences and the Tatoeba links file for you. Do you want to continue?",
 				() -> {
-					System.out.println("You can't go back from here!");
+					Terminal.println("You can't go back from here!");
 					run();
 				},
 				() -> {
-					System.out.println("Okay! Come back when you're ready to download.");
+					Terminal.println("Okay! Come back when you're ready to download.");
 					System.exit(0);
 				},
 				this::tryToDownloadAndExtractFiles
@@ -24,16 +25,16 @@ public class DownloadDefaultLanguageSentencesMenu extends Menu {
 	}
 	
 	private void tryToDownloadAndExtractFiles() {
-		System.out.println("Downloading and extracting...");
+		Terminal.println("Downloading and extracting...");
 		try {
 			downloadSentenceLinks();
 			downloadFileForLanguage(AccountManager.getDefaultLanguage());
-			System.out.println("Completed!");
+			Terminal.println("Completed!");
 			new MainMenu().run();
 		} catch (IOException e) {
 			System.err.println("Something went wrong:");
 			e.printStackTrace();
-			System.out.println("Terminating.");
+			Terminal.println("Terminating.");
 			System.exit(0);
 		}
 	}

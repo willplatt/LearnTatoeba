@@ -2,6 +2,7 @@ package Menu;
 
 import Account.AccountManager;
 import Language.Language;
+import Terminal.Terminal;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ public class SetDefaultLanguageMenu extends Menu {
 	public void run() {
 		askUserAQuestion("\nSpecify the native language for accounts on this machine. The native language can be set independently for each account, but this will be the default:",
 				() -> {
-					System.out.println("You can't go back from here!");
+					Terminal.println("You can't go back from here!");
 					run();
 				},
 				languageName -> {
@@ -31,7 +32,7 @@ public class SetDefaultLanguageMenu extends Menu {
 					} catch (IOException e) {
 						System.err.println("Something went wrong:");
 						e.printStackTrace();
-						System.out.println("Default language not set. Terminating.");
+						Terminal.println("Default language not set. Terminating.");
 						System.exit(0);
 					}
 				}

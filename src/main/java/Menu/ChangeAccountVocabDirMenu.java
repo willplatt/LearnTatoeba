@@ -2,6 +2,7 @@ package Menu;
 
 import Account.Account;
 import Account.AccountManager;
+import Terminal.Terminal;
 
 public class ChangeAccountVocabDirMenu extends Menu {
 	private Account account;
@@ -28,10 +29,10 @@ public class ChangeAccountVocabDirMenu extends Menu {
 				newVocabDir -> {
 					boolean setDirSuccessful = AccountManager.setVocabDir(account, newVocabDir);
 					if (setDirSuccessful) {
-						System.out.println("Your account's vocab directory has been changed!");
+						Terminal.println("Your account's vocab directory has been changed!");
 						nextMenu.run();
 					} else {
-						System.out.println("Unfortunately, that directory could not be accessed or created. Please try again.");
+						Terminal.println("Unfortunately, that directory could not be accessed or created. Please try again.");
 						run();
 					}
 				}

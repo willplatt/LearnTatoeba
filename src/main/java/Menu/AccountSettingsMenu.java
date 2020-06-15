@@ -1,6 +1,7 @@
 package Menu;
 
 import Account.Account;
+import Terminal.Terminal;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class AccountSettingsMenu extends Menu {
 	
 	@Override
 	public void run() {
-		System.out.println("\nModify account:");
+		Terminal.println("\nModify account:");
 		List<String> options = List.of("Change native language", "Change vocab directory", "Delete account");
 		giveUserAChoice(options,
 				previousMenu::run,

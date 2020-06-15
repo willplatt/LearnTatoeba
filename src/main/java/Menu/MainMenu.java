@@ -2,6 +2,7 @@ package Menu;
 
 import Account.Account;
 import Account.AccountManager;
+import Terminal.Terminal;
 
 import java.util.List;
 
@@ -10,15 +11,15 @@ public class MainMenu extends Menu {
 	public void run() {
 		int numberOfAccounts = AccountManager.getNumberOfAccounts();
 		if (numberOfAccounts > 0) {
-			System.out.println("\nChoose an account to practice with:");
+			Terminal.println("\nChoose an account to practice with:");
 		} else {
-			System.out.println("\nNo accounts could be found on this machine.");
+			Terminal.println("\nNo accounts could be found on this machine.");
 		}
 		List<String> accountNames = AccountManager.getAccountNames();
 		List<List<String>> finalOptions = List.of(List.of("*", "Create a new account"));
 		giveUserAChoice(accountNames, finalOptions,
 				() -> {
-					System.out.println("You cannot go back from here.");
+					Terminal.println("You cannot go back from here.");
 					run();
 				},
 				userChoice -> {
@@ -27,7 +28,7 @@ public class MainMenu extends Menu {
 					} else {
 						int accountIndex = Integer.parseInt(userChoice) - 1;
 						String accountName = accountNames.get(accountIndex);
-						System.out.println("Opening account " + accountName + ".");
+						Terminal.println("Opening account " + accountName + ".");
 						Account account = AccountManager.getAccountFromName(accountName);
 						new AccountMainMenu(account, this).run();
 					}

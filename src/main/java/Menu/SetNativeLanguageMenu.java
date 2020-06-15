@@ -3,6 +3,7 @@ package Menu;
 import Account.Account;
 import Account.AccountManager;
 import Language.Language;
+import Terminal.Terminal;
 
 public class SetNativeLanguageMenu extends Menu {
 	private Account account;
@@ -18,7 +19,7 @@ public class SetNativeLanguageMenu extends Menu {
 	@Override
 	public void run() {
 		AccountManager.setNativeLanguage(account, newNativeLanguage);
-		System.out.println("Your account's native language has been changed!");
+		Terminal.println("Your account's native language has been changed!");
 		nextMenu.run();
 	}
 }

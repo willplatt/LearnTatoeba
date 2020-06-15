@@ -1,6 +1,7 @@
 package Account;
 
 import Language.Language;
+import Terminal.Terminal;
 import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedWriter;
@@ -231,10 +232,10 @@ public class AccountManager {
 	
 	private static boolean isAccountEligibleForCreation(String accountName, List<String> accountNames) {
 		if (accountNames.size() > 999) {
-			System.out.println("You already have the maximum number of accounts. You must delete one if you wish to create a new one.");
+			Terminal.println("You already have the maximum number of accounts. You must delete one if you wish to create a new one.");
 			return false;
 		} else if (accountNames.contains(accountName)) {
-			System.out.println("There is already an account with this name. Please choose another name.");
+			Terminal.println("There is already an account with this name. Please choose another name.");
 			return false;
 		}
 		return true;
@@ -296,7 +297,7 @@ public class AccountManager {
 	private static boolean createAccountDir(File newAccountDir) {
 		boolean dirCreationSuccessful = newAccountDir.mkdir();
 		if (!dirCreationSuccessful) {
-			System.out.println(
+			Terminal.println(
 					"For an unknown reason, the directory '" + newAccountDir.getPath() + "' could not be created. " +
 					"Try checking that the program has permission to write to '" + ACCOUNTS_DIR.getAbsolutePath() + "'."
 			);
@@ -323,7 +324,7 @@ public class AccountManager {
 		}
 		boolean dirCreationSuccessful = dir.mkdir();
 		if (!dirCreationSuccessful) {
-			System.out.println(
+			Terminal.println(
 					"For an unknown reason, the directory '" + dir.getPath() + "' could not be created. " +
 							"Try checking that the program has permission to write to '" + dir.getAbsolutePath() + "'."
 			);

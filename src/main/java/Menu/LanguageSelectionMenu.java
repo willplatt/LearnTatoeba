@@ -2,6 +2,7 @@ package Menu;
 
 import Account.Account;
 import Language.Language;
+import Terminal.Terminal;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,10 +25,10 @@ public class LanguageSelectionMenu extends Menu {
 			List<Language> languages = getLanguagesForAccount(account);
 			List<String> languageNames = languages.stream().map(language -> language.getName()).collect(Collectors.toList());
 			if (languages.isEmpty()) {
-				System.out.println("You haven't added any languages to practice with yet!");
+				Terminal.println("You haven't added any languages to practice with yet!");
 				previousMenu.run();
 			} else {
-				System.out.println("\nChoose a language to practice:");
+				Terminal.println("\nChoose a language to practice:");
 				giveUserAChoice(languageNames,
 						previousMenu::run,
 						userChoice -> {

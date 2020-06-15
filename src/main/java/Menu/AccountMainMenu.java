@@ -1,6 +1,7 @@
 package Menu;
 
 import Account.Account;
+import Terminal.Terminal;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class AccountMainMenu extends Menu {
 	
 	@Override
 	public void run() {
-		System.out.println("\n" + account.getName() + "'s account:");
+		Terminal.println("\n" + account.getName() + "'s account:");
 		List<String> options = List.of("Practice a language", "Add a new language", "Account settings");
 		giveUserAChoice(options,
 				previousMenu::run,
