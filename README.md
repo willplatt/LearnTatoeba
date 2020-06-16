@@ -117,6 +117,7 @@ If you use LT I would be interested to hear what your experiences and ideas are 
 Even if you only used it once, I would like to know why you didn’t use it more.
 
 If LT seems like a useful tool with advantages over other freely available learning methods, then the following are some natural next steps to take:
+
 * Add a GUI
 * Add Tatoeba audio and text-to-speech
 * Improve the speed of sentence selection (currently limited by the way Tatoeba organizes its download files)
