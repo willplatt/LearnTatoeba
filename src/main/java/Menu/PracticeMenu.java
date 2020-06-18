@@ -3,15 +3,16 @@ package Menu;
 import Account.Account;
 import Language.Language;
 import Language.SentenceChooser;
+import Language.Sentence;
 import Terminal.Terminal;
 
 import java.io.IOException;
 import java.util.List;
 
 public class PracticeMenu extends Menu {
-	private Account account;
-	private Language language;
-	private Menu previousMenu;
+	private final Account account;
+	private final Language language;
+	private final Menu previousMenu;
 	
 	public PracticeMenu(Account account, Language language, Menu previousMenu) {
 		this.account = account;
@@ -54,15 +55,16 @@ public class PracticeMenu extends Menu {
 	}
 	
 	private void doAnotherSentence(SentenceChooser sentenceChooser) throws IOException {
-		String sentence = sentenceChooser.getNextSentence();
+		Sentence sentence = sentenceChooser.getNextSentence();
 		if (sentence == null) {
 			Terminal.println("Wow! You've been through all of the sentences! Take a well-deserved break.");
 			sentenceChooser.close();
 			previousMenu.run();
 		} else {
-			List<String> translations = sentenceChooser.getNextTranslations();
-			printSentence(sentence);
-			Terminal.println("\t" + sentenceChooser.getSentenceAnnotation(sentence));
+			String sentenceText = sentence.getText();
+			List<Sentence> translations = sentence.getTranslations();
+			printSentence(sentenceText);
+			Terminal.println("\t" + sentenceChooser.getSentenceAnnotation(sentenceText));
 			askUserHowToProceed(sentenceChooser, translations);
 		}
 	}
@@ -76,11 +78,11 @@ public class PracticeMenu extends Menu {
 		}
 	}
 	
-	private void askUserHowToProceed(SentenceChooser sentenceChooser, List<String> translations) throws IOException {
+	private void askUserHowToProceed(SentenceChooser sentenceChooser, List<Sentence> translations) throws IOException {
 		String nextSentenceOrTranslate = getNextLine();
 		if (nextSentenceOrTranslate.startsWith("#")) {
-			for (String translation : translations) {
-				printTranslation(translation);
+			for (Sentence translation : translations) {
+				printTranslation(translation.getText());
 			}
 			String userInput = getNextLine();
 			processVocabUpdateAndGoToNextSentence(userInput, sentenceChooser, translations);
@@ -111,7 +113,7 @@ public class PracticeMenu extends Menu {
 		);
 	}
 	
-	private void processVocabUpdateAndGoToNextSentence(String updateCommand, SentenceChooser sentenceChooser, List<String> translations) throws IOException {
+	private void processVocabUpdateAndGoToNextSentence(String updateCommand, SentenceChooser sentenceChooser, List<Sentence> translations) throws IOException {
 		doAnotherSentenceOrDoSomethingElse(updateCommand, sentenceChooser,
 				() -> {
 					boolean updateVocabSuccessful = sentenceChooser.updateVocab(updateCommand);

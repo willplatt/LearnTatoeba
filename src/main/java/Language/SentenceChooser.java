@@ -12,19 +12,19 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static Language.FileIdSearcher.*;
+import static Language.SentencesDirManager.SUFFIX_OF_SENTENCE_FILES;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
 
 public class SentenceChooser {
-	private static final String SUFFIX_OF_SENTENCE_FILES = "_sentences.tsv";
 	private static final int MAX_SCORE_UPPER_LIMIT = 100;
 	
 	private int sentenceScoreUpperLimit = 50;
 	private final VocabManager vocabManager;
 	private final File sentencesFile;
-	private final List<String> nextSentences = new ArrayList<>();
-	private final List<List<String>> nextTranslations = new ArrayList<>();
+	private final List<Sentence> nextSentences = new ArrayList<>();
 	private final RandomAccessFile nativeTranslationReader;
 	private final String wordCharRegex;
 	private final boolean isRightToLeft;
@@ -42,7 +42,7 @@ public class SentenceChooser {
 		return vocabManager.isEmpty();
 	}
 	
-	public String getNextSentence() throws IOException {
+	public Sentence getNextSentence() throws IOException {
 		while (nextSentences.isEmpty() && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
 			Terminal.println("Computing more sentences...");
 			computeNextSentencesWithScoresBetween(Math.max(1, sentenceScoreUpperLimit - 20), sentenceScoreUpperLimit);
@@ -52,17 +52,10 @@ public class SentenceChooser {
 			return null;
 		} else {
 			int indexOfFinalSentence = nextSentences.size() - 1;
-			String sentence = nextSentences.get(indexOfFinalSentence);
+			Sentence sentence = nextSentences.get(indexOfFinalSentence);
 			nextSentences.remove(indexOfFinalSentence);
 			return sentence;
 		}
-	}
-	
-	public List<String> getNextTranslations() {
-		int indexOfFinalTranslation = nextTranslations.size() - 1;
-		List<String> translations = nextTranslations.get(indexOfFinalTranslation);
-		nextTranslations.remove(indexOfFinalTranslation);
-		return translations;
 	}
 	
 	public String getSentenceAnnotation(String sentence) {
@@ -94,17 +87,13 @@ public class SentenceChooser {
 		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8)) {
 			String line;
 			while (nextSentences.size() < 15 && (line = sentencesReader.readLine()) != null) {
-				int indexOfFirstTab = line.indexOf('\t');
-				int indexOfSecondTab = line.indexOf('\t', indexOfFirstTab + 1);
-				int indexOfThirdTab = line.indexOf('\t', indexOfSecondTab + 1);
-				int indexOfThirdTabOrEndOfLine = indexOfThirdTab == -1 ? line.length() : indexOfThirdTab;
-				String sentence = line.substring(indexOfSecondTab + 1, indexOfThirdTabOrEndOfLine);
-				int score = getScoreForSentence(sentence);
+				Sentence sentence = new Sentence(line);
+				int score = getScoreForSentence(sentence.getText());
 				if (score >= minScore && score < maxScore) {
-					List<String> translations = getNativeTranslations(line);
+					List<Sentence> translations = getNativeTranslations(line);
 					if (!translations.isEmpty()) {
+						sentence.addTranslations(translations);
 						nextSentences.add(sentence);
-						nextTranslations.add(translations);
 					}
 				}
 			}
@@ -210,32 +199,33 @@ public class SentenceChooser {
 		return matcher.find() ? matcher.start() : 0;
 	}
 	
-	private List<String> getNativeTranslations(String sentenceLine) throws IOException {
+	private List<Sentence> getNativeTranslations(String sentenceLine) throws IOException {
 		return getNativeTranslationsForIds(getTranslationIds(sentenceLine));
 	}
 	
 	private List<Integer> getTranslationIds(String sentenceLine) {
 		String[] ids = sentenceLine.split("\t");
 		List<Integer> translationIds = new ArrayList<>();
-		for (int i = 3; i < ids.length; i++) {
+		for (int i = 6; i < ids.length; i++) {
 			translationIds.add(parseInt(ids[i]));
 		}
 		return translationIds;
 	}
 	
-	private List<String> getNativeTranslationsForIds(List<Integer> ids) throws IOException {
+	private List<Sentence> getNativeTranslationsForIds(List<Integer> ids) throws IOException {
 		Collections.sort(ids);
-		List<String> translations = new ArrayList<>();
+		List<Sentence> translations = new ArrayList<>();
 		long startIndex = 0;
 		long fileLength = nativeTranslationReader.length();
-		int i = 0;
-		while (i < ids.size() && startIndex < fileLength - 1) {
-			int desiredId = ids.get(i);
-			startIndex = FileIdSearcher.getByteIndexOnLineWithId(desiredId, startIndex, fileLength, nativeTranslationReader);
-			if (desiredId == FileIdSearcher.getFirstIdOfLineAt(startIndex, nativeTranslationReader)) {
-				translations.add(FileIdSearcher.getTextAfterSecondTabOfLineAt(startIndex, nativeTranslationReader));
+		int idsIndex = 0;
+		while (idsIndex < ids.size() && startIndex < fileLength - 1) {
+			int desiredId = ids.get(idsIndex);
+			startIndex = getByteIndexOnLineWithId(desiredId, startIndex, fileLength, nativeTranslationReader);
+			Sentence sentence = new Sentence(readLineAt(startIndex, nativeTranslationReader));
+			if (desiredId == sentence.getId()) {
+				translations.add(sentence);
 			}
-			i++;
+			idsIndex++;
 		}
 		return translations;
 	}

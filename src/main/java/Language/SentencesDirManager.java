@@ -15,9 +15,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class SentencesDirManager {
 	public static final File SENTENCES_DIR = new File(INSTALL_DIR, "sentences");
 	public static final File LINKS_FILE = new File(SENTENCES_DIR, "links.csv");
+	public static final String SUFFIX_OF_SENTENCE_FILES = "_sentences_detailed.tsv";
 	
 	public static boolean hasFileForLanguage(Language language) {
-		File sentencesFile = new File(SENTENCES_DIR, language.getTatoebaCode() + "_sentences.tsv");
+		File sentencesFile = new File(SENTENCES_DIR, language.getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		return sentencesFile.exists();
 	}
 	
@@ -40,9 +41,9 @@ public class SentencesDirManager {
 			downloadSentenceLinks();
 		}
 		String languageCode = language.getTatoebaCode();
-		File bZipFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv.bz2");
-		downloadFile("https://downloads.tatoeba.org/exports/per_language/" + languageCode + "/" + languageCode + "_sentences.tsv.bz2", bZipFile);
-		File targetExtractionFile = new File(SENTENCES_DIR, languageCode + "_sentences.tsv");
+		File bZipFile = new File(SENTENCES_DIR, languageCode + SUFFIX_OF_SENTENCE_FILES + ".bz2");
+		downloadFile("https://downloads.tatoeba.org/exports/per_language/" + languageCode + "/" + languageCode + SUFFIX_OF_SENTENCE_FILES + ".bz2", bZipFile);
+		File targetExtractionFile = new File(SENTENCES_DIR, languageCode + SUFFIX_OF_SENTENCE_FILES);
 		extractBZip2(bZipFile, targetExtractionFile);
 		addLinkedIdsToSentences(targetExtractionFile);
 	}
