@@ -16,7 +16,7 @@ public class Sentence {
 		String[] values = tsvLine.split("\t");
 		this.id = parseInt(values[0]);
 		this.text = values[2];
-		this.author = values[4];
+		this.author = values[3];
 	}
 	
 	public int getId() {
