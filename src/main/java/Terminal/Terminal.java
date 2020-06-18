@@ -1,6 +1,7 @@
 package Terminal;
 
 import java.io.Console;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Terminal {
@@ -41,6 +42,13 @@ public class Terminal {
 	}
 	
 	public static String readLine() {
+		try {
+			while (System.in.available() > 0) {
+				System.in.read(new byte[System.in.available()]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return SCANNER.nextLine();
 	}
 	
