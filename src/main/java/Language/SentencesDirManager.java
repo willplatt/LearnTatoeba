@@ -64,6 +64,7 @@ public class SentencesDirManager {
 			while (-1 != (n = compressedInputStream.read(buffer))) {
 				targetOutputStream.write(buffer, 0, n);
 			}
+			Files.delete(bZipFile.toPath());
 		}
 	}
 	
@@ -76,6 +77,7 @@ public class SentencesDirManager {
 			while (-1 != (n = tarInputStream.read(buffer))) {
 				targetOutputStream.write(buffer, 0, n);
 			}
+			Files.delete(tarFile.toPath());
 		}
 	}
 	
