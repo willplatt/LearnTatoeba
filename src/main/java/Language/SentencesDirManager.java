@@ -93,7 +93,9 @@ public class SentencesDirManager {
 					linkId = getIdAtStartOfLine(linkLine);
 				}
 				String lineAppendage = getTabSeparatedLinkedIds(sentenceId, linkId, linkLine, linksReader);
-				bufferedTempWriter.write(sentenceLine + lineAppendage + "\n");
+				int indexOfLastTab = sentenceLine.lastIndexOf('\t');
+				int indexOfSecondToLastTab = sentenceLine.lastIndexOf('\t', indexOfLastTab - 1);
+				bufferedTempWriter.write(sentenceLine.substring(0, indexOfSecondToLastTab) + lineAppendage + "\n");
 			}
 		}
 		Files.delete(sentencesFile.toPath());

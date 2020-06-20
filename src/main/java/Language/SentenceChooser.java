@@ -206,7 +206,7 @@ public class SentenceChooser {
 	private List<Integer> getTranslationIds(String sentenceLine) {
 		String[] ids = sentenceLine.split("\t");
 		List<Integer> translationIds = new ArrayList<>();
-		for (int i = 6; i < ids.length; i++) {
+		for (int i = 4; i < ids.length; i++) {
 			translationIds.add(parseInt(ids[i]));
 		}
 		return translationIds;
