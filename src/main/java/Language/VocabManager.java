@@ -16,10 +16,10 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class VocabManager {
 	private static final Set<String> VALID_STATUSES = Set.of("1", "2", "3", "4", "5", "98", "99");
 	
-	private Map<String, Integer> phraseToStatusMap = new HashMap<>();
-	private Map<String, Integer> statusUpdates = new HashMap<>();
-	private File vocabFile;
-	private File backupVocabFile;
+	private final Map<String, Integer> phraseToStatusMap = new HashMap<>();
+	private final Map<String, Integer> statusUpdates = new HashMap<>();
+	private final File vocabFile;
+	private final File backupVocabFile;
 	
 	public VocabManager(Account account, Language practiceLanguage) throws IOException {
 		vocabFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Words.csv");
@@ -40,24 +40,21 @@ public class VocabManager {
 	}
 	
 	public boolean updateVocab(String updateCommand) {
+		if (updateCommand.length() == 0) {
+			return true;
+		}
 		String[] subCommands = updateCommand.toLowerCase().split(", ");
-		boolean hasCorrectFormat = subCommands.length > 0;
 		for (String subCommand : subCommands) {
 			String[] terms = subCommand.split(": ");
 			if (terms.length != 2 || !VALID_STATUSES.contains(terms[1])) {
-				hasCorrectFormat = false;
-				break;
+				return false;
 			}
 		}
-		if (!hasCorrectFormat) {
-			return false;
-		} else {
-			for (String subCommand : subCommands) {
-				String[] terms = subCommand.split(": ");
-				statusUpdates.put(terms[0], parseInt(terms[1]));
-			}
-			return true;
+		for (String subCommand : subCommands) {
+			String[] terms = subCommand.split(": ");
+			statusUpdates.put(terms[0], parseInt(terms[1]));
 		}
+		return true;
 	}
 	
 	public void pushUpdatesToFile() throws IOException {

@@ -22,13 +22,19 @@ public class PracticeMenu extends Menu {
 	
 	@Override
 	public void run() {
-		Terminal.println("\nYou will now be presented with up to 50 sentences in " + language.getName() + " until you type 'back' or 'exit'. Vocab updates will be lost if you end the session in any other way.");
-		Terminal.println("After reading a sentence, you can do several things:\n" +
+		Terminal.println(
+				"\nYou will now be presented with up to 50 sentences in " + language.getName() + " until you type 'back' or 'exit'. Vocab updates will be lost if you end the session in any other way.\n" +
+				"After reading a sentence, you can do several things:\n" +
 				"1) Enter anything beginning with the '#' symbol. This will give you the translation(s) of the sentence into your native language.\n" +
 				"2) Enter 'a' to see the authors of the sentence and its translations, as well as Tatoeba URLs for more information about the sentences.\n" +
-				"3) Enter a blank line to move on to the next sentence.\n" +
-				"4) Enter a command to change the status of phrases in your vocabulary and move on to the next sentence. A command must be of the form \"phrase1: status1, phrase2: status2, ... phraseN: statusN\"." +
-				" A status must be a whole number from 1 to 5, or 98 or 99. These have the following meanings:\n" +
+				"3) Enter a command and move on to the next sentence.\n" +
+				"\n" +
+				"A blank command does nothing and you move on to the next sentence.\n" +
+				"A command beginning with \"!bX\" for some positive whole number X blacklists the sentence for X days, meaning you won't see it when practicing on this account until the blacklist expires. If you want to blacklist the sentence forever, use \"!b0\".\n" +
+				"A command of the form \"phrase1: status1, phrase2: status2, ... phraseN: statusN\" updates the statuses of phrases in your vocabulary.\n" +
+				"To blacklist the sentence and update your vocabulary both at once, separate the two parts of the command with a space and put the blacklist at the front like so: \"!b2 wood: 3\".\n" +
+				"\n" +
+				"A status must be a whole number from 1 to 5, or 98 or 99. These have the following meanings:\n" +
 				"\t1: Unknown\n" +
 				"\t2: A bit better than unknown\n" +
 				"\t3: Still learning\n" +
@@ -36,7 +42,8 @@ public class PracticeMenu extends Menu {
 				"\t5: Known\n" +
 				"\t98: Ignored (this can be used for names)\n" +
 				"\t99: Well-known (this can be used for words that are the same in your native language)\n" +
-				"So for example, \"chair: 2, coffee table: 3, stool: 1\" will record that you recognise the word chair (even if you don't know what it means), you are on your way to learning the phrase coffee table, and the word stool is unknown to you.");
+				"So for example, \"chair: 2, coffee table: 3, stool: 1\" will record that you recognize the word chair, you are on your way to learning the phrase coffee table, and the word stool is unknown to you.\n"
+		);
 		try {
 			sentenceChooser = new SentenceChooser(account, language);
 			if (sentenceChooser.vocabIsEmpty()) {
@@ -92,7 +99,7 @@ public class PracticeMenu extends Menu {
 			printAttributions(sentence);
 			askUserHowToProceed(sentence);
 		} else {
-			processVocabUpdateAndGoToNextSentence(userInput, sentence);
+			processUpdateCommandAndGoToNextSentence(userInput, sentence);
 		}
 	}
 	
@@ -134,11 +141,11 @@ public class PracticeMenu extends Menu {
 		}
 	}
 	
-	private void processVocabUpdateAndGoToNextSentence(String updateCommand, Sentence sentence) throws IOException {
+	private void processUpdateCommandAndGoToNextSentence(String updateCommand, Sentence sentence) throws IOException {
 		doAnotherSentenceOrDoSomethingElse(updateCommand,
 				() -> {
-					boolean updateVocabSuccessful = sentenceChooser.updateVocab(updateCommand);
-					if (updateVocabSuccessful) {
+					boolean updateCommandIsValid = sentenceChooser.updateBlacklistAndVocab(sentence, updateCommand);
+					if (updateCommandIsValid) {
 						doAnotherSentence();
 					} else {
 						Terminal.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");

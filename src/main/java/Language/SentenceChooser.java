@@ -23,6 +23,7 @@ public class SentenceChooser {
 	private static final int MAX_NUMBER_OF_SENTENCES = 50;
 	
 	private final VocabManager vocabManager;
+	private final BlacklistManager blacklistManager;
 	private final File sentencesFile;
 	private final List<Sentence> nextSentences = new ArrayList<>();
 	private final RandomAccessFile nativeTranslationReader;
@@ -35,6 +36,7 @@ public class SentenceChooser {
 	
 	public SentenceChooser(Account account, Language practiceLanguage) throws IOException {
 		this.vocabManager =  new VocabManager(account, practiceLanguage);
+		this.blacklistManager =  new BlacklistManager(account, practiceLanguage);
 		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, account.getNativeLanguage().getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		this.nativeTranslationReader = new RandomAccessFile(translationsFile, "r");
 		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, practiceLanguage.getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
@@ -70,6 +72,25 @@ public class SentenceChooser {
 		}
 	}
 	
+	public boolean updateBlacklistAndVocab(Sentence sentence, String updateCommand) {
+		String vocabCommand = updateCommand;
+		try {
+			if (updateCommand.startsWith("!b")) {
+				int indexOfFirstSpace = updateCommand.indexOf(' ');
+				int endOfBlacklistCommand = indexOfFirstSpace == -1 ? updateCommand.length() : indexOfFirstSpace;
+				vocabCommand = updateCommand.substring(Math.min(updateCommand.length(), endOfBlacklistCommand + 1));
+				int blacklistDuration = Integer.parseInt(updateCommand.substring(2, endOfBlacklistCommand));
+				blacklistManager.blacklist(sentence, blacklistDuration);
+			}
+		} catch (NumberFormatException | IndexOutOfBoundsException e) {
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("There was a problem modifying the blacklist file.");
+		}
+		return updateVocab(vocabCommand);
+	}
+	
 	public boolean updateVocab(String updateCommand) {
 		return vocabManager.updateVocab(updateCommand);
 	}
@@ -80,7 +101,7 @@ public class SentenceChooser {
 			Terminal.println("Updates saved to file.");
 		} catch (IOException e) {
 			e.printStackTrace();
-			Terminal.println("There was a problem writing your vocab updates to the file. Your vocab changes for this session may not have been saved.");
+			System.err.println("There was a problem writing your vocab updates to the file. Your vocab changes for this session may not have been saved.");
 		}
 		try {
 			nativeTranslationReader.close();
@@ -99,13 +120,15 @@ public class SentenceChooser {
 		while (nextSentences.size() < 5 && sentencesChosen < MAX_NUMBER_OF_SENTENCES && (line = sentencesReader.readLine()) != null) {
 			if (Math.random() < 0.1) {
 				Sentence sentence = new Sentence(line);
-				int score = getScoreForSentence(sentence.getText());
-				if (score >= minScore && score < maxScore) {
-					List<Sentence> translations = getNativeTranslations(line);
-					if (!translations.isEmpty()) {
-						sentence.addTranslations(translations);
-						nextSentences.add(sentence);
-						sentencesChosen++;
+				if (!blacklistManager.isBlacklisted(sentence)) {
+					int score = getScoreForSentence(sentence.getText());
+					if (score >= minScore && score < maxScore) {
+						List<Sentence> translations = getNativeTranslations(line);
+						if (!translations.isEmpty()) {
+							sentence.addTranslations(translations);
+							nextSentences.add(sentence);
+							sentencesChosen++;
+						}
 					}
 				}
 			}
