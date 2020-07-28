@@ -11,6 +11,7 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class VocabManager {
 	private static final Set<String> VALID_STATUSES = Set.of("1", "2", "3", "4", "5", "98", "99");
@@ -18,11 +19,11 @@ public class VocabManager {
 	private Map<String, Integer> phraseToStatusMap = new HashMap<>();
 	private Map<String, Integer> statusUpdates = new HashMap<>();
 	private File vocabFile;
-	private File tempVocabFile;
+	private File backupVocabFile;
 	
 	public VocabManager(Account account, Language practiceLanguage) throws IOException {
 		vocabFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Words.csv");
-		tempVocabFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Words.temp");
+		backupVocabFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Words.bak");
 		readVocab();
 	}
 	
@@ -64,7 +65,7 @@ public class VocabManager {
 			vocabFile.createNewFile();
 		}
 		try (BufferedReader vocabReader = Files.newBufferedReader(vocabFile.toPath(), UTF_8);
-		     BufferedWriter bufferedTempWriter = Files.newBufferedWriter(tempVocabFile.toPath(), UTF_8)) {
+		     BufferedWriter backupWriter = Files.newBufferedWriter(backupVocabFile.toPath(), UTF_8)) {
 			String line;
 			while ((line = vocabReader.readLine()) != null) {
 				int indexOfLastTab = line.lastIndexOf('\t');
@@ -75,17 +76,16 @@ public class VocabManager {
 					line = line.substring(0, indexOfSecondToLastTab + 1) + updatedStatus + line.substring(indexOfLastTab);
 					statusUpdates.remove(phrase);
 				}
-				bufferedTempWriter.write(line + "\n");
+				backupWriter.write(line + "\n");
 			}
 			for (Map.Entry<String, Integer> entry : statusUpdates.entrySet()) {
 				String phrase = entry.getKey();
 				int updatedStatus = entry.getValue();
 				String lineForPhrase = phrase + "\t\t\t\t" + updatedStatus + "\t" + phrase;
-				bufferedTempWriter.write(lineForPhrase + "\n");
+				backupWriter.write(lineForPhrase + "\n");
 			}
 		}
-		Files.delete(vocabFile.toPath());
-		Files.move(tempVocabFile.toPath(), vocabFile.toPath());
+		Files.copy(backupVocabFile.toPath(), vocabFile.toPath(), REPLACE_EXISTING);
 	}
 	
 	private void readVocab() throws IOException {
