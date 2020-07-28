@@ -10,26 +10,20 @@ LT keeps track of the words you know and the words you’re learning to provide 
 It’s great for absolute beginners or anyone who’s not yet ready to read articles and books.
 Whatever your native language, Tatoeba will have translations for it.
 
-In reading and trying to understand these sentences you’ll be introduced to new words in the context of more familiar words. This should help you infer the meanings of new words, and then you can look at the sentence translation to see if you were right.
+In reading and trying to understand these sentences you’ll be introduced to new words in the context of more familiar words.
+This should help you infer the meanings of new words, and then you can look at the sentence translation to see if you were right.
 
 LT uses a status from 1 to 5 to keep track of how well you know a word.
 When you come across a new word, you can add it to your vocabulary with a status of 1.
-When you come across that word again and recognise it, bump the status up to 2.
-If you see it again the next day and remember the meaning, why not increase it to 3?
+If you come across that word after several minutes and remember its meaning, bump the status up to 2.
+If you see it again the next day and still remember the meaning, why not increase it to 3?
 Updating the status not only helps you see your progress, but it also helps LT choose the right sentences for where you’re at.
 
-### Use it with FLTR
+**Extra features:**
 
-LT can also work alongside the [FLTR](https://fltr.sourceforge.io/) reading tool; vocabulary changes in one program will be reflected in the other.
-Just set the vocab directory for your LT account to your FLTR data directory.
-
-Also, when you add a language through FLTR, if you want it to be recognised in LT, you have to give it a name LT recognises.
-The preferred names for languages recognised by LT are listed in the first column of [languages.tsv](languages.tsv).
-(Some alternative names and spellings are also recognised.)
-
-### Use it offline
-
-Once LT has downloaded the files you need for the languages you’re learning, it works totally offline, so it’s great to use on a laptop away from home.
+* Assign statuses to phrases involving multiple words
+* Practice your languages offline
+* Share your LT vocabulary with the [FLTR](https://fltr.sourceforge.io/) reading tool
 
 ## Running the application
 
@@ -39,7 +33,19 @@ To run the program, simply run the `.jar` file from a terminal with Java 11 or n
 java -jar LearnTatoeba.jar
 ```
 
-### Fixing character printing issues
+### Using it with FLTR
+
+LT can also work alongside the [FLTR](https://fltr.sourceforge.io/) reading tool.
+This means if you update your vocabulary through either program, the other program will also see the updates.
+Just set the vocab directory for your LT account to your FLTR data directory.
+
+Also, when you add a language through FLTR, if you want it to be recognized in LT, you have to give it a name LT recognizes.
+The preferred names for languages recognized by LT are listed in the first column of [languages.tsv](languages.tsv).
+(Some alternative names and spellings are also recognized.)
+
+## Fixing common issues
+
+### Character printing issues
 
 If non-Latin characters aren’t showing correctly, configure your terminal with an appropriate font and [code page](https://en.wikipedia.org/wiki/Code_page) for those characters.
 For example, the Windows Hebrew code page is code page 1255, so if I want to practice Hebrew with a Windows terminal I set the code page with the command `chcp 1255`, and then I run LT.
@@ -72,7 +78,7 @@ In the meantime, here are two issues you can try to fix yourself:
 
 1) If the language is right-to-left but it’s still coming out left-to-right, even with the `bidi` argument, then find the line for that language in [languages.tsv](languages.tsv) and add `rtl` to the end of the line (in other words, in the 5th column).
 
-2) If the language uses non-Latin characters and words do not have dashes `---` underneath them that means the characters are not getting recognised as word characters.
+2) If the language uses non-Latin characters and words do not have dashes `---` underneath them that means the characters are not getting recognized as word characters.
 This can be fixed by adding (or changing) an appropriate regular expression in the 4th column of `languages.tsv` on the line for that language.
 When the column is left blank then the default is implied: `\\-'a-zA-ZÀ-ÖØ-ö\u00F8-\u01BF\u01C4-\u024F\u0370-\u052F\u1E00-\u1FFF`.
 
@@ -119,6 +125,7 @@ Even if you only used it once, I would like to know why you didn’t use it more
 If LT seems like a useful tool with advantages over other freely available learning methods, then the following are some natural next steps to take:
 
 * Add a GUI
+* Add automated tests
 * Add Tatoeba audio and text-to-speech
 * Improve the speed of sentence selection (currently limited by the way Tatoeba organizes its download files)
 * Use sentences outside of Tatoeba (for example, biblical languages can be learnt with Bible verses and their translations)
@@ -130,3 +137,13 @@ If things advance so far, maybe there could even be a mobile app and a browser e
 ## License
 
 I have chosen to license this project under the [MIT license](LICENSE.txt) to give the most freedom for people to modify and redistribute this software.
+
+## Disclaimer
+
+Sentences from [Tatoeba](https://tatoeba.org) are released under the [CC-BY 2.0 FR](https://creativecommons.org/licenses/by/2.0/fr/) license.
+This project is not endorsed by or affiliated with Tatoeba.
+I and this project hold no responsibility for content from Tatoeba, whether sentences, translations, or information connected with these, such as language or author.
+
+Be aware that members of the general public can contribute to Tatoeba without proof of language proficiency.
+Tatoeba does not guarantee the quality of its sentences.
+If you find mistakes or take issue with content from Tatoeba, you may be able to fix these problems through Tatoeba's website.
