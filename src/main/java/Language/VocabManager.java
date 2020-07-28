@@ -43,18 +43,16 @@ public class VocabManager {
 		if (updateCommand.length() == 0) {
 			return true;
 		}
-		String[] subCommands = updateCommand.toLowerCase().split(", ");
-		for (String subCommand : subCommands) {
-			String[] terms = subCommand.split(": ");
-			if (terms.length != 2 || !VALID_STATUSES.contains(terms[1])) {
-				return false;
+		String[] subcommands = updateCommand.toLowerCase().split(", ");
+		if (subcommandsAreValid(subcommands)) {
+			for (String subcommand : subcommands) {
+				String[] terms = subcommand.split(": ");
+				statusUpdates.put(terms[0], parseInt(terms[1]));
 			}
+			return true;
+		} else {
+			return false;
 		}
-		for (String subCommand : subCommands) {
-			String[] terms = subCommand.split(": ");
-			statusUpdates.put(terms[0], parseInt(terms[1]));
-		}
-		return true;
 	}
 	
 	public void pushUpdatesToFile() throws IOException {
@@ -100,5 +98,15 @@ public class VocabManager {
 				}
 			}
 		}
+	}
+	
+	private boolean subcommandsAreValid(String[] subcommands) {
+		for (String subcommand : subcommands) {
+			String[] terms = subcommand.split(": ");
+			if (terms.length != 2 || !VALID_STATUSES.contains(terms[1])) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

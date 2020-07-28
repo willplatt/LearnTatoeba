@@ -85,7 +85,7 @@ public class SentencesDirManager {
 		File tempSentencesFile = new File(SENTENCES_DIR, "temp.tsv");
 		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8);
 		     BufferedReader linksReader = Files.newBufferedReader(SentencesDirManager.LINKS_FILE.toPath(), UTF_8);
-		     BufferedWriter bufferedTempWriter = Files.newBufferedWriter(tempSentencesFile.toPath(), UTF_8)) {
+		     BufferedWriter tempWriter = Files.newBufferedWriter(tempSentencesFile.toPath(), UTF_8)) {
 			String sentenceLine;
 			int linkId = 0;
 			while ((sentenceLine = sentencesReader.readLine()) != null) {
@@ -97,7 +97,7 @@ public class SentencesDirManager {
 				String lineAppendage = getTabSeparatedLinkedIds(sentenceId, linkId, linkLine, linksReader);
 				int indexOfLastTab = sentenceLine.lastIndexOf('\t');
 				int indexOfSecondToLastTab = sentenceLine.lastIndexOf('\t', indexOfLastTab - 1);
-				bufferedTempWriter.write(sentenceLine.substring(0, indexOfSecondToLastTab) + lineAppendage + "\n");
+				tempWriter.write(sentenceLine.substring(0, indexOfSecondToLastTab) + lineAppendage + "\n");
 			}
 		}
 		Files.delete(sentencesFile.toPath());
