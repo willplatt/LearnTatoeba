@@ -19,9 +19,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
 
 public class SentenceChooser {
-	private static final int MAX_SCORE_UPPER_LIMIT = 100;
+	private static final int MAX_SCORE_UPPER_LIMIT = 300;
+	private static final int MAX_NUMBER_OF_SENTENCES = 50;
 	
-	private int sentenceScoreUpperLimit = 50;
 	private final VocabManager vocabManager;
 	private final File sentencesFile;
 	private final List<Sentence> nextSentences = new ArrayList<>();
@@ -29,11 +29,16 @@ public class SentenceChooser {
 	private final String wordCharRegex;
 	private final boolean isRightToLeft;
 	
+	private BufferedReader sentencesReader;
+	private int sentenceScoreUpperLimit = 20;
+	private int sentencesChosen = 0;
+	
 	public SentenceChooser(Account account, Language practiceLanguage) throws IOException {
 		this.vocabManager =  new VocabManager(account, practiceLanguage);
-		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, practiceLanguage.getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		File translationsFile = new File(SentencesDirManager.SENTENCES_DIR, account.getNativeLanguage().getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		this.nativeTranslationReader = new RandomAccessFile(translationsFile, "r");
+		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, practiceLanguage.getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
+		this.sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8);
 		this.wordCharRegex = "[" + unescapeJava(practiceLanguage.getWordCharRegExp()) + "]";
 		this.isRightToLeft = practiceLanguage.isRightToLeft();
 	}
@@ -43,10 +48,9 @@ public class SentenceChooser {
 	}
 	
 	public Sentence getNextSentence() throws IOException {
-		while (nextSentences.isEmpty() && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
+		while (nextSentences.isEmpty() && sentencesChosen < MAX_NUMBER_OF_SENTENCES && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
 			Terminal.println("Computing more sentences...");
 			computeNextSentencesWithScoresBetween(Math.max(1, sentenceScoreUpperLimit - 20), sentenceScoreUpperLimit);
-			sentenceScoreUpperLimit += 20;
 		}
 		if (nextSentences.isEmpty()) {
 			return null;
@@ -73,20 +77,27 @@ public class SentenceChooser {
 	public void close() {
 		try {
 			vocabManager.pushUpdatesToFile();
-		} catch (IOException e){
+			Terminal.println("Updates saved to file.");
+		} catch (IOException e) {
 			e.printStackTrace();
+			Terminal.println("There was a problem writing your vocab updates to the file. Your vocab changes for this session may not have been saved.");
 		}
 		try {
 			nativeTranslationReader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		try {
+			sentencesReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void computeNextSentencesWithScoresBetween(int minScore, int maxScore) throws IOException {
-		try (BufferedReader sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8)) {
-			String line;
-			while (nextSentences.size() < 15 && (line = sentencesReader.readLine()) != null) {
+		String line = null;
+		while (nextSentences.size() < 5 && sentencesChosen < MAX_NUMBER_OF_SENTENCES && (line = sentencesReader.readLine()) != null) {
+			if (Math.random() < 0.1) {
 				Sentence sentence = new Sentence(line);
 				int score = getScoreForSentence(sentence.getText());
 				if (score >= minScore && score < maxScore) {
@@ -94,9 +105,15 @@ public class SentenceChooser {
 					if (!translations.isEmpty()) {
 						sentence.addTranslations(translations);
 						nextSentences.add(sentence);
+						sentencesChosen++;
 					}
 				}
 			}
+		}
+		if (line == null) {
+			sentencesReader.close();
+			sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8);
+			sentenceScoreUpperLimit += 20;
 		}
 	}
 	
