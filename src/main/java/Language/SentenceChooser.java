@@ -80,6 +80,9 @@ public class SentenceChooser {
 				int endOfBlacklistCommand = indexOfFirstSpace == -1 ? updateCommand.length() : indexOfFirstSpace;
 				vocabCommand = updateCommand.substring(Math.min(updateCommand.length(), endOfBlacklistCommand + 1));
 				int blacklistDuration = Integer.parseInt(updateCommand.substring(2, endOfBlacklistCommand));
+				if (blacklistDuration < 0) {
+					return false;
+				}
 				blacklistManager.blacklist(sentence, blacklistDuration);
 			}
 		} catch (NumberFormatException | IndexOutOfBoundsException e) {
