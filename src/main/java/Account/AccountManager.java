@@ -72,8 +72,8 @@ public class AccountManager {
 	}
 	
 	public static void setNativeLanguage(Account account, Language newNativeLanguage) {
-		changeNativeLanguageOfInfoFile(account, newNativeLanguage);
 		account.setNativeLanguage(newNativeLanguage);
+		updateInfoFile(account);
 	}
 	
 	public static boolean setVocabDir(Account account, String vocabDir) {
@@ -82,8 +82,27 @@ public class AccountManager {
 		if (!dirNowExists) {
 			return false;
 		}
-		changeVocabDirOfInfoFile(account, newVocabDir);
 		account.setVocabDirectory(vocabDir);
+		updateInfoFile(account);
+		return true;
+	}
+	
+	public static boolean setAutoblacklistDuration(Account account, String duration) {
+		int newDuration;
+		try {
+			newDuration = Integer.parseInt(duration);
+			if (newDuration < 0) {
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			if (duration.toLowerCase().equals("infinite")) {
+				newDuration = -1;
+			} else {
+				return false;
+			}
+		}
+		account.setAutoblacklistDuration(newDuration);
+		updateInfoFile(account);
 		return true;
 	}
 	
@@ -344,22 +363,10 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void changeNativeLanguageOfInfoFile(Account account, Language newNativeLanguage) {
+	private static void updateInfoFile(Account account) {
 		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
 		try {
-			String fileContents = account.getName() + "\n" + newNativeLanguage.getName() + "\n" + account.getVocabDirectory();
-			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
-		} catch (IOException e) {
-			System.err.println("Could not write info.txt for this account. Terminating program.");
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-	
-	private static void changeVocabDirOfInfoFile(Account account, File newVocabDir) {
-		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
-		try {
-			String fileContents = account.getName() + "\n" + account.getNativeLanguage().getName() + "\n" + newVocabDir;
+			String fileContents = account.getName() + "\n" + account.getNativeLanguage().getName() + "\n" + account.getVocabDirectory() + "\n" + account.getAutoblacklistDuration();
 			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not write info.txt for this account. Terminating program.");
