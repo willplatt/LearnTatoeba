@@ -29,7 +29,7 @@ public class PracticeMenu extends Menu {
 				"2) Enter 'a' to see the authors of the sentence and its translations, as well as Tatoeba URLs for more information about the sentences.\n" +
 				"3) Enter a command and move on to the next sentence.\n" +
 				"\n" +
-				"If your command begins with \"!bX\" for some non-negative whole number X, then the sentence will be blacklisted for X days, meaning you won't see it when practicing on this account until the blacklist expires. If you want to blacklist the sentence forever, use \"!bInfinite\", or \"!bi\" for short.\n" +
+				"If your command begins with \"!bX\" for some non-negative whole number X, then the sentence will be blacklisted for X days, meaning you won't see it when practicing on this account until the blacklist expires. To specify a duration in hours, use \"!bXh\". If you want to blacklist the sentence forever, use \"!bInfinite\", or \"!bi\" for short.\n" +
 				"If your command doesn't begin with \"!b\", then your account's autoblacklist setting applies. Currently your account's autoblacklist duration is set to " + account.getAutoblacklistDuration().toPrintString() + ".\n" +
 				"The rest of the command is of the form \"phrase1: status1, phrase2: status2, ... phraseN: statusN\", which updates the statuses of phrases in your vocabulary. This should be blank if you do not wish to update any statuses.\n" +
 				"Note that if you want to apply a manual blacklist while updating statuses, you must separate the two parts of the command with a space like so: \"!b2 wood: 3\".\n" +

@@ -39,7 +39,7 @@ public class BlacklistManager {
 	}
 	
 	public void blacklist(Sentence sentence, BlacklistDuration duration) throws IOException {
-		if (!duration.toString().equals("0")) {
+		if (duration.isInfinite() || duration.toSeconds() != 0) {
 			if (!blacklistFile.exists()) {
 				blacklistFile.createNewFile();
 			}

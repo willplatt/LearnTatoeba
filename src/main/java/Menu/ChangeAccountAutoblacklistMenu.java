@@ -25,7 +25,7 @@ public class ChangeAccountAutoblacklistMenu extends Menu {
 	}
 	
 	private void askUserToChangeAutoblacklist() {
-		askUserAQuestion("Specify the new autoblacklist duration for this account in whole days. To turn autoblacklisting off, type \"0\". To set an infinite autoblacklist duration, type \"infinite\".",
+		askUserAQuestion("Specify a new autoblacklist duration in whole days. If you would prefer to specify a precise number of hours, follow your number with the letter h. For example, \"12h\". To set an infinite duration, type \"infinite\".",
 				previousMenu::run,
 				newDuration -> {
 					boolean setDurationSuccessful = AccountManager.setAutoblacklistDuration(account, newDuration);

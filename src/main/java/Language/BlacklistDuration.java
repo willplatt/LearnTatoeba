@@ -2,24 +2,37 @@ package Language;
 
 public class BlacklistDuration {
 	private static final String INFINITE = "infinite";
-	private static final int SECONDS_PER_DAY = 86400;
-	private static final int SECONDS_PER_6_HOURS = 21600;
 	
 	private String duration;
+	private int hours;
 	
 	public BlacklistDuration(String duration) {
+		duration = duration.toLowerCase();
 		try {
 			int numberOfDays = Integer.parseInt(duration);
 			if (numberOfDays >= 0) {
 				this.duration = String.valueOf(numberOfDays);
+				this.hours = (numberOfDays * 24) - 6;
 			} else {
 				throw new IllegalArgumentException("A blacklist duration cannot be negative.");
 			}
 		} catch (NumberFormatException e) {
-			if ("infinite".startsWith(duration.toLowerCase())) {
+			if ("infinite".startsWith(duration)) {
 				this.duration = INFINITE;
+			} else if (duration.endsWith("h")) {
+				try {
+					int numberOfHours = Integer.parseInt(duration.substring(0, duration.length() - 1));
+					if (numberOfHours >= 0) {
+						this.duration = duration;
+						this.hours = numberOfHours;
+					} else {
+						throw new IllegalArgumentException("A blacklist duration cannot be negative.");
+					}
+				} catch (NumberFormatException ex) {
+					throw new IllegalArgumentException("A blacklist duration in hours must be a whole number.");
+				}
 			} else {
-				throw new IllegalArgumentException("A blacklist duration must be an integer for infinite");
+				throw new IllegalArgumentException("A blacklist duration must be an integer or infinite or specified in hours");
 			}
 		}
 	}
@@ -36,21 +49,20 @@ public class BlacklistDuration {
 		if (isInfinite()) {
 			throw new IllegalStateException("Cannot convert an infinite duration to seconds.");
 		}
-		return (toDays() * SECONDS_PER_DAY) - SECONDS_PER_6_HOURS;
-	}
-	
-	public int toDays() {
-		if (isInfinite()) {
-			throw new IllegalStateException("Cannot convert an infinite duration to days.");
-		}
-		return Integer.parseInt(duration);
+		return hours * 3600;
 	}
 	
 	public String toPrintString() {
 		if (duration.equals(INFINITE)) {
 			return duration;
 		} else {
-			if (duration.equals("1")) {
+			if (duration.endsWith("h")) {
+				if (hours == 1) {
+					return hours + " hour";
+				} else {
+					return hours + " hours";
+				}
+			} else if (duration.equals("1")) {
 				return duration + " day";
 			} else {
 				return duration + " days";
