@@ -80,19 +80,11 @@ public class SentenceChooser {
 				int endOfBlacklistCommand = indexOfFirstSpace == -1 ? updateCommand.length() : indexOfFirstSpace;
 				vocabCommand = updateCommand.substring(Math.min(updateCommand.length(), endOfBlacklistCommand + 1));
 				String blacklistDurationString = updateCommand.substring(2, endOfBlacklistCommand);
-				if ("infinite".startsWith(blacklistDurationString.toLowerCase())) {
-					blacklistManager.blacklist(sentence, -1);
-				} else {
-					int blacklistDuration = Integer.parseInt(updateCommand.substring(2, endOfBlacklistCommand));
-					if (blacklistDuration < 0) {
-						return false;
-					}
-					blacklistManager.blacklist(sentence, blacklistDuration);
-				}
+				blacklistManager.blacklist(sentence, new BlacklistDuration(blacklistDurationString));
 			} else {
 				blacklistManager.autoblacklist(sentence);
 			}
-		} catch (NumberFormatException | IndexOutOfBoundsException e) {
+		} catch (IllegalArgumentException e) {
 			return false;
 		} catch (IOException e) {
 			e.printStackTrace();

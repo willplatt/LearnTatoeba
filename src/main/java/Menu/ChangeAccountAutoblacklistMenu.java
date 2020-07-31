@@ -17,18 +17,8 @@ public class ChangeAccountAutoblacklistMenu extends Menu {
 	
 	@Override
 	public void run() {
-		String autoblacklistDuration = String.valueOf(account.getAutoblacklistDuration());
-		if (autoblacklistDuration.equals("-1")) {
-			autoblacklistDuration = "infinite";
-		} else {
-			if (autoblacklistDuration.equals("1")) {
-				autoblacklistDuration += " day";
-			} else {
-				autoblacklistDuration += " days";
-			}
-		}
 		Terminal.println("\nThe autoblacklist duration for your account specifies how long to automatically blacklist a foreign language sentence after you read it. For example, if your autoblacklist duration is 2 days, then after reading a sentence you will not see it again until 2 days have elapsed. Autoblacklisting can be overridden for individual sentences by using the \"!b\" command when practicing.");
-		askUserAYesNoQuestion("The current autoblacklist duration for this account is " + autoblacklistDuration + ". Would you like to change it?",
+		askUserAYesNoQuestion("The current autoblacklist duration for this account is " + account.getAutoblacklistDuration().toPrintString() + ". Would you like to change it?",
 				nextMenu::run,
 				this::askUserToChangeAutoblacklist
 		);

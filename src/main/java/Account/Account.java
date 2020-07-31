@@ -1,6 +1,7 @@
 package Account;
 
 import Language.Language;
+import Language.BlacklistDuration;
 
 public class Account {
 	private final String name;
@@ -8,9 +9,9 @@ public class Account {
 	
 	private Language nativeLanguage;
 	private String vocabDirectory;
-	private int autoblacklistDuration;
+	private BlacklistDuration autoblacklistDuration;
 	
-	public Account(String name, String directoryName, Language nativeLanguage, String vocabDirectory, int autoblacklistDuration) {
+	public Account(String name, String directoryName, Language nativeLanguage, String vocabDirectory, BlacklistDuration autoblacklistDuration) {
 		this.name = name;
 		this.directoryName = directoryName;
 		this.nativeLanguage = nativeLanguage;
@@ -42,11 +43,11 @@ public class Account {
 		vocabDirectory = newVocabDirectory;
 	}
 	
-	public int getAutoblacklistDuration() {
+	public BlacklistDuration getAutoblacklistDuration() {
 		return autoblacklistDuration;
 	}
 	
-	public void setAutoblacklistDuration(int newAutoblacklistDuration) {
+	public void setAutoblacklistDuration(BlacklistDuration newAutoblacklistDuration) {
 		autoblacklistDuration = newAutoblacklistDuration;
 	}
 }

@@ -1,6 +1,7 @@
 package Account;
 
 import Language.Language;
+import Language.BlacklistDuration;
 import Terminal.Terminal;
 import org.apache.commons.io.FileUtils;
 
@@ -88,20 +89,12 @@ public class AccountManager {
 	}
 	
 	public static boolean setAutoblacklistDuration(Account account, String duration) {
-		int newDuration;
 		try {
-			newDuration = Integer.parseInt(duration);
-			if (newDuration < 0) {
-				return false;
-			}
-		} catch (NumberFormatException e) {
-			if (duration.toLowerCase().equals("infinite")) {
-				newDuration = -1;
-			} else {
-				return false;
-			}
+			BlacklistDuration newDuration = new BlacklistDuration(duration);
+			account.setAutoblacklistDuration(newDuration);
+		} catch (IllegalArgumentException e) {
+			return false;
 		}
-		account.setAutoblacklistDuration(newDuration);
 		updateInfoFile(account);
 		return true;
 	}
@@ -195,7 +188,7 @@ public class AccountManager {
 			String accountName = readAccountName(accountDirName);
 			Language nativeLanguage = readAccountNativeLanguage(accountDirName);
 			String vocabDir = readVocabDir(accountDirName);
-			int autoblacklistDuration = readAutoblacklistDuration(accountDirName);
+			BlacklistDuration autoblacklistDuration = readAutoblacklistDuration(accountDirName);
 			if (isValidAccountName(accountName)) {
 				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir, autoblacklistDuration));
 			}
@@ -214,12 +207,12 @@ public class AccountManager {
 		return readLineFromInfoFile(accountDirName, 2);
 	}
 	
-	private static int readAutoblacklistDuration(String accountDirName) {
+	private static BlacklistDuration readAutoblacklistDuration(String accountDirName) {
 		String autoblacklistString = readLineFromInfoFile(accountDirName, 3);
 		if (autoblacklistString == null) {
 			return DEFAULT_AUTOBLACKLIST_DURATION;
 		} else {
-			return Integer.parseInt(autoblacklistString);
+			return new BlacklistDuration(autoblacklistString);
 		}
 	}
 	
@@ -314,7 +307,7 @@ public class AccountManager {
 		return accountDirNames;
 	}
 	
-	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName, int autoblacklistDuration) {
+	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName, BlacklistDuration autoblacklistDuration) {
 		File newAccountDir = new File(ACCOUNTS_DIR, accountDirName);
 		boolean dirCreationSuccessful = createAccountDir(newAccountDir);
 		if (!dirCreationSuccessful) {
@@ -336,7 +329,7 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir, int autoblacklistDuration) {
+	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir, BlacklistDuration autoblacklistDuration) {
 		File infoFile = new File(newAccountDir, "info.txt");
 		try {
 			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath() + "\n" + autoblacklistDuration;

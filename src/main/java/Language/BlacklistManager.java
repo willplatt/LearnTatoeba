@@ -15,10 +15,8 @@ import java.util.Set;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BlacklistManager {
-	private final static int SECONDS_PER_DAY = 86400;
-	private final static int SECONDS_PER_6_HOURS = 21600;
-	private final static String SEPARATOR = "\texpires ";
-	private final static String NEVER_EXPIRE = "never";
+	private static final String SEPARATOR = "\texpires ";
+	private static final String NEVER_EXPIRE = "never";
 	
 	private final Account account;
 	private final Set<Integer> blacklist = new HashSet<>();
@@ -40,16 +38,16 @@ public class BlacklistManager {
 		blacklist(sentence, account.getAutoblacklistDuration());
 	}
 	
-	public void blacklist(Sentence sentence, int durationInDays) throws IOException {
-		if (durationInDays != 0) {
+	public void blacklist(Sentence sentence, BlacklistDuration duration) throws IOException {
+		if (!duration.toString().equals("0")) {
 			if (!blacklistFile.exists()) {
 				blacklistFile.createNewFile();
 			}
 			try (BufferedWriter blacklistWriter = Files.newBufferedWriter(blacklistFile.toPath(), UTF_8, StandardOpenOption.APPEND)) {
 				String expiryTime = NEVER_EXPIRE;
-				if (durationInDays != -1) {
+				if (duration.isNotInfinite()) {
 					long currentSecond = Instant.now().getEpochSecond();
-					long blacklistExpirySecond = currentSecond + (durationInDays * SECONDS_PER_DAY) - SECONDS_PER_6_HOURS;
+					long blacklistExpirySecond = currentSecond + duration.toSeconds();
 					expiryTime = String.valueOf(blacklistExpirySecond);
 				}
 				blacklistWriter.write(sentence.getId() + SEPARATOR + expiryTime + "\n");
