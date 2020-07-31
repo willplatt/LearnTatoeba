@@ -12,7 +12,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Constants.Paths.INSTALL_DIR;
+import static Constants.Constants.DEFAULT_AUTOBLACKLIST_DURATION;
+import static Constants.Constants.INSTALL_DIR;
 import static Language.LanguageManager.getLanguage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -62,11 +63,11 @@ public class AccountManager {
 			return false;
 		}
 		String accountDirName = generateUniqueDirectoryName(accountName);
-		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, defaultNativeLanguage, accountDirName);
+		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, defaultNativeLanguage, accountDirName, DEFAULT_AUTOBLACKLIST_DURATION);
 		if (!setUpAccountDirSuccessful) {
 			return false;
 		}
-		accounts.add(new Account(accountName, accountDirName, defaultNativeLanguage, new File(ACCOUNTS_DIR, accountDirName).getPath()));
+		accounts.add(new Account(accountName, accountDirName, defaultNativeLanguage, new File(ACCOUNTS_DIR, accountDirName).getPath(), DEFAULT_AUTOBLACKLIST_DURATION));
 		return true;
 	}
 	
@@ -175,8 +176,9 @@ public class AccountManager {
 			String accountName = readAccountName(accountDirName);
 			Language nativeLanguage = readAccountNativeLanguage(accountDirName);
 			String vocabDir = readVocabDir(accountDirName);
+			int autoblacklistDuration = readAutoblacklistDuration(accountDirName);
 			if (isValidAccountName(accountName)) {
-				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir));
+				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir, autoblacklistDuration));
 			}
 		}
 	}
@@ -193,12 +195,21 @@ public class AccountManager {
 		return readLineFromInfoFile(accountDirName, 2);
 	}
 	
+	private static int readAutoblacklistDuration(String accountDirName) {
+		String autoblacklistString = readLineFromInfoFile(accountDirName, 3);
+		if (autoblacklistString == null) {
+			return DEFAULT_AUTOBLACKLIST_DURATION;
+		} else {
+			return Integer.parseInt(autoblacklistString);
+		}
+	}
+	
 	private static String readLineFromInfoFile(String accountDirName, int lineNumber) {
 		File accountInfoFile = new File(ACCOUNTS_DIR, accountDirName + "/info.txt");
 		if (accountInfoFile.exists() && accountInfoFile.isFile()) {
 			try {
 				return Files.readAllLines(accountInfoFile.toPath(), UTF_8).get(lineNumber);
-			} catch (IOException e) {
+			} catch (IOException | IndexOutOfBoundsException e) {
 				e.printStackTrace();
 			}
 		}
@@ -284,13 +295,13 @@ public class AccountManager {
 		return accountDirNames;
 	}
 	
-	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName) {
+	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName, int autoblacklistDuration) {
 		File newAccountDir = new File(ACCOUNTS_DIR, accountDirName);
 		boolean dirCreationSuccessful = createAccountDir(newAccountDir);
 		if (!dirCreationSuccessful) {
 			return false;
 		}
-		writeInfoFile(accountName, accountNativeLanguage, newAccountDir);
+		writeInfoFile(accountName, accountNativeLanguage, newAccountDir, autoblacklistDuration);
 		return true;
 	}
 	
@@ -306,10 +317,10 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir) {
+	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir, int autoblacklistDuration) {
 		File infoFile = new File(newAccountDir, "info.txt");
 		try {
-			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath();
+			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath() + "\n" + autoblacklistDuration;
 			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not create info.txt for this account. Terminating program.");

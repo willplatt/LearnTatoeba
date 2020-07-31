@@ -29,10 +29,10 @@ public class PracticeMenu extends Menu {
 				"2) Enter 'a' to see the authors of the sentence and its translations, as well as Tatoeba URLs for more information about the sentences.\n" +
 				"3) Enter a command and move on to the next sentence.\n" +
 				"\n" +
-				"A blank command does nothing and you move on to the next sentence.\n" +
-				"A command beginning with \"!bX\" for some positive whole number X blacklists the sentence for X days, meaning you won't see it when practicing on this account until the blacklist expires. If you want to blacklist the sentence forever, use \"!b0\".\n" +
-				"A command of the form \"phrase1: status1, phrase2: status2, ... phraseN: statusN\" updates the statuses of phrases in your vocabulary.\n" +
-				"To blacklist the sentence and update your vocabulary both at once, separate the two parts of the command with a space and put the blacklist at the front like so: \"!b2 wood: 3\".\n" +
+				"If your command begins with \"!bX\" for some non-negative whole number X, then the sentence will be blacklisted for X days, meaning you won't see it when practicing on this account until the blacklist expires. If you want to blacklist the sentence forever, use \"!bInfinite\", or \"!bi\" for short.\n" +
+				"If your command doesn't begin with \"!b\", then your account's autoblacklist setting applies. Currently your account's autoblacklist duration is set to " + (account.getAutoblacklistDuration() == -1 ? "infinite" : account.getAutoblacklistDuration() + " days") + ".\n" +
+				"The rest of the command is of the form \"phrase1: status1, phrase2: status2, ... phraseN: statusN\", which updates the statuses of phrases in your vocabulary. This should be blank if you do not wish to update any statuses.\n" +
+				"Note that if you want to apply a manual blacklist while updating statuses, you must separate the two parts of the command with a space like so: \"!b2 wood: 3\".\n" +
 				"\n" +
 				"A status must be a whole number from 1 to 5, or 98 or 99. These have the following meanings:\n" +
 				"\t1: Unknown\n" +
@@ -63,13 +63,17 @@ public class PracticeMenu extends Menu {
 	
 	private void processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank() throws IOException {
 		String userInput = getNextLine();
-		doAnotherSentenceOrDoSomethingElse(userInput,
+		exitMenuOrDoSomethingElse(userInput,
 				() -> {
-					boolean updateVocabSuccessful = sentenceChooser.updateVocab(userInput);
-					if (!updateVocabSuccessful) {
-						Terminal.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
+					if (userInput.equals("")) {
+						doAnotherSentence();
+					} else {
+						boolean updateVocabSuccessful = sentenceChooser.updateVocab(userInput);
+						if (!updateVocabSuccessful) {
+							Terminal.println("Your request was improperly formatted. Please make sure you typed correctly and try again:");
+						}
+						processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank();
 					}
-					processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank();
 				}
 		);
 	}
@@ -142,7 +146,7 @@ public class PracticeMenu extends Menu {
 	}
 	
 	private void processUpdateCommandAndGoToNextSentence(String updateCommand, Sentence sentence) throws IOException {
-		doAnotherSentenceOrDoSomethingElse(updateCommand,
+		exitMenuOrDoSomethingElse(updateCommand,
 				() -> {
 					boolean updateCommandIsValid = sentenceChooser.updateBlacklistAndVocab(sentence, updateCommand);
 					if (updateCommandIsValid) {
@@ -155,15 +159,13 @@ public class PracticeMenu extends Menu {
 		);
 	}
 	
-	private void doAnotherSentenceOrDoSomethingElse(String userInput, RunnableWithIOException somethingElseProcedure) throws IOException {
+	private void exitMenuOrDoSomethingElse(String userInput, RunnableWithIOException somethingElseProcedure) throws IOException {
 		if (userInput.toLowerCase().equals("exit")) {
 			sentenceChooser.close();
 			System.exit(0);
 		} else if (userInput.toLowerCase().equals("back")) {
 			sentenceChooser.close();
 			previousMenu.run();
-		} else if (userInput.equals("")){
-			doAnotherSentence();
 		} else {
 			somethingElseProcedure.run();
 		}

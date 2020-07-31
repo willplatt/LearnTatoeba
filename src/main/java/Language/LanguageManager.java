@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static Constants.Paths.INSTALL_DIR;
+import static Constants.Constants.INSTALL_DIR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class LanguageManager {

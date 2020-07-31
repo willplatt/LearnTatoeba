@@ -75,15 +75,22 @@ public class SentenceChooser {
 	public boolean updateBlacklistAndVocab(Sentence sentence, String updateCommand) {
 		String vocabCommand = updateCommand;
 		try {
-			if (updateCommand.startsWith("!b")) {
+			if (updateCommand.toLowerCase().startsWith("!b")) {
 				int indexOfFirstSpace = updateCommand.indexOf(' ');
 				int endOfBlacklistCommand = indexOfFirstSpace == -1 ? updateCommand.length() : indexOfFirstSpace;
 				vocabCommand = updateCommand.substring(Math.min(updateCommand.length(), endOfBlacklistCommand + 1));
-				int blacklistDuration = Integer.parseInt(updateCommand.substring(2, endOfBlacklistCommand));
-				if (blacklistDuration < 0) {
-					return false;
+				String blacklistDurationString = updateCommand.substring(2, endOfBlacklistCommand);
+				if ("infinite".startsWith(blacklistDurationString.toLowerCase())) {
+					blacklistManager.blacklist(sentence, -1);
+				} else {
+					int blacklistDuration = Integer.parseInt(updateCommand.substring(2, endOfBlacklistCommand));
+					if (blacklistDuration < 0) {
+						return false;
+					}
+					blacklistManager.blacklist(sentence, blacklistDuration);
 				}
-				blacklistManager.blacklist(sentence, blacklistDuration);
+			} else {
+				blacklistManager.autoblacklist(sentence);
 			}
 		} catch (NumberFormatException | IndexOutOfBoundsException e) {
 			return false;

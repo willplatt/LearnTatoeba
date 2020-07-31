@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
-import static Constants.Paths.INSTALL_DIR;
+import static Constants.Constants.INSTALL_DIR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SentencesDirManager {

@@ -20,11 +20,13 @@ public class BlacklistManager {
 	private final static String SEPARATOR = "\texpires ";
 	private final static String NEVER_EXPIRE = "never";
 	
+	private final Account account;
 	private final Set<Integer> blacklist = new HashSet<>();
 	private final File blacklistFile;
 	private final File tempBlacklistFile;
 	
 	public BlacklistManager(Account account, Language practiceLanguage) throws IOException {
+		this.account = account;
 		blacklistFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Blacklist.tsv");
 		tempBlacklistFile = new File(account.getVocabDirectory(), "temp.tsv");
 		cleanAndReadBlacklist();
@@ -34,19 +36,25 @@ public class BlacklistManager {
 		return blacklist.contains(sentence.getId());
 	}
 	
+	public void autoblacklist(Sentence sentence) throws IOException {
+		blacklist(sentence, account.getAutoblacklistDuration());
+	}
+	
 	public void blacklist(Sentence sentence, int durationInDays) throws IOException {
-		if (!blacklistFile.exists()) {
-			blacklistFile.createNewFile();
-		}
-		try (BufferedWriter blacklistWriter = Files.newBufferedWriter(blacklistFile.toPath(), UTF_8, StandardOpenOption.APPEND)) {
-			String expiryTime = NEVER_EXPIRE;
-			if (durationInDays != 0) {
-				long currentSecond = Instant.now().getEpochSecond();
-				long blacklistExpirySecond = currentSecond + (durationInDays * SECONDS_PER_DAY) - SECONDS_PER_6_HOURS;
-				expiryTime = String.valueOf(blacklistExpirySecond);
+		if (durationInDays != 0) {
+			if (!blacklistFile.exists()) {
+				blacklistFile.createNewFile();
 			}
-			blacklistWriter.write(sentence.getId() + SEPARATOR + expiryTime + "\n");
-			blacklist.add(sentence.getId());
+			try (BufferedWriter blacklistWriter = Files.newBufferedWriter(blacklistFile.toPath(), UTF_8, StandardOpenOption.APPEND)) {
+				String expiryTime = NEVER_EXPIRE;
+				if (durationInDays != -1) {
+					long currentSecond = Instant.now().getEpochSecond();
+					long blacklistExpirySecond = currentSecond + (durationInDays * SECONDS_PER_DAY) - SECONDS_PER_6_HOURS;
+					expiryTime = String.valueOf(blacklistExpirySecond);
+				}
+				blacklistWriter.write(sentence.getId() + SEPARATOR + expiryTime + "\n");
+				blacklist.add(sentence.getId());
+			}
 		}
 	}
 	

@@ -8,12 +8,14 @@ public class Account {
 	
 	private Language nativeLanguage;
 	private String vocabDirectory;
+	private int autoblacklistDuration;
 	
-	public Account(String name, String directoryName, Language nativeLanguage, String vocabDirectory) {
+	public Account(String name, String directoryName, Language nativeLanguage, String vocabDirectory, int autoblacklistDuration) {
 		this.name = name;
 		this.directoryName = directoryName;
 		this.nativeLanguage = nativeLanguage;
 		this.vocabDirectory = vocabDirectory;
+		this.autoblacklistDuration = autoblacklistDuration;
 	}
 	
 	public String getName() {
@@ -38,5 +40,13 @@ public class Account {
 	
 	public void setVocabDirectory(String newVocabDirectory) {
 		vocabDirectory = newVocabDirectory;
+	}
+	
+	public int getAutoblacklistDuration() {
+		return autoblacklistDuration;
+	}
+	
+	public void setAutoblacklistDuration(int newAutoblacklistDuration) {
+		autoblacklistDuration = newAutoblacklistDuration;
 	}
 }
