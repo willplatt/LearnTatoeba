@@ -29,6 +29,7 @@ public class SentenceChooser {
 	private final RandomAccessFile nativeTranslationReader;
 	private final String wordCharRegex;
 	private final boolean isRightToLeft;
+	private final double recurrenceProbability;
 	
 	private BufferedReader sentencesReader;
 	private int sentenceScoreUpperLimit = 20;
@@ -43,6 +44,7 @@ public class SentenceChooser {
 		this.sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8);
 		this.wordCharRegex = "[" + unescapeJava(practiceLanguage.getWordCharRegExp()) + "]";
 		this.isRightToLeft = practiceLanguage.isRightToLeft();
+		this.recurrenceProbability = account.getRecurrenceProbability();
 	}
 	
 	public boolean vocabIsEmpty() {
@@ -120,7 +122,7 @@ public class SentenceChooser {
 	private void computeNextSentencesWithScoresBetween(int minScore, int maxScore) throws IOException {
 		String line = null;
 		while (nextSentences.size() < 5 && sentencesChosen < MAX_NUMBER_OF_SENTENCES && (line = sentencesReader.readLine()) != null) {
-			if (Math.random() < 0.1) {
+			if (Math.random() < recurrenceProbability) {
 				Sentence sentence = new Sentence(line);
 				if (!blacklistManager.isBlacklisted(sentence)) {
 					int score = getScoreForSentence(sentence.getText());

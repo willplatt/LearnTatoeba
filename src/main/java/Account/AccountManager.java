@@ -13,8 +13,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Constants.Constants.DEFAULT_AUTOBLACKLIST_DURATION;
-import static Constants.Constants.INSTALL_DIR;
+import static Constants.Constants.*;
 import static Language.LanguageManager.getLanguage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -64,11 +63,13 @@ public class AccountManager {
 			return false;
 		}
 		String accountDirName = generateUniqueDirectoryName(accountName);
-		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, defaultNativeLanguage, accountDirName, DEFAULT_AUTOBLACKLIST_DURATION);
+		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, defaultNativeLanguage, accountDirName, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY);
 		if (!setUpAccountDirSuccessful) {
 			return false;
 		}
-		accounts.add(new Account(accountName, accountDirName, defaultNativeLanguage, new File(ACCOUNTS_DIR, accountDirName).getPath(), DEFAULT_AUTOBLACKLIST_DURATION));
+		String vocabDirPath = new File(ACCOUNTS_DIR, accountDirName).getPath();
+		Account newAccount = new Account(accountName, accountDirName, defaultNativeLanguage, vocabDirPath, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY);
+		accounts.add(newAccount);
 		return true;
 	}
 	
@@ -189,8 +190,9 @@ public class AccountManager {
 			Language nativeLanguage = readAccountNativeLanguage(accountDirName);
 			String vocabDir = readVocabDir(accountDirName);
 			BlacklistDuration autoblacklistDuration = readAutoblacklistDuration(accountDirName);
+			double recurrenceProbability = readRecurrenceProbability(accountDirName);
 			if (isValidAccountName(accountName)) {
-				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir, autoblacklistDuration));
+				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir, autoblacklistDuration, recurrenceProbability));
 			}
 		}
 	}
@@ -213,6 +215,19 @@ public class AccountManager {
 			return DEFAULT_AUTOBLACKLIST_DURATION;
 		} else {
 			return new BlacklistDuration(autoblacklistString);
+		}
+	}
+	
+	private static double readRecurrenceProbability(String accountDirName) {
+		String recurrenceProbabilityString = readLineFromInfoFile(accountDirName, 4);
+		if (recurrenceProbabilityString == null) {
+			return DEFAULT_RECURRENCE_PROBABILITY;
+		} else {
+			double recurrenceProbability = Double.parseDouble(recurrenceProbabilityString);
+			if (recurrenceProbability <= 0 || recurrenceProbability > 1) {
+				throw new IllegalArgumentException("Sentence recurrence probability must be greater than 0 and less than or equal to 1.");
+			}
+			return recurrenceProbability;
 		}
 	}
 	
@@ -307,13 +322,13 @@ public class AccountManager {
 		return accountDirNames;
 	}
 	
-	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName, BlacklistDuration autoblacklistDuration) {
+	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName, BlacklistDuration autoblacklistDuration, double recurrenceProbability) {
 		File newAccountDir = new File(ACCOUNTS_DIR, accountDirName);
 		boolean dirCreationSuccessful = createAccountDir(newAccountDir);
 		if (!dirCreationSuccessful) {
 			return false;
 		}
-		writeInfoFile(accountName, accountNativeLanguage, newAccountDir, autoblacklistDuration);
+		writeInfoFile(accountName, accountNativeLanguage, newAccountDir, autoblacklistDuration, recurrenceProbability);
 		return true;
 	}
 	
@@ -329,10 +344,10 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir, BlacklistDuration autoblacklistDuration) {
+	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir, BlacklistDuration autoblacklistDuration, double recurrenceProbability) {
 		File infoFile = new File(newAccountDir, "info.txt");
 		try {
-			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath() + "\n" + autoblacklistDuration;
+			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath() + "\n" + autoblacklistDuration + "\n" + recurrenceProbability;
 			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not create info.txt for this account. Terminating program.");
