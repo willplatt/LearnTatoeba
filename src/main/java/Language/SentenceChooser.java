@@ -20,7 +20,6 @@ import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
 
 public class SentenceChooser {
 	private static final int MAX_SCORE_UPPER_LIMIT = 300;
-	private static final int MAX_NUMBER_OF_SENTENCES = 50;
 	
 	private final VocabManager vocabManager;
 	private final BlacklistManager blacklistManager;
@@ -30,6 +29,7 @@ public class SentenceChooser {
 	private final String wordCharRegex;
 	private final boolean isRightToLeft;
 	private final double recurrenceProbability;
+	private final int sessionLength;
 	
 	private BufferedReader sentencesReader;
 	private int sentenceScoreUpperLimit = 20;
@@ -45,6 +45,7 @@ public class SentenceChooser {
 		this.wordCharRegex = "[" + unescapeJava(practiceLanguage.getWordCharRegExp()) + "]";
 		this.isRightToLeft = practiceLanguage.isRightToLeft();
 		this.recurrenceProbability = account.getRecurrenceProbability();
+		this.sessionLength = account.getSessionLength();
 	}
 	
 	public boolean vocabIsEmpty() {
@@ -52,7 +53,7 @@ public class SentenceChooser {
 	}
 	
 	public Sentence getNextSentence() throws IOException {
-		while (nextSentences.isEmpty() && sentencesChosen < MAX_NUMBER_OF_SENTENCES && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
+		while (nextSentences.isEmpty() && sentencesChosen < sessionLength && sentenceScoreUpperLimit < MAX_SCORE_UPPER_LIMIT) {
 			Terminal.println("Computing more sentences...");
 			computeNextSentencesWithScoresBetween(Math.max(1, sentenceScoreUpperLimit - 20), sentenceScoreUpperLimit);
 		}
@@ -121,7 +122,7 @@ public class SentenceChooser {
 	
 	private void computeNextSentencesWithScoresBetween(int minScore, int maxScore) throws IOException {
 		String line = null;
-		while (nextSentences.size() < 5 && sentencesChosen < MAX_NUMBER_OF_SENTENCES && (line = sentencesReader.readLine()) != null) {
+		while (nextSentences.size() < 5 && sentencesChosen < sessionLength && (line = sentencesReader.readLine()) != null) {
 			if (Math.random() < recurrenceProbability) {
 				Sentence sentence = new Sentence(line);
 				if (!blacklistManager.isBlacklisted(sentence)) {

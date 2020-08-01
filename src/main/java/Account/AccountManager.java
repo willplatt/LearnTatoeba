@@ -63,12 +63,12 @@ public class AccountManager {
 			return false;
 		}
 		String accountDirName = generateUniqueDirectoryName(accountName);
-		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, defaultNativeLanguage, accountDirName, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY);
+		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, defaultNativeLanguage, accountDirName, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
 		if (!setUpAccountDirSuccessful) {
 			return false;
 		}
 		String vocabDirPath = new File(ACCOUNTS_DIR, accountDirName).getPath();
-		Account newAccount = new Account(accountName, accountDirName, defaultNativeLanguage, vocabDirPath, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY);
+		Account newAccount = new Account(accountName, accountDirName, defaultNativeLanguage, vocabDirPath, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
 		accounts.add(newAccount);
 		return true;
 	}
@@ -206,8 +206,9 @@ public class AccountManager {
 			String vocabDir = readVocabDir(accountDirName);
 			BlacklistDuration autoblacklistDuration = readAutoblacklistDuration(accountDirName);
 			double recurrenceProbability = readRecurrenceProbability(accountDirName);
+			int sessionLength = readSessionLength(accountDirName);
 			if (isValidAccountName(accountName)) {
-				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir, autoblacklistDuration, recurrenceProbability));
+				accounts.add(new Account(accountName, accountDirName, nativeLanguage, vocabDir, autoblacklistDuration, recurrenceProbability, sessionLength));
 			}
 		}
 	}
@@ -243,6 +244,19 @@ public class AccountManager {
 				throw new IllegalArgumentException("Sentence recurrence probability must be greater than 0 and less than or equal to 1.");
 			}
 			return recurrenceProbability;
+		}
+	}
+	
+	private static int readSessionLength(String accountDirName) {
+		String sessionLengthString = readLineFromInfoFile(accountDirName, 5);
+		if (sessionLengthString == null) {
+			return DEFAULT_SESSION_LENGTH;
+		} else {
+			int sessionLength = Integer.parseInt(sessionLengthString);
+			if (sessionLength < 1) {
+				throw new IllegalArgumentException("Session length must be greater than zero.");
+			}
+			return sessionLength;
 		}
 	}
 	
@@ -337,13 +351,13 @@ public class AccountManager {
 		return accountDirNames;
 	}
 	
-	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName, BlacklistDuration autoblacklistDuration, double recurrenceProbability) {
+	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName, BlacklistDuration autoblacklistDuration, double recurrenceProbability, int sessionLength) {
 		File newAccountDir = new File(ACCOUNTS_DIR, accountDirName);
 		boolean dirCreationSuccessful = createAccountDir(newAccountDir);
 		if (!dirCreationSuccessful) {
 			return false;
 		}
-		writeInfoFile(accountName, accountNativeLanguage, newAccountDir, autoblacklistDuration, recurrenceProbability);
+		writeInfoFile(accountName, accountNativeLanguage, newAccountDir, autoblacklistDuration, recurrenceProbability, sessionLength);
 		return true;
 	}
 	
@@ -359,10 +373,10 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir, BlacklistDuration autoblacklistDuration, double recurrenceProbability) {
+	private static void writeInfoFile(String accountName, Language accountNativeLanguage, File newAccountDir, BlacklistDuration autoblacklistDuration, double recurrenceProbability, int sessionLength) {
 		File infoFile = new File(newAccountDir, "info.txt");
 		try {
-			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath() + "\n" + autoblacklistDuration + "\n" + recurrenceProbability;
+			String fileContents = accountName + "\n" + accountNativeLanguage.getName() + "\n" + newAccountDir.getPath() + "\n" + autoblacklistDuration + "\n" + recurrenceProbability + "\n" + sessionLength;
 			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not create info.txt for this account. Terminating program.");
@@ -389,7 +403,7 @@ public class AccountManager {
 	private static void updateInfoFile(Account account) {
 		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
 		try {
-			String fileContents = account.getName() + "\n" + account.getNativeLanguage().getName() + "\n" + account.getVocabDirectory() + "\n" + account.getAutoblacklistDuration() + "\n" + account.getRecurrenceProbability();
+			String fileContents = account.getName() + "\n" + account.getNativeLanguage().getName() + "\n" + account.getVocabDirectory() + "\n" + account.getAutoblacklistDuration() + "\n" + account.getRecurrenceProbability() + "\n" + account.getSessionLength();
 			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not write info.txt for this account. Terminating program.");

@@ -23,7 +23,7 @@ public class PracticeMenu extends Menu {
 	@Override
 	public void run() {
 		Terminal.println(
-				"\nYou will now be presented with up to 50 sentences in " + language.getName() + " until you type 'back' or 'exit'. Vocab updates will be lost if you end the session in any other way.\n" +
+				"\nYou will now be presented with up to " + getSessionLengthPrintString() + " in " + language.getName() + " until you type 'back' or 'exit'. Vocab updates will be lost if you end the session in any other way.\n" +
 				"After reading a sentence, you can do several things:\n" +
 				"1) Enter anything beginning with the '#' symbol. This will give you the translation(s) of the sentence into your native language.\n" +
 				"2) Enter 'a' to see the authors of the sentence and its translations, as well as Tatoeba URLs for more information about the sentences.\n" +
@@ -58,6 +58,15 @@ public class PracticeMenu extends Menu {
 			}
 			e.printStackTrace();
 			previousMenu.run();
+		}
+	}
+	
+	private String getSessionLengthPrintString() {
+		int sessionLength = account.getSessionLength();
+		if (sessionLength == 1) {
+			return sessionLength + " sentence";
+		} else {
+			return sessionLength + " sentences";
 		}
 	}
 	

@@ -11,19 +11,22 @@ public class Account {
 	private String vocabDirectory;
 	private BlacklistDuration autoblacklistDuration;
 	private double recurrenceProbability;
+	private int sessionLength;
 	
 	public Account(String name,
 	               String directoryName,
 	               Language nativeLanguage,
 	               String vocabDirectory,
 	               BlacklistDuration autoblacklistDuration,
-	               double recurrenceProbability) {
+	               double recurrenceProbability,
+	               int sessionLength) {
 		this.name = name;
 		this.directoryName = directoryName;
 		this.nativeLanguage = nativeLanguage;
 		this.vocabDirectory = vocabDirectory;
 		this.autoblacklistDuration = autoblacklistDuration;
 		this.recurrenceProbability = recurrenceProbability;
+		this.sessionLength = sessionLength;
 	}
 	
 	public String getName() {
@@ -64,5 +67,13 @@ public class Account {
 	
 	public void setRecurrenceProbability(double newRecurrenceProbability) {
 		recurrenceProbability = newRecurrenceProbability;
+	}
+	
+	public int getSessionLength() {
+		return sessionLength;
+	}
+	
+	public void setSessionLength(int newSessionLength) {
+		sessionLength = newSessionLength;
 	}
 }
