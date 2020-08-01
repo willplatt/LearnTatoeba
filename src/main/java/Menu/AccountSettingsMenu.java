@@ -17,7 +17,13 @@ public class AccountSettingsMenu extends Menu {
 	@Override
 	public void run() {
 		Terminal.println("\nModify account:");
-		List<String> options = List.of("Change native language", "Change vocab directory", "Change autoblacklist duration", "Delete account");
+		List<String> options = List.of(
+				"Change native language",
+				"Change vocab directory",
+				"Change autoblacklist duration",
+				"Change sentence recurrence probability",
+				"Delete account"
+		);
 		giveUserAChoice(options,
 				previousMenu::run,
 				userChoice -> {
@@ -27,6 +33,8 @@ public class AccountSettingsMenu extends Menu {
 						new ChangeAccountVocabDirMenu(account, this, this).run();
 					} else if (userChoice.equals("3")) {
 						new ChangeAccountAutoblacklistMenu(account, this, this).run();
+					} else if (userChoice.equals("4")) {
+						new ChangeAccountRecurrenceProbabilityMenu(account, this, this).run();
 					} else {
 						new DeleteAccountMenu(account, this, new MainMenu()).run();
 					}

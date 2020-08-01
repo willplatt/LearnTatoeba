@@ -100,6 +100,21 @@ public class AccountManager {
 		return true;
 	}
 	
+	public static boolean setRecurrenceProbability(Account account, String probability) {
+		try {
+			double newProbability = Double.parseDouble(probability);
+			if (newProbability <= 0 || newProbability > 1) {
+				return false;
+			} else {
+				account.setRecurrenceProbability(newProbability);
+			}
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		updateInfoFile(account);
+		return true;
+	}
+	
 	public static Account getAccountFromName(String accountName) {
 		for (Account account : accounts) {
 			if (account.getName().equals(accountName)) {
@@ -374,7 +389,7 @@ public class AccountManager {
 	private static void updateInfoFile(Account account) {
 		File infoFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), "info.txt");
 		try {
-			String fileContents = account.getName() + "\n" + account.getNativeLanguage().getName() + "\n" + account.getVocabDirectory() + "\n" + account.getAutoblacklistDuration();
+			String fileContents = account.getName() + "\n" + account.getNativeLanguage().getName() + "\n" + account.getVocabDirectory() + "\n" + account.getAutoblacklistDuration() + "\n" + account.getRecurrenceProbability();
 			Files.write(infoFile.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not write info.txt for this account. Terminating program.");
