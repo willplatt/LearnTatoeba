@@ -115,6 +115,21 @@ public class AccountManager {
 		return true;
 	}
 	
+	public static boolean setSessionLength(Account account, String sessionLength) {
+		try {
+			int newSessionLength = Integer.parseInt(sessionLength);
+			if (newSessionLength < 1 || newSessionLength > 500) {
+				return false;
+			} else {
+				account.setSessionLength(newSessionLength);
+			}
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		updateInfoFile(account);
+		return true;
+	}
+	
 	public static Account getAccountFromName(String accountName) {
 		for (Account account : accounts) {
 			if (account.getName().equals(accountName)) {
@@ -253,8 +268,8 @@ public class AccountManager {
 			return DEFAULT_SESSION_LENGTH;
 		} else {
 			int sessionLength = Integer.parseInt(sessionLengthString);
-			if (sessionLength < 1) {
-				throw new IllegalArgumentException("Session length must be greater than zero.");
+			if (sessionLength < 1 || sessionLength > 500) {
+				throw new IllegalArgumentException("Session length must be between 1 and 500 inclusive.");
 			}
 			return sessionLength;
 		}

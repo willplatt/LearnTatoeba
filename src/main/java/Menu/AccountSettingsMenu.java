@@ -22,6 +22,7 @@ public class AccountSettingsMenu extends Menu {
 				"Change vocab directory",
 				"Change autoblacklist duration",
 				"Change sentence recurrence probability",
+				"Change session length",
 				"Delete account"
 		);
 		giveUserAChoice(options,
@@ -35,6 +36,8 @@ public class AccountSettingsMenu extends Menu {
 						new ChangeAccountAutoblacklistMenu(account, this, this).run();
 					} else if (userChoice.equals("4")) {
 						new ChangeAccountRecurrenceProbabilityMenu(account, this, this).run();
+					} else if (userChoice.equals("5")) {
+						new ChangeAccountSessionLengthMenu(account, this, this).run();
 					} else {
 						new DeleteAccountMenu(account, this, new MainMenu()).run();
 					}
