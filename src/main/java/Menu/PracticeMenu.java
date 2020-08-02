@@ -47,7 +47,7 @@ public class PracticeMenu extends Menu {
 		try {
 			sentenceChooser = new SentenceChooser(account, language);
 			if (sentenceChooser.vocabIsEmpty()) {
-				Terminal.println("\nIt looks like you don't have any " + language.getName() + " vocab yet, so you might want to enter some commands now to add words you know (or partly know). When you're done and want to start practicing, just press enter a blank line.");
+				Terminal.println("\nIt looks like you don't have any " + language.getName() + " vocab yet, so you might want to enter some commands now to add words you know (or partly know). When you're done and want to start practicing, just enter a blank line.");
 				processVocabUpdatesAndGoToNextSentenceWhenUserInputIsBlank();
 			} else {
 				doAnotherSentence();
