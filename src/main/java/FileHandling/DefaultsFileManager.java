@@ -22,7 +22,7 @@ public class DefaultsFileManager {
 	
 	public static void setDefaultLanguage(Language newDefaultLanguage) {
 		AccountManager.createAccountsDirIfNecessary();
-		createDefaultLanguageFile(newDefaultLanguage);
+		createDefaultsFile(newDefaultLanguage);
 		defaultNativeLanguage = newDefaultLanguage;
 	}
 	
@@ -37,7 +37,7 @@ public class DefaultsFileManager {
 		return readValueFromFile(DEFAULTS_FILE, VERSION_KEY);
 	}
 	
-	private static void createDefaultLanguageFile(Language defaultLanguage) {
+	private static void createDefaultsFile(Language defaultLanguage) {
 		try {
 			String fileContents = VERSION_KEY + "\t" + VERSION + "\n" +
 					DEFAULT_LANGUAGE_KEY + "\t" + defaultLanguage.getName();
