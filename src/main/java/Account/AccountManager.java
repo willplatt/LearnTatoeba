@@ -54,12 +54,12 @@ public class AccountManager {
 			return false;
 		}
 		String accountDirName = generateUniqueDirectoryName(accountName);
-		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, getDefaultLanguage(), accountDirName, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
+		String vocabDirPath = new File(ACCOUNTS_DIR, accountDirName).getPath();
+		Account newAccount = new Account(accountName, accountDirName, getDefaultLanguage(), vocabDirPath, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
+		boolean setUpAccountDirSuccessful = setUpAccountDir(newAccount);
 		if (!setUpAccountDirSuccessful) {
 			return false;
 		}
-		String vocabDirPath = new File(ACCOUNTS_DIR, accountDirName).getPath();
-		Account newAccount = new Account(accountName, accountDirName, getDefaultLanguage(), vocabDirPath, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
 		accounts.add(newAccount);
 		return true;
 	}
@@ -345,13 +345,13 @@ public class AccountManager {
 		return accountDirNames;
 	}
 	
-	private static boolean setUpAccountDir(String accountName, Language accountNativeLanguage, String accountDirName, BlacklistDuration autoblacklistDuration, double recurrenceProbability, int sessionLength) {
-		File newAccountDir = new File(ACCOUNTS_DIR, accountDirName);
+	private static boolean setUpAccountDir(Account account) {
+		File newAccountDir = new File(ACCOUNTS_DIR, account.getDirectoryName());
 		boolean dirCreationSuccessful = createAccountDir(newAccountDir);
 		if (!dirCreationSuccessful) {
 			return false;
 		}
-		writeSettingsFile(accountName, accountNativeLanguage, newAccountDir, autoblacklistDuration, recurrenceProbability, sessionLength);
+		updateSettingsFile(account);
 		return true;
 	}
 	
@@ -367,9 +367,9 @@ public class AccountManager {
 		return true;
 	}
 	
-	private static void writeSettingsFile(String accountName, Language accountNativeLanguage, File newAccountDir, BlacklistDuration autoblacklistDuration, double recurrenceProbability, int sessionLength) {
-		File settingsFile = new File(newAccountDir, SETTINGS_FILE_NAME);
-		writeSettingsToFile(settingsFile, accountName, accountNativeLanguage, newAccountDir.getPath(), autoblacklistDuration, recurrenceProbability, sessionLength);
+	private static void updateSettingsFile(Account account) {
+		File settingsFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), SETTINGS_FILE_NAME);
+		writeSettingsToFile(settingsFile, account.getName(), account.getNativeLanguage(), account.getVocabDirectory(), account.getAutoblacklistDuration(), account.getRecurrenceProbability(), account.getSessionLength());
 	}
 	
 	private static boolean createDirIfNecessary(File dir) {
@@ -385,11 +385,6 @@ public class AccountManager {
 			return false;
 		}
 		return true;
-	}
-	
-	private static void updateSettingsFile(Account account) {
-		File settingsFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), SETTINGS_FILE_NAME);
-		writeSettingsToFile(settingsFile, account.getName(), account.getNativeLanguage(), account.getVocabDirectory(), account.getAutoblacklistDuration(), account.getRecurrenceProbability(), account.getSessionLength());
 	}
 	
 	private static String getGoogleTranslateCode(Language language) {
