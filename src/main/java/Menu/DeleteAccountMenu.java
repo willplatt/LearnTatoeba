@@ -23,7 +23,7 @@ public class DeleteAccountMenu extends Menu {
 		File accountDir = new File(AccountManager.ACCOUNTS_DIR, account.getDirectoryName());
 		File vocabDir = new File(account.getVocabDirectory());
 		if (accountDir.equals(vocabDir)) {
-			Terminal.println("\nThis account's vocab directory is \"" + vocabDir + "\"; which is also the account directory. If you continue the vocab data will be deleted.");
+			Terminal.println("\nThis account's vocab directory is \"" + vocabDir + "\", which is also the account directory. If you continue the vocab data will be deleted.");
 		} else {
 			Terminal.println("\nThis account's vocab directory is \"" + vocabDir + "\" and will not be affected by deleting the account.");
 		}

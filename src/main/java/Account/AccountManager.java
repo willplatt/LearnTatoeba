@@ -1,7 +1,7 @@
 package Account;
 
-import Language.Language;
 import Language.BlacklistDuration;
+import Language.Language;
 import Terminal.Terminal;
 import org.apache.commons.io.FileUtils;
 
@@ -11,16 +11,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static Constants.Constants.*;
+import static FileHandling.KeyValueFileManager.readValueFromFile;
+import static FileHandling.DefaultsFileManager.getDefaultLanguage;
 import static Language.LanguageManager.getLanguage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AccountManager {
 	public static final File ACCOUNTS_DIR = new File(INSTALL_DIR, "accounts");
 	public static final String SETTINGS_FILE_NAME = "settings.tsv";
-	private static final File DEFAULTS_FILE = new File(ACCOUNTS_DIR, "defaults.tsv");
 	
 	private static final String ACCOUNT_NAME_KEY = "accountName";
 	private static final String NATIVE_LANGUAGE_KEY = "nativeLanguage";
@@ -29,28 +29,11 @@ public class AccountManager {
 	private static final String RECURRENCE_PROBABILITY_KEY = "recurrenceProbability";
 	private static final String SESSION_LENGTH_KEY = "sessionLength";
 	
-	private static final String VERSION_KEY = "version";
-	private static final String DEFAULT_LANGUAGE_KEY = "defaultNativeLanguage";
-	
-	private static Language defaultNativeLanguage;
 	private static List<Account> accounts;
 	
 	public static void loadAccounts() throws IOException {
 		createAccountsDirIfNecessary();
 		loadAccountsFromSubDirs();
-	}
-	
-	public static void setDefaultLanguage(Language newDefaultLanguage) {
-		createAccountsDirIfNecessary();
-		createDefaultLanguageFile(newDefaultLanguage);
-		defaultNativeLanguage = newDefaultLanguage;
-	}
-	
-	public static Language getDefaultLanguage() {
-		if (defaultNativeLanguage == null) {
-			defaultNativeLanguage = readDefaultLanguage();
-		}
-		return defaultNativeLanguage;
 	}
 	
 	public static int getNumberOfAccounts() {
@@ -71,12 +54,12 @@ public class AccountManager {
 			return false;
 		}
 		String accountDirName = generateUniqueDirectoryName(accountName);
-		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, defaultNativeLanguage, accountDirName, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
+		boolean setUpAccountDirSuccessful = setUpAccountDir(accountName, getDefaultLanguage(), accountDirName, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
 		if (!setUpAccountDirSuccessful) {
 			return false;
 		}
 		String vocabDirPath = new File(ACCOUNTS_DIR, accountDirName).getPath();
-		Account newAccount = new Account(accountName, accountDirName, defaultNativeLanguage, vocabDirPath, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
+		Account newAccount = new Account(accountName, accountDirName, getDefaultLanguage(), vocabDirPath, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
 		accounts.add(newAccount);
 		return true;
 	}
@@ -225,11 +208,7 @@ public class AccountManager {
 		}
 	}
 	
-	public static String readVersion() {
-		return readValueFromFile(DEFAULTS_FILE, VERSION_KEY);
-	}
-	
-	private static void createAccountsDirIfNecessary() {
+	public static void createAccountsDirIfNecessary() {
 		if (!ACCOUNTS_DIR.exists() || !ACCOUNTS_DIR.isDirectory()) {
 			boolean dirCreationSuccessful = ACCOUNTS_DIR.mkdir();
 			if (!dirCreationSuccessful) {
@@ -306,49 +285,6 @@ public class AccountManager {
 	private static String readValueFromSettingsFile(String accountDirName, String desiredKey) {
 		File settingsFile = new File(new File(ACCOUNTS_DIR, accountDirName), SETTINGS_FILE_NAME);
 		return readValueFromFile(settingsFile, desiredKey);
-	}
-	
-	private static void createDefaultLanguageFile(Language defaultLanguage) {
-		try {
-			String fileContents = VERSION_KEY + "\t" + VERSION + "\n" +
-					DEFAULT_LANGUAGE_KEY + "\t" + defaultLanguage.getName();
-			Files.write(DEFAULTS_FILE.toPath(), fileContents.getBytes(UTF_8));
-		} catch (IOException e) {
-			System.err.println("Could not create defaultLanguage.txt for this account. Terminating program.");
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
-	
-	private static Language readDefaultLanguage() {
-		String defaultLanguageName = readValueFromFile(DEFAULTS_FILE, DEFAULT_LANGUAGE_KEY);
-		if (defaultLanguageName == null) {
-			return null;
-		}
-		try {
-			return getLanguage(defaultLanguageName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	private static String readValueFromFile(File file, String desiredKey) {
-		if (file.exists() && file.isFile()) {
-			try {
-				List<String> lines = Files.readAllLines(file.toPath(), UTF_8);
-				for (String line : lines) {
-					String[] keyAndValue = line.split("\t");
-					if (keyAndValue[0].equals(desiredKey)) {
-						return keyAndValue[1];
-					}
-				}
-				throw new NoSuchElementException("File " + file.getPath() + " has no entry with key '" + desiredKey + "'.");
-			} catch (IOException | IndexOutOfBoundsException | NoSuchElementException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
 	}
 	
 	private static boolean isValidAccountName(String accountName) {

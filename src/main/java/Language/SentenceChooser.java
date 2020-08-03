@@ -1,6 +1,7 @@
 package Language;
 
 import Account.Account;
+import FileHandling.SentencesDirManager;
 import Terminal.Terminal;
 
 import java.io.BufferedReader;
@@ -12,8 +13,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static Language.FileIdSearcher.*;
-import static Language.SentencesDirManager.SUFFIX_OF_SENTENCE_FILES;
+import static FileHandling.SentenceFileSearcher.*;
+import static FileHandling.SentencesDirManager.SUFFIX_OF_SENTENCE_FILES;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.text.StringEscapeUtils.unescapeJava;

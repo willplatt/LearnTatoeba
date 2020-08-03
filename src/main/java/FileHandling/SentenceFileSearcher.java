@@ -1,4 +1,4 @@
-package Language;
+package FileHandling;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -7,7 +7,7 @@ import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class FileIdSearcher {
+public class SentenceFileSearcher {
 	public static long getByteIndexOnLineWithId(int desiredId, long startIndex, long endIndex, RandomAccessFile reader) throws IOException {
 		if (startIndex >= endIndex) {
 			return endIndex;

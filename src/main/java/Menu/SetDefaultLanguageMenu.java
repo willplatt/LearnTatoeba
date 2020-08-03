@@ -1,13 +1,13 @@
 package Menu;
 
-import Account.AccountManager;
+import FileHandling.DefaultsFileManager;
 import Language.Language;
 import Terminal.Terminal;
 
 import java.io.IOException;
 
 import static Language.LanguageManager.getLanguage;
-import static Language.SentencesDirManager.hasFileForLanguage;
+import static FileHandling.SentencesDirManager.hasFileForLanguage;
 
 public class SetDefaultLanguageMenu extends Menu {
 	@Override
@@ -20,7 +20,7 @@ public class SetDefaultLanguageMenu extends Menu {
 				languageName -> {
 					try {
 						Language language = getLanguage(languageName);
-						AccountManager.setDefaultLanguage(language);
+						DefaultsFileManager.setDefaultLanguage(language);
 						if (hasFileForLanguage(language)) {
 							new MainMenu().run();
 						} else {

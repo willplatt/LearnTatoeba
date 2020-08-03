@@ -1,4 +1,4 @@
-package Language;
+package FileHandling;
 
 import java.io.*;
 import java.net.URL;
@@ -6,6 +6,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 
+import Language.Language;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 

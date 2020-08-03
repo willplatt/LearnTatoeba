@@ -1,6 +1,7 @@
 package Migration;
 
 import Account.AccountManager;
+import FileHandling.DefaultsFileManager;
 import Language.Language;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class MigrationTo0_1_0dev {
 	
 	private static void migrateDefaultsFile() throws IOException {
 		Language defaultNativeLanguage = getLanguage(Files.readAllLines(DEFAULT_LANGUAGE_FILE.toPath(), UTF_8).get(0));
-		AccountManager.setDefaultLanguage(defaultNativeLanguage);
+		DefaultsFileManager.setDefaultLanguage(defaultNativeLanguage);
 	}
 	
 	private static void migrateSettingsOfAllAccounts() throws IOException {

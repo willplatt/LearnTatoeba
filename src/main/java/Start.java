@@ -1,6 +1,7 @@
 import Account.AccountManager;
+import FileHandling.DefaultsFileManager;
 import Language.Language;
-import Language.SentencesDirManager;
+import FileHandling.SentencesDirManager;
 import Menu.DownloadDefaultLanguageSentencesMenu;
 import Menu.MainMenu;
 import Menu.SetDefaultLanguageMenu;
@@ -26,7 +27,7 @@ public class Start {
     
     private static void continueToNextMenu() throws IOException {
         AccountManager.loadAccounts();
-        Language defaultLanguage = AccountManager.getDefaultLanguage();
+        Language defaultLanguage = DefaultsFileManager.getDefaultLanguage();
         if (defaultLanguage != null) {
             if (SentencesDirManager.hasFileForLanguage(defaultLanguage)) {
                 new MainMenu().run();

@@ -5,8 +5,8 @@ import Terminal.Terminal;
 
 import java.io.IOException;
 
-import static Language.SentencesDirManager.downloadFileForLanguage;
-import static Language.SentencesDirManager.hasFileForLanguage;
+import static FileHandling.SentencesDirManager.downloadFileForLanguage;
+import static FileHandling.SentencesDirManager.hasFileForLanguage;
 
 public class IfNecessaryDownloadSentencesMenu extends Menu {
 	private Language language;

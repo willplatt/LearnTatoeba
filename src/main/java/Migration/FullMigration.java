@@ -4,7 +4,7 @@ import Menu.MigrationMenu;
 
 import java.util.List;
 
-import static Account.AccountManager.readVersion;
+import static FileHandling.DefaultsFileManager.readVersion;
 import static Migration.MigrationTo0_1_0dev.DEFAULT_LANGUAGE_FILE;
 
 public class FullMigration {
