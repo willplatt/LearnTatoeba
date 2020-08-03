@@ -20,7 +20,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AccountManager {
 	public static final File ACCOUNTS_DIR = new File(INSTALL_DIR, "accounts");
-	private static final File DEFAULT_LANGUAGE_FILE = new File(ACCOUNTS_DIR, "defaultLanguage.txt");
+	private static final File DEFAULTS_FILE = new File(ACCOUNTS_DIR, "defaults.tsv");
 	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
 	private static final FilenameFilter FILE_FILTER = (current, name) -> !new File(current, name).isDirectory();
 	private static final String SETTINGS_FILE_NAME = "settings.tsv";
@@ -31,6 +31,9 @@ public class AccountManager {
 	private static final String AUTOBLACKLIST_DURATION_KEY = "autoblacklistDuration";
 	private static final String RECURRENCE_PROBABILITY_KEY = "recurrenceProbability";
 	private static final String SESSION_LENGTH_KEY = "sessionLength";
+	
+	private static final String VERSION_KEY = "version";
+	private static final String DEFAULT_LANGUAGE_KEY = "defaultNativeLanguage";
 	
 	private static Language defaultNativeLanguage;
 	private static List<Account> accounts;
@@ -285,26 +288,14 @@ public class AccountManager {
 	
 	private static String readValueFromSettingsFile(String accountDirName, String desiredKey) {
 		File settingsFile = new File(new File(ACCOUNTS_DIR, accountDirName), SETTINGS_FILE_NAME);
-		if (settingsFile.exists() && settingsFile.isFile()) {
-			try {
-				List<String> lines = Files.readAllLines(settingsFile.toPath(), UTF_8);
-				for (String line : lines) {
-					String[] keyAndValue = line.split("\t");
-					if (keyAndValue[0].equals(desiredKey)) {
-						return keyAndValue[1];
-					}
-				}
-				throw new NoSuchElementException("Settings file has no entry with key '" + desiredKey + "'.");
-			} catch (IOException | IndexOutOfBoundsException | NoSuchElementException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
+		return readValueFromFile(settingsFile, desiredKey);
 	}
 	
 	private static void createDefaultLanguageFile(Language defaultLanguage) {
 		try {
-			Files.write(DEFAULT_LANGUAGE_FILE.toPath(), defaultLanguage.getName().getBytes(UTF_8));
+			String fileContents = VERSION_KEY + "\t" + VERSION + "\n" +
+					DEFAULT_LANGUAGE_KEY + "\t" + defaultLanguage.getName();
+			Files.write(DEFAULTS_FILE.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
 			System.err.println("Could not create defaultLanguage.txt for this account. Terminating program.");
 			e.printStackTrace();
@@ -313,10 +304,30 @@ public class AccountManager {
 	}
 	
 	private static Language readDefaultLanguage() {
-		if (DEFAULT_LANGUAGE_FILE.exists() && DEFAULT_LANGUAGE_FILE.isFile()) {
+		String defaultLanguageName = readValueFromFile(DEFAULTS_FILE, DEFAULT_LANGUAGE_KEY);
+		if (defaultLanguageName == null) {
+			return null;
+		}
+		try {
+			return getLanguage(defaultLanguageName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private static String readValueFromFile(File file, String desiredKey) {
+		if (file.exists() && file.isFile()) {
 			try {
-				return getLanguage(Files.readAllLines(DEFAULT_LANGUAGE_FILE.toPath(), UTF_8).get(0));
-			} catch (IOException e) {
+				List<String> lines = Files.readAllLines(file.toPath(), UTF_8);
+				for (String line : lines) {
+					String[] keyAndValue = line.split("\t");
+					if (keyAndValue[0].equals(desiredKey)) {
+						return keyAndValue[1];
+					}
+				}
+				throw new NoSuchElementException("File " + file.getPath() + " has no entry with key '" + desiredKey + "'.");
+			} catch (IOException | IndexOutOfBoundsException | NoSuchElementException e) {
 				e.printStackTrace();
 			}
 		}
