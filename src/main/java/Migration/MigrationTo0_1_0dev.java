@@ -10,9 +10,10 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static Account.AccountManager.ACCOUNTS_DIR;
-import static Account.AccountManager.SETTINGS_FILE_NAME;
 import static Constants.Constants.*;
 import static Constants.Constants.DEFAULT_SESSION_LENGTH;
+import static FileHandling.AccountSettingsFileManager.SETTINGS_FILE_NAME;
+import static FileHandling.AccountSettingsFileManager.writeSettingsToFile;
 import static Language.LanguageManager.getLanguage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -50,6 +51,6 @@ public class MigrationTo0_1_0dev {
 		Language nativeLanguage = getLanguage(lines.get(1));
 		String vocabDir = lines.get(2);
 		File settingsFile = new File(new File(ACCOUNTS_DIR, accountDirName), SETTINGS_FILE_NAME);
-		AccountManager.writeSettingsToFile(settingsFile, accountName, nativeLanguage, vocabDir, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
+		writeSettingsToFile(settingsFile, accountName, nativeLanguage, vocabDir, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
 	}
 }
