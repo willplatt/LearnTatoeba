@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -20,10 +19,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AccountManager {
 	public static final File ACCOUNTS_DIR = new File(INSTALL_DIR, "accounts");
+	public static final String SETTINGS_FILE_NAME = "settings.tsv";
 	private static final File DEFAULTS_FILE = new File(ACCOUNTS_DIR, "defaults.tsv");
-	private static final FilenameFilter DIRECTORY_FILTER = (current, name) -> new File(current, name).isDirectory();
-	private static final FilenameFilter FILE_FILTER = (current, name) -> !new File(current, name).isDirectory();
-	private static final String SETTINGS_FILE_NAME = "settings.tsv";
 	
 	private static final String ACCOUNT_NAME_KEY = "accountName";
 	private static final String NATIVE_LANGUAGE_KEY = "nativeLanguage";
@@ -210,6 +207,26 @@ public class AccountManager {
 	public static void deleteAccount(Account account) throws IOException {
 		FileUtils.deleteDirectory(new File(ACCOUNTS_DIR, account.getDirectoryName()));
 		accounts.remove(account);
+	}
+	
+	public static void writeSettingsToFile(File settingsFile, String accountName, Language accountNativeLanguage, String vocabDir, BlacklistDuration autoblacklistDuration, double recurrenceProbability, int sessionLength) {
+		try {
+			String fileContents = ACCOUNT_NAME_KEY + "\t" + accountName + "\n" +
+					NATIVE_LANGUAGE_KEY + "\t" + accountNativeLanguage.getName() + "\n" +
+					VOCAB_DIR_KEY + "\t" + vocabDir + "\n" +
+					AUTOBLACKLIST_DURATION_KEY + "\t" + autoblacklistDuration + "\n" +
+					RECURRENCE_PROBABILITY_KEY + "\t" + recurrenceProbability + "\n" +
+					SESSION_LENGTH_KEY + "\t" + sessionLength;
+			Files.write(settingsFile.toPath(), fileContents.getBytes(UTF_8));
+		} catch (IOException e) {
+			System.err.println("Could not write to settings file for this account. Terminating program.");
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
+	public static String readVersion() {
+		return readValueFromFile(DEFAULTS_FILE, VERSION_KEY);
 	}
 	
 	private static void createAccountsDirIfNecessary() {
@@ -437,22 +454,6 @@ public class AccountManager {
 	private static void updateSettingsFile(Account account) {
 		File settingsFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), SETTINGS_FILE_NAME);
 		writeSettingsToFile(settingsFile, account.getName(), account.getNativeLanguage(), account.getVocabDirectory(), account.getAutoblacklistDuration(), account.getRecurrenceProbability(), account.getSessionLength());
-	}
-	
-	private static void writeSettingsToFile(File settingsFile, String accountName, Language accountNativeLanguage, String vocabDir, BlacklistDuration autoblacklistDuration, double recurrenceProbability, int sessionLength) {
-		try {
-			String fileContents = ACCOUNT_NAME_KEY + "\t" + accountName + "\n" +
-							NATIVE_LANGUAGE_KEY + "\t" + accountNativeLanguage.getName() + "\n" +
-							VOCAB_DIR_KEY + "\t" + vocabDir + "\n" +
-							AUTOBLACKLIST_DURATION_KEY + "\t" + autoblacklistDuration + "\n" +
-							RECURRENCE_PROBABILITY_KEY + "\t" + recurrenceProbability + "\n" +
-							SESSION_LENGTH_KEY + "\t" + sessionLength;
-			Files.write(settingsFile.toPath(), fileContents.getBytes(UTF_8));
-		} catch (IOException e) {
-			System.err.println("Could not write to settings file for this account. Terminating program.");
-			e.printStackTrace();
-			System.exit(0);
-		}
 	}
 	
 	private static String getGoogleTranslateCode(Language language) {
