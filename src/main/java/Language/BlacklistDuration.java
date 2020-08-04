@@ -10,8 +10,10 @@ public class BlacklistDuration {
 		duration = duration.toLowerCase();
 		try {
 			int numberOfDays = Integer.parseInt(duration);
-			if (numberOfDays >= 0) {
-				this.duration = String.valueOf(numberOfDays);
+			this.duration = String.valueOf(numberOfDays);
+			if (numberOfDays == 0) {
+				this.hours = 0;
+			} else if (numberOfDays > 0) {
 				this.hours = (numberOfDays * 24) - 6;
 			} else {
 				throw new IllegalArgumentException("A blacklist duration cannot be negative.");
@@ -23,7 +25,7 @@ public class BlacklistDuration {
 				try {
 					int numberOfHours = Integer.parseInt(duration.substring(0, duration.length() - 1));
 					if (numberOfHours >= 0) {
-						this.duration = duration;
+						this.duration = numberOfHours + "h";
 						this.hours = numberOfHours;
 					} else {
 						throw new IllegalArgumentException("A blacklist duration cannot be negative.");
