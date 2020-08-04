@@ -2,6 +2,7 @@ package Menu;
 
 import Account.Account;
 import Account.AccountManager;
+import FileHandling.AccountDirManager;
 import Terminal.Terminal;
 
 import java.io.File;
@@ -20,7 +21,7 @@ public class DeleteAccountMenu extends Menu {
 	
 	@Override
 	public void run() {
-		File accountDir = new File(AccountManager.ACCOUNTS_DIR, account.getDirectoryName());
+		File accountDir = AccountDirManager.getDir(account);
 		File vocabDir = new File(account.getVocabDirectory());
 		if (accountDir.equals(vocabDir)) {
 			Terminal.println("\nThis account's vocab directory is \"" + vocabDir + "\", which is also the account directory. If you continue the vocab data will be deleted.");

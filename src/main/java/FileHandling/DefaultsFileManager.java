@@ -1,14 +1,13 @@
 package FileHandling;
 
-import Account.AccountManager;
 import Language.Language;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static Account.AccountManager.ACCOUNTS_DIR;
 import static Constants.Constants.VERSION;
+import static FileHandling.AccountDirManager.ACCOUNTS_DIR;
 import static FileHandling.KeyValueFileManager.readValueFromFile;
 import static Language.LanguageManager.getLanguage;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -21,7 +20,7 @@ public class DefaultsFileManager {
 	private static Language defaultNativeLanguage;
 	
 	public static void setDefaultLanguage(Language newDefaultLanguage) {
-		AccountManager.createAccountsDirIfNecessary();
+		AccountDirManager.createAccountsDirIfNecessary();
 		createDefaultsFile(newDefaultLanguage);
 		defaultNativeLanguage = newDefaultLanguage;
 	}
@@ -43,7 +42,7 @@ public class DefaultsFileManager {
 					DEFAULT_LANGUAGE_KEY + "\t" + defaultLanguage.getName();
 			Files.write(DEFAULTS_FILE.toPath(), fileContents.getBytes(UTF_8));
 		} catch (IOException e) {
-			System.err.println("Could not create defaultLanguage.txt for this account. Terminating program.");
+			System.err.println("Could not create " + DEFAULTS_FILE.getPath() + " for this account. Terminating program.");
 			e.printStackTrace();
 			System.exit(0);
 		}

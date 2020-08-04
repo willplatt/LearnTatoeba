@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static Account.AccountManager.ACCOUNTS_DIR;
 import static Constants.Constants.*;
 import static FileHandling.KeyValueFileManager.readValueFromFile;
 import static Language.LanguageManager.getLanguage;
@@ -72,7 +71,7 @@ public class AccountSettingsFileManager {
 	}
 	
 	public static void updateSettingsFile(Account account) {
-		File settingsFile = new File(new File(ACCOUNTS_DIR, account.getDirectoryName()), SETTINGS_FILE_NAME);
+		File settingsFile = new File(AccountDirManager.getDir(account), SETTINGS_FILE_NAME);
 		writeSettingsToFile(settingsFile, account.getName(), account.getNativeLanguage(), account.getVocabDirectory(), account.getAutoblacklistDuration(), account.getRecurrenceProbability(), account.getSessionLength());
 	}
 	
@@ -93,7 +92,7 @@ public class AccountSettingsFileManager {
 	}
 	
 	private static String readValueFromSettingsFile(String accountDirName, String desiredKey) {
-		File settingsFile = new File(new File(ACCOUNTS_DIR, accountDirName), SETTINGS_FILE_NAME);
+		File settingsFile = new File(AccountDirManager.getDir(accountDirName), SETTINGS_FILE_NAME);
 		return readValueFromFile(settingsFile, desiredKey);
 	}
 }

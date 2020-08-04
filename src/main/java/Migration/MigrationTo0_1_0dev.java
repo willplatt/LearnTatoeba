@@ -1,6 +1,5 @@
 package Migration;
 
-import Account.AccountManager;
 import FileHandling.DefaultsFileManager;
 import Language.Language;
 
@@ -9,9 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-import static Account.AccountManager.ACCOUNTS_DIR;
 import static Constants.Constants.*;
-import static Constants.Constants.DEFAULT_SESSION_LENGTH;
+import static FileHandling.AccountDirManager.ACCOUNTS_DIR;
 import static FileHandling.AccountSettingsFileManager.SETTINGS_FILE_NAME;
 import static FileHandling.AccountSettingsFileManager.writeSettingsToFile;
 import static Language.LanguageManager.getLanguage;
