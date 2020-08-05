@@ -32,6 +32,7 @@ public class MigrationTo0_1_0dev {
 	private static void migrateDefaultsFile() throws IOException {
 		Language defaultNativeLanguage = getLanguage(Files.readAllLines(DEFAULT_LANGUAGE_FILE.toPath(), UTF_8).get(0));
 		DefaultsFileManager.setDefaultLanguage(defaultNativeLanguage);
+		Files.delete(DEFAULT_LANGUAGE_FILE.toPath());
 	}
 	
 	private static void migrateSettingsOfAllAccounts() throws IOException {
@@ -50,5 +51,6 @@ public class MigrationTo0_1_0dev {
 		String vocabDir = lines.get(2);
 		File settingsFile = new File(new File(ACCOUNTS_DIR, accountDirName), SETTINGS_FILE_NAME);
 		writeSettingsToFile(settingsFile, accountName, nativeLanguage, vocabDir, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
+		Files.delete(infoFile.toPath());
 	}
 }

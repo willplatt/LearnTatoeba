@@ -9,7 +9,7 @@ public class MigrationMenu extends Menu {
 	@Override
 	public void run() {
 		askUserAYesNoQuestion("\nIt looks like you have data from LearnTatoeba version " + FullMigration.lastUsedVersion + ". To continue, we'll have to migrate your data to version " + VERSION + ".\n" +
-						"Do you want to continue? It is recommended you make a copy of the accounts directory first in case something goes wrong.",
+						"Do you want to continue? A backup of your data will be made in case the migration fails.",
 				() -> {
 					Terminal.println("You can't go back from here!");
 					run();
@@ -19,10 +19,8 @@ public class MigrationMenu extends Menu {
 					System.exit(0);
 				},
 				() -> {
-					boolean migrationSuccessful = FullMigration.migrate();
-					if (migrationSuccessful) {
-						Terminal.println("Migration complete.");
-					} else {
+					boolean migrationSuccessful = FullMigration.backupAndMigrate();
+					if (!migrationSuccessful) {
 						Terminal.println("Something went wrong during migration. Terminating program.");
 						System.exit(0);
 					}

@@ -123,6 +123,29 @@ public class AccountDirManager {
 		FileUtils.deleteDirectory(getDir(account));
 	}
 	
+	public static boolean backupAccountsDir(File target) {
+		if (target.exists()) {
+			System.err.println("Could not backup accounts directory to \"" + target + "\" because this file/directory already exists.");
+			return false;
+		}
+		try {
+			FileUtils.copyDirectory(ACCOUNTS_DIR, target);
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean restoreBackupAccountsDir(File backupDir) {
+		try {
+			FileUtils.deleteDirectory(ACCOUNTS_DIR);
+			FileUtils.moveDirectory(backupDir, ACCOUNTS_DIR);
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+	
 	private static String getShortAlphaNumericFromAccountName(String accountName) {
 		String alphaNumericName = "";
 		for (char ch : accountName.toCharArray()) {

@@ -2,5 +2,6 @@
 out/
 target/
 accounts/
+accounts-backup/
 sentences/
 SpacedRepetition.iml
