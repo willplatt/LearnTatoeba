@@ -45,12 +45,14 @@ public class MigrationTo0_1_0dev {
 	
 	private static void migrateSettingsOfAccount(String accountDirName) throws IOException {
 		File infoFile = new File(new File(ACCOUNTS_DIR, accountDirName), "info.txt");
-		List<String> lines = Files.readAllLines(infoFile.toPath(), UTF_8);
-		String accountName = lines.get(0);
-		Language nativeLanguage = getLanguage(lines.get(1));
-		String vocabDir = lines.get(2);
-		File settingsFile = new File(new File(ACCOUNTS_DIR, accountDirName), SETTINGS_FILE_NAME);
-		writeSettingsToFile(settingsFile, accountName, nativeLanguage, vocabDir, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
-		Files.delete(infoFile.toPath());
+		if (infoFile.isFile()) {
+			List<String> lines = Files.readAllLines(infoFile.toPath(), UTF_8);
+			String accountName = lines.get(0);
+			Language nativeLanguage = getLanguage(lines.get(1));
+			String vocabDir = lines.get(2);
+			File settingsFile = new File(new File(ACCOUNTS_DIR, accountDirName), SETTINGS_FILE_NAME);
+			writeSettingsToFile(settingsFile, accountName, nativeLanguage, vocabDir, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
+			Files.delete(infoFile.toPath());
+		}
 	}
 }
