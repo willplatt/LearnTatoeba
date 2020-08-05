@@ -15,7 +15,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class VocabManager {
-	private static final Set<String> VALID_STATUSES = Set.of("1", "2", "3", "4", "5", "98", "99");
+	private static final Set<String> VALID_STATUSES = Set.of("-", "1", "2", "3", "4", "5", "98", "99");
 	
 	private final Map<String, Integer> phraseToStatusMap = new HashMap<>();
 	private final Map<String, Integer> statusUpdates = new HashMap<>();
@@ -48,7 +48,7 @@ public class VocabManager {
 		if (subcommandsAreValid(subcommands)) {
 			for (String subcommand : subcommands) {
 				String[] terms = subcommand.split(": ");
-				statusUpdates.put(terms[0], parseInt(terms[1]));
+				statusUpdates.put(terms[0], statusStringToInt(terms[1]));
 			}
 			return true;
 		} else {
@@ -72,13 +72,17 @@ public class VocabManager {
 					line = line.substring(0, indexOfSecondToLastTab + 1) + updatedStatus + line.substring(indexOfLastTab);
 					statusUpdates.remove(phrase);
 				}
-				backupWriter.write(line + "\n");
+				if (updatedStatus == null || updatedStatus != 0) {
+					backupWriter.write(line + "\n");
+				}
 			}
 			for (Map.Entry<String, Integer> entry : statusUpdates.entrySet()) {
 				String phrase = entry.getKey();
 				int updatedStatus = entry.getValue();
-				String lineForPhrase = phrase + "\t\t\t\t" + updatedStatus + "\t" + phrase;
-				backupWriter.write(lineForPhrase + "\n");
+				if (updatedStatus != 0) {
+					String lineForPhrase = phrase + "\t\t\t\t" + updatedStatus + "\t" + phrase;
+					backupWriter.write(lineForPhrase + "\n");
+				}
 			}
 		}
 		Files.copy(backupVocabFile.toPath(), vocabFile.toPath(), REPLACE_EXISTING);
@@ -94,7 +98,7 @@ public class VocabManager {
 					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
 					String status = line.substring(indexOfSecondToLastTab + 1, indexOfLastTab);
 					if (VALID_STATUSES.contains(status)) {
-						phraseToStatusMap.put(phrase, parseInt(status));
+						phraseToStatusMap.put(phrase, statusStringToInt(status));
 					}
 				}
 			}
@@ -109,5 +113,9 @@ public class VocabManager {
 			}
 		}
 		return true;
+	}
+	
+	private int statusStringToInt(String statusString) {
+		return statusString.equals("-") ? 0 : parseInt(statusString);
 	}
 }
