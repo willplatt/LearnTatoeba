@@ -30,7 +30,7 @@ public class AccountDirManager {
 	
 	public static String[] getAccountDirNames() {
 		String[] accountDirNames = ACCOUNTS_DIR.list(DIRECTORY_FILTER);
-		assert(accountDirNames != null);
+		assert accountDirNames != null;
 		return accountDirNames;
 	}
 	

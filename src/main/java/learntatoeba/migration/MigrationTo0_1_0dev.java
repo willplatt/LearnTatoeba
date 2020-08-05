@@ -1,5 +1,6 @@
 package learntatoeba.migration;
 
+import learntatoeba.Terminal;
 import learntatoeba.defaults.DefaultsFileManager;
 import learntatoeba.language.Language;
 
@@ -9,6 +10,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static learntatoeba.Constants.*;
+import static learntatoeba.SentencesDirManager.SENTENCES_DIR;
 import static learntatoeba.account.AccountDirManager.ACCOUNTS_DIR;
 import static learntatoeba.account.settings.AccountSettingsFileManager.SETTINGS_FILE_NAME;
 import static learntatoeba.account.settings.AccountSettingsFileManager.writeSettingsToFile;
@@ -22,11 +24,18 @@ public class MigrationTo0_1_0dev {
 		try {
 			migrateDefaultsFile();
 			migrateSettingsOfAllAccounts();
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
+		Terminal.println("Deleting any obsolete sentence files and archives.");
+		try {
+			deleteOldSentenceFiles();
+		} catch (IOException e) {
+			System.err.println("There was a problem trying to delete obsolete sentence files. Fortunately, this is not necessary for successful migration.");
+			e.printStackTrace();
+		}
+		return true;
 	}
 	
 	private static void migrateDefaultsFile() throws IOException {
@@ -37,9 +46,10 @@ public class MigrationTo0_1_0dev {
 	
 	private static void migrateSettingsOfAllAccounts() throws IOException {
 		String[] accountDirNames = ACCOUNTS_DIR.list(DIRECTORY_FILTER);
-		assert(accountDirNames != null);
-		for (String accountDirName : accountDirNames) {
-			migrateSettingsOfAccount(accountDirName);
+		if (accountDirNames != null) {
+			for (String accountDirName : accountDirNames) {
+				migrateSettingsOfAccount(accountDirName);
+			}
 		}
 	}
 	
@@ -53,6 +63,20 @@ public class MigrationTo0_1_0dev {
 			File settingsFile = new File(new File(ACCOUNTS_DIR, accountDirName), SETTINGS_FILE_NAME);
 			writeSettingsToFile(settingsFile, accountName, nativeLanguage, vocabDir, DEFAULT_AUTOBLACKLIST_DURATION, DEFAULT_RECURRENCE_PROBABILITY, DEFAULT_SESSION_LENGTH);
 			Files.delete(infoFile.toPath());
+		}
+	}
+	
+	private static void deleteOldSentenceFiles() throws IOException {
+		String[] fileNames = SENTENCES_DIR.list(FILE_FILTER);
+		if (fileNames != null) {
+			for (String fileName : fileNames) {
+				if (fileName.endsWith("_sentences.tsv") || fileName.endsWith("_sentences.tsv.bz2")) {
+					File file = new File(SENTENCES_DIR, fileName);
+					Files.delete(file.toPath());
+				}
+			}
+			Files.deleteIfExists(new File(SENTENCES_DIR, "links.tar").toPath());
+			Files.deleteIfExists(new File(SENTENCES_DIR, "links.tar.bz2").toPath());
 		}
 	}
 }
