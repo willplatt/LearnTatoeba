@@ -6,9 +6,9 @@ import learntatoeba.Menu;
 import learntatoeba.Terminal;
 
 public class ChangeAccountRecurrenceProbabilityMenu extends Menu {
-	private Account account;
-	private Menu previousMenu;
-	private Menu nextMenu;
+	private final Account account;
+	private final Menu previousMenu;
+	private final Menu nextMenu;
 	
 	public ChangeAccountRecurrenceProbabilityMenu(Account account, Menu previousMenu, Menu nextMenu) {
 		this.account = account;
@@ -31,7 +31,7 @@ public class ChangeAccountRecurrenceProbabilityMenu extends Menu {
 				newProbability -> {
 					boolean setProbabilitySuccessful = AccountManager.setRecurrenceProbability(account, newProbability);
 					if (setProbabilitySuccessful) {
-						Terminal.println("Your account's recurrence probability has been changed!");
+						Terminal.println("Your account's recurrence probability has been changed to " + account.getRecurrenceProbability() + ".");
 						nextMenu.run();
 					} else {
 						Terminal.println("You did not enter a valid probability. Please try again.");

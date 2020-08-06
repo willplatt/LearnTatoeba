@@ -8,8 +8,8 @@ import learntatoeba.Terminal;
 import java.util.List;
 
 public class AccountSettingsMenu extends Menu {
-	private Account account;
-	private Menu previousMenu;
+	private final Account account;
+	private final Menu previousMenu;
 	
 	public AccountSettingsMenu(Account account, Menu previousMenu) {
 		this.account = account;
@@ -20,11 +20,11 @@ public class AccountSettingsMenu extends Menu {
 	public void run() {
 		Terminal.println("\nModify account:");
 		List<String> options = List.of(
-				"Change native language",
-				"Change vocab directory",
-				"Change autoblacklist duration",
-				"Change sentence recurrence probability",
-				"Change session length",
+				"Change native language (" + account.getNativeLanguage().getName() + ")",
+				"Change vocab directory (" + account.getVocabDirectory() + ")",
+				"Change autoblacklist duration (" + account.getAutoblacklistDuration().toPrintString() + ")",
+				"Change sentence recurrence probability (" + account.getRecurrenceProbability() + ")",
+				"Change session length (" + account.getSessionLength() + ")",
 				"Delete account"
 		);
 		giveUserAChoice(options,

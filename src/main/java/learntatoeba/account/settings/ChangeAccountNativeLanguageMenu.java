@@ -10,9 +10,9 @@ import java.io.IOException;
 import static learntatoeba.language.LanguageManager.getLanguage;
 
 public class ChangeAccountNativeLanguageMenu extends Menu {
-	private Account account;
-	private Menu previousMenu;
-	private Menu nextMenu;
+	private final Account account;
+	private final Menu previousMenu;
+	private final Menu nextMenu;
 	
 	public ChangeAccountNativeLanguageMenu(Account account, Menu previousMenu, Menu nextMenu) {
 		this.account = account;

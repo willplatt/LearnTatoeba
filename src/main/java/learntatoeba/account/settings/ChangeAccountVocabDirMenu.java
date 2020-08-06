@@ -6,9 +6,9 @@ import learntatoeba.Menu;
 import learntatoeba.Terminal;
 
 public class ChangeAccountVocabDirMenu extends Menu {
-	private Account account;
-	private Menu previousMenu;
-	private Menu nextMenu;
+	private final Account account;
+	private final Menu previousMenu;
+	private final Menu nextMenu;
 	
 	public ChangeAccountVocabDirMenu(Account account, Menu previousMenu, Menu nextMenu) {
 		this.account = account;
@@ -30,7 +30,7 @@ public class ChangeAccountVocabDirMenu extends Menu {
 				newVocabDir -> {
 					boolean setDirSuccessful = AccountManager.setVocabDir(account, newVocabDir);
 					if (setDirSuccessful) {
-						Terminal.println("Your account's vocab directory has been changed!");
+						Terminal.println("Your account's vocab directory has been changed to \"" + account.getVocabDirectory() + "\".");
 						nextMenu.run();
 					} else {
 						Terminal.println("Unfortunately, that directory could not be accessed or created. Please try again.");

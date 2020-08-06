@@ -6,9 +6,9 @@ import learntatoeba.Menu;
 import learntatoeba.Terminal;
 
 public class ChangeAccountSessionLengthMenu extends Menu {
-	private Account account;
-	private Menu previousMenu;
-	private Menu nextMenu;
+	private final Account account;
+	private final Menu previousMenu;
+	private final Menu nextMenu;
 	
 	public ChangeAccountSessionLengthMenu(Account account, Menu previousMenu, Menu nextMenu) {
 		this.account = account;
@@ -31,7 +31,7 @@ public class ChangeAccountSessionLengthMenu extends Menu {
 				newSessionLength -> {
 					boolean setSessionLengthSuccessful = AccountManager.setSessionLength(account, newSessionLength);
 					if (setSessionLengthSuccessful) {
-						Terminal.println("Your account's session length has been changed!");
+						Terminal.println("Your account's session length has been changed to " + account.getSessionLength() + ".");
 						nextMenu.run();
 					} else {
 						Terminal.println("You did not enter a valid session length. Please try again.");

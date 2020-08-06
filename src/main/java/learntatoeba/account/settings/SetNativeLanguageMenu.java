@@ -7,9 +7,9 @@ import learntatoeba.language.Language;
 import learntatoeba.Terminal;
 
 public class SetNativeLanguageMenu extends Menu {
-	private Account account;
-	private Language newNativeLanguage;
-	private Menu nextMenu;
+	private final Account account;
+	private final Language newNativeLanguage;
+	private final Menu nextMenu;
 	
 	public SetNativeLanguageMenu(Account account, Language newNativeLanguage, Menu nextMenu) {
 		this.account = account;
@@ -20,7 +20,7 @@ public class SetNativeLanguageMenu extends Menu {
 	@Override
 	public void run() {
 		AccountManager.setNativeLanguage(account, newNativeLanguage);
-		Terminal.println("Your account's native language has been changed!");
+		Terminal.println("Your account's native language has been changed to " + newNativeLanguage.getName() + ".");
 		nextMenu.run();
 	}
 }

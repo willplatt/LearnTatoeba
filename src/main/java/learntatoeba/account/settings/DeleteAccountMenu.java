@@ -10,9 +10,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class DeleteAccountMenu extends Menu {
-	private Account account;
-	private Menu previousMenu;
-	private Menu nextMenu;
+	private final Account account;
+	private final Menu previousMenu;
+	private final Menu nextMenu;
 	
 	public DeleteAccountMenu(Account account, Menu previousMenu, Menu nextMenu) {
 		this.account = account;
@@ -41,7 +41,7 @@ public class DeleteAccountMenu extends Menu {
 	private void tryToDeleteAccount() {
 		try {
 			AccountManager.deleteAccount(account);
-			Terminal.println("Account successfully deleted.");
+			Terminal.println("Account " + account.getName() + " successfully deleted.");
 		} catch (IOException e) {
 			Terminal.println("Something went wrong trying to delete the account directory:");
 			e.printStackTrace();

@@ -6,9 +6,9 @@ import learntatoeba.Menu;
 import learntatoeba.Terminal;
 
 public class ChangeAccountAutoblacklistMenu extends Menu {
-	private Account account;
-	private Menu previousMenu;
-	private Menu nextMenu;
+	private final Account account;
+	private final Menu previousMenu;
+	private final Menu nextMenu;
 	
 	public ChangeAccountAutoblacklistMenu(Account account, Menu previousMenu, Menu nextMenu) {
 		this.account = account;
@@ -31,7 +31,7 @@ public class ChangeAccountAutoblacklistMenu extends Menu {
 				newDuration -> {
 					boolean setDurationSuccessful = AccountManager.setAutoblacklistDuration(account, newDuration);
 					if (setDurationSuccessful) {
-						Terminal.println("Your account's autoblacklist duration has been changed!");
+						Terminal.println("Your account's autoblacklist duration has been changed to " + account.getAutoblacklistDuration().toPrintString() + ".");
 						nextMenu.run();
 					} else {
 						Terminal.println("You did not enter a valid duration. Please try again.");
