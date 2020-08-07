@@ -49,7 +49,11 @@ public class Terminal {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return SCANNER.nextLine();
+		if (CONSOLE == null) {
+			return SCANNER.nextLine();
+		} else {
+			return CONSOLE.readLine();
+		}
 	}
 	
 	private static String getRtlPrintString(String str) {
