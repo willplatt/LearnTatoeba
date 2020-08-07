@@ -53,51 +53,36 @@ public class Terminal {
 	}
 	
 	private static String getRtlPrintString(String str) {
+		UnicodeString unicodeStr = new UnicodeString(str);
 		String printString = "";
 		String ltrString = "";
-		int strIndex = 0;
-		while (strIndex < str.length()) {
-			String unicodeCharacter = getUnicodeCharacterStartingAt(strIndex, str);
-			if (unicodeCharacter.matches(LTR_CHAR_REGEX)) {
-				ltrString += unicodeCharacter;
-			} else if (unicodeCharacter.matches(RTL_CHAR_REGEX)) {
-				ltrString = amendLtrString(ltrString);
-				printString = ltrString + printString;
+		for (int i = 0; i < unicodeStr.length(); i++) {
+			String character = unicodeStr.getCharacter(i);
+			if (character.matches(LTR_CHAR_REGEX)) {
+				ltrString += character;
+			} else if (character.matches(RTL_CHAR_REGEX)) {
+				printString = character + moveWeakCharacterSuffixToBeginningInReverse(ltrString) + printString;
 				ltrString = "";
-				printString = unicodeCharacter + printString;
 			} else if (ltrString.equals("")) {
-				printString = unicodeCharacter + printString;
+				printString = character + printString;
 			} else {
-				ltrString += unicodeCharacter;
+				ltrString += character;
 			}
-			strIndex += unicodeCharacter.length();
 		}
-		ltrString = amendLtrString(ltrString);
-		printString = ltrString + printString;
+		printString = moveWeakCharacterSuffixToBeginningInReverse(ltrString) + printString;
 		return printString;
 	}
 	
-	private static String getUnicodeCharacterStartingAt(int index, String str) {
-		int codepoint = str.codePointAt(index);
-		return str.substring(index, index + Character.charCount(codepoint));
-	}
-	
-	private static String amendLtrString(String ltrString) {
-		if (ltrString.length() > 0) {
+	private static String moveWeakCharacterSuffixToBeginningInReverse(String ltrString) {
+		UnicodeString unicodeLtrString = new UnicodeString(ltrString);
+		if (unicodeLtrString.length() > 0) {
 			String ltrPrefix = "";
-			String endCharacter = getFinalUnicodeCharacter(ltrString);
-			while (endCharacter.matches(WEAK_CHAR_REGEX)) {
-				ltrPrefix += endCharacter;
-				ltrString = ltrString.substring(0, ltrString.length() - endCharacter.length());
-				endCharacter = getFinalUnicodeCharacter(ltrString);
+			while (unicodeLtrString.finalCharacter().matches(WEAK_CHAR_REGEX)) {
+				ltrPrefix += unicodeLtrString.finalCharacter();
+				unicodeLtrString.removeFinalCharacter();
 			}
-			ltrString = ltrPrefix + ltrString;
+			unicodeLtrString.prepend(ltrPrefix);
 		}
-		return ltrString;
-	}
-	
-	private static String getFinalUnicodeCharacter(String str) {
-		int codepoint = str.codePointAt(str.length() - 1);
-		return str.substring(str.length() - Character.charCount(codepoint));
+		return unicodeLtrString.toString();
 	}
 }
