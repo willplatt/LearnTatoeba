@@ -1,29 +1,31 @@
 package learntatoeba.account.practice;
 
-import learntatoeba.UnicodeString;
-import learntatoeba.language.Language;
-import learntatoeba.account.Account;
-import learntatoeba.Terminal;
-import learntatoeba.account.BlacklistDuration;
 import learntatoeba.SentencesDirManager;
+import learntatoeba.Terminal;
+import learntatoeba.UnicodeString;
+import learntatoeba.account.Account;
+import learntatoeba.account.BlacklistDuration;
+import learntatoeba.language.Language;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import static learntatoeba.account.practice.SentenceFileSearcher.*;
-import static learntatoeba.SentencesDirManager.SUFFIX_OF_SENTENCE_FILES;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static learntatoeba.SentencesDirManager.SUFFIX_OF_SENTENCE_FILES;
+import static learntatoeba.account.practice.SentenceFileSearcher.getByteIndexOnLineWithId;
+import static learntatoeba.account.practice.SentenceFileSearcher.readLineAt;
 import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
 
 public class SentenceChooser {
 	private static final int MAX_SCORE_UPPER_LIMIT = 300;
+	private static final String FULLWIDTH_CHAR_REGEX = "[\u1100-\u11FF\u2E80-\u302D\u3030-\u303E\u3040-\u31FF\u3400-\uA4CF\uA500-\uA61F\uA960-\uA97F\uAC00-\uD7FF\uF900-\uFAFF\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6" + Character.toString(0x20000) + "-" + Character.toString(0x3134F) + "]";
 	
 	private final VocabManager vocabManager;
 	private final BlacklistManager blacklistManager;
@@ -165,7 +167,11 @@ public class SentenceChooser {
 	private String getRightToLeftSentenceAnnotation(String sentence) {
 		if (Terminal.isEmulatingBidi()) {
 			String reversedLeftToRightAnnotation = new StringBuilder(getLeftToRightSentenceAnnotation(sentence)).reverse().toString();
-			return reversedLeftToRightAnnotation.replace("89", "98");
+			return reversedLeftToRightAnnotation
+					.replace("89", "98")
+					.replace("\uFF18\uFF19", "\uFF19\uFF18")
+					.replace("\uFF189", "9\uFF18")
+					.replace("8\uFF19", "\uFF198");
 		} else {
 			return "\u200F" + getLeftToRightSentenceAnnotation(sentence) + "\u200F";
 		}
@@ -189,7 +195,7 @@ public class SentenceChooser {
 			remainingToAnnotate = remainingToAnnotate.getUnicodeSubstring(wordSeparatorLength);
 		}
 		annotation += " ".repeat(Math.max(0, unicodeSentence.length() - annotation.length()));
-		return annotation;
+		return convertAnnotationToFullwidthWhereNecessary(annotation, unicodeSentence);
 	}
 	
 	private UnicodeString trimOuterPunctuation(UnicodeString sentence) {
@@ -257,6 +263,44 @@ public class SentenceChooser {
 			index--;
 		}
 		return phrase.getUnicodeSubstring(0, index);
+	}
+	
+	private String convertAnnotationToFullwidthWhereNecessary(String annotation, UnicodeString sentence) {
+		String newAnnotation = "";
+		for (int i = 0; i < sentence.length(); i++) {
+			if (sentence.getCharacter(i).matches(FULLWIDTH_CHAR_REGEX)) {
+				newAnnotation += convertCharToFullwidth(annotation.charAt(i));
+			} else {
+				newAnnotation += annotation.charAt(i);
+			}
+		}
+		newAnnotation += annotation.substring(sentence.length());
+		return newAnnotation;
+	}
+	
+	private char convertCharToFullwidth(char ch) {
+		switch (ch) {
+			case '-':
+				return '\uFF0D';
+			case ' ':
+				return '\u3000';
+			case '1':
+				return '\uFF11';
+			case '2':
+				return '\uFF12';
+			case '3':
+				return '\uFF13';
+			case '4':
+				return '\uFF14';
+			case '5':
+				return '\uFF15';
+			case '8':
+				return '\uFF18';
+			case '9':
+				return '\uFF19';
+			default:
+				throw new IllegalArgumentException("Unexpected character '" + ch + "'. Cannot convert to fullwidth.");
+		}
 	}
 	
 	private List<Sentence> getNativeTranslations(String sentenceLine) throws IOException {
