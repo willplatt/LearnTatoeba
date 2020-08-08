@@ -83,9 +83,9 @@ public class Terminal {
 			String ltrPrefix = "";
 			while (unicodeLtrString.finalCharacter().matches(WEAK_CHAR_REGEX)) {
 				ltrPrefix += unicodeLtrString.finalCharacter();
-				unicodeLtrString.removeFinalCharacter();
+				unicodeLtrString = unicodeLtrString.getUnicodeSubstring(0, unicodeLtrString.length() - 1);
 			}
-			unicodeLtrString.prepend(ltrPrefix);
+			unicodeLtrString = unicodeLtrString.prepend(ltrPrefix);
 		}
 		return unicodeLtrString.toString();
 	}

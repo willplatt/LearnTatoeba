@@ -1,5 +1,6 @@
 package learntatoeba.account.practice;
 
+import learntatoeba.UnicodeString;
 import learntatoeba.language.Language;
 import learntatoeba.account.Account;
 import learntatoeba.Terminal;
@@ -149,15 +150,14 @@ public class SentenceChooser {
 	}
 	
 	private int getScoreForSentence(String sentence) {
-		String trimmedSentence = trimOuterPunctuation(sentence);
+		UnicodeString remainingToScore = trimOuterPunctuation(new UnicodeString(sentence));
 		int score = 0;
-		String remainingToScore = trimmedSentence;
 		while (remainingToScore.length() > 0) {
-			String phrase = getLongestPhrasePrefix(remainingToScore);
-			score += getScoreForPhrase(phrase);
-			remainingToScore = remainingToScore.substring(phrase.length());
+			UnicodeString phrase = getLongestPhrasePrefix(remainingToScore);
+			score += getScoreForPhrase(phrase.toString());
+			remainingToScore = remainingToScore.getUnicodeSubstring(phrase.length());
 			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToScore);
-			remainingToScore = remainingToScore.substring(wordSeparatorLength);
+			remainingToScore = remainingToScore.getUnicodeSubstring(wordSeparatorLength);
 		}
 		return score;
 	}
@@ -172,41 +172,42 @@ public class SentenceChooser {
 	}
 	
 	private String getLeftToRightSentenceAnnotation(String sentence) {
-		String trimmedSentence = trimOuterPunctuation(sentence);
-		int charsTrimmedFromStart = sentence.indexOf(trimmedSentence);
-		String annotation = " ".repeat(charsTrimmedFromStart);
-		String remainingToAnnotate = trimmedSentence;
+		UnicodeString unicodeSentence = new UnicodeString(sentence);
+		UnicodeString trimmedSentence = trimOuterPunctuation(unicodeSentence);
+		int charactersTrimmedFromStart = unicodeSentence.indexOf(trimmedSentence);
+		String annotation = " ".repeat(charactersTrimmedFromStart);
+		UnicodeString remainingToAnnotate = trimmedSentence;
 		while (remainingToAnnotate.length() > 0) {
-			String phrase = getLongestPhrasePrefix(remainingToAnnotate);
+			UnicodeString phrase = getLongestPhrasePrefix(remainingToAnnotate);
 			String phraseAnnotation = getPhraseAnnotation(phrase);
 			annotation += phraseAnnotation;
-			remainingToAnnotate = remainingToAnnotate.substring(phrase.length());
+			remainingToAnnotate = remainingToAnnotate.getUnicodeSubstring(phrase.length());
 			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToAnnotate);
 			int annotationOverrun = phraseAnnotation.length() - phrase.length();
 			int numberOfSpaces = Math.max(0, wordSeparatorLength - annotationOverrun);
 			annotation += " ".repeat(numberOfSpaces);
-			remainingToAnnotate = remainingToAnnotate.substring(wordSeparatorLength);
+			remainingToAnnotate = remainingToAnnotate.getUnicodeSubstring(wordSeparatorLength);
 		}
-		annotation += " ".repeat(Math.max(0, sentence.length() - annotation.length()));
+		annotation += " ".repeat(Math.max(0, unicodeSentence.length() - annotation.length()));
 		return annotation;
 	}
 	
-	private String trimOuterPunctuation(String sentence) {
+	private UnicodeString trimOuterPunctuation(UnicodeString sentence) {
 		int start = 0;
 		int end = sentence.length();
-		while (start < end && !sentence.substring(start, start + 1).matches(wordCharRegex)) {
+		while (start < end && !sentence.getCharacter(start).matches(wordCharRegex)) {
 			start++;
 		}
-		while (start < end && !sentence.substring(end - 1, end).matches(wordCharRegex)) {
+		while (start < end && !sentence.getCharacter(end - 1).matches(wordCharRegex)) {
 			end--;
 		}
-		return sentence.substring(start, end);
+		return sentence.getUnicodeSubstring(start, end);
 	}
 	
-	private String getLongestPhrasePrefix(String sentenceFragment) {
+	private UnicodeString getLongestPhrasePrefix(UnicodeString sentenceFragment) {
 		int wordLength = lengthOfFirstWordIn(sentenceFragment);
-		String phrase = sentenceFragment;
-		while (phrase.length() != wordLength && vocabManager.getStatusOfPhrase(phrase) == 0) {
+		UnicodeString phrase = sentenceFragment;
+		while (phrase.length() != wordLength && vocabManager.getStatusOfPhrase(phrase.toString()) == 0) {
 			phrase = removeLastWordFrom(phrase);
 		}
 		return phrase;
@@ -222,29 +223,40 @@ public class SentenceChooser {
 		return 5 * differenceSquared;
 	}
 	
-	private int lengthOfFirstWordIn(String phrase) {
+	private String getPhraseAnnotation(UnicodeString phrase) {
+		String status = String.valueOf(vocabManager.getStatusOfPhrase(phrase.toString()));
+		if (status.equals("0")) {
+			status = "-";
+		}
+		return status + "-".repeat(Math.max(0, phrase.length() - status.length()));
+	}
+	
+	private int indexOfFirstWordCharOrZero(UnicodeString str) {
+		for (int i = 0; i < str.length(); i++) {
+			if (str.getCharacter(i).matches(wordCharRegex)) {
+				return i;
+			}
+		}
+		return 0;
+	}
+	
+	private int lengthOfFirstWordIn(UnicodeString phrase) {
 		int index = 0;
-		while (index < phrase.length() && phrase.substring(index, index + 1).matches(wordCharRegex)) {
+		while (index < phrase.length() && phrase.getCharacter(index).matches(wordCharRegex)) {
 			index++;
 		}
 		return index;
 	}
 	
-	private String removeLastWordFrom(String phrase) {
+	private UnicodeString removeLastWordFrom(UnicodeString phrase) {
 		int index = phrase.length();
-		while (index > 0 && phrase.substring(index - 1, index).matches(wordCharRegex)) {
+		while (index > 0 && phrase.getCharacter(index - 1).matches(wordCharRegex)) {
 			index--;
 		}
-		while (index > 0 && !phrase.substring(index - 1, index).matches(wordCharRegex)) {
+		while (index > 0 && !phrase.getCharacter(index - 1).matches(wordCharRegex)) {
 			index--;
 		}
-		return phrase.substring(0, index);
-	}
-	
-	private int indexOfFirstWordCharOrZero(String str) {
-		Pattern pattern = Pattern.compile(wordCharRegex);
-		Matcher matcher = pattern.matcher(str);
-		return matcher.find() ? matcher.start() : 0;
+		return phrase.getUnicodeSubstring(0, index);
 	}
 	
 	private List<Sentence> getNativeTranslations(String sentenceLine) throws IOException {
@@ -276,13 +288,5 @@ public class SentenceChooser {
 			idsIndex++;
 		}
 		return translations;
-	}
-	
-	private String getPhraseAnnotation(String phrase) {
-		String status = String.valueOf(vocabManager.getStatusOfPhrase(phrase));
-		if (status.equals("0")) {
-			status = "-";
-		}
-		return status + "-".repeat(Math.max(0, phrase.length() - status.length()));
 	}
 }

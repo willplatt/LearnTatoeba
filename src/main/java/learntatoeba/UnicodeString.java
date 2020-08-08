@@ -7,7 +7,7 @@ public class UnicodeString {
 	private List<String> characters;
 	
 	public UnicodeString(String str) {
-		this.characters = stringToCharacters(str);
+		characters = stringToCharacters(str);
 	}
 	
 	public String getCharacter(int characterNumber) {
@@ -18,34 +18,52 @@ public class UnicodeString {
 		return characters.size();
 	}
 	
-	public void prepend(String strToPrepend) {
-		List<String> newCharacterList = stringToCharacters(strToPrepend);
-		newCharacterList.addAll(characters);
-		characters = newCharacterList;
+	public UnicodeString prepend(String strToPrepend) {
+		return new UnicodeString(strToPrepend + toString());
 	}
 	
 	public String finalCharacter() {
 		return characters.get(characters.size() - 1);
 	}
 	
-	public void removeFinalCharacter() {
-		removeCharacter(length() - 1);
+	public UnicodeString getUnicodeSubstring(int beginIndex) {
+		return getUnicodeSubstring(beginIndex, length());
 	}
 	
-	public void removeCharacter(int index) {
-		characters.remove(index);
+	public UnicodeString getUnicodeSubstring(int beginIndex, int endIndex) {
+		return new UnicodeString(getSubstring(beginIndex, endIndex));
+	}
+	
+	public String getSubstring(int beginIndex, int endIndex) {
+		return charactersToString(characters.subList(beginIndex, endIndex));
+	}
+	
+	public int indexOf(UnicodeString str) {
+		for (int i = 0; i < length(); i++) {
+			if (getCharacter(i).equals(str.getCharacter(0))) {
+				List<String> candidateSubList = characters.subList(i, i + str.length());
+				if (candidateSubList.equals(str.characters)) {
+					return i;
+				}
+			}
+		}
+		return -1;
 	}
 	
 	@Override
 	public String toString() {
+		return charactersToString(characters);
+	}
+	
+	private List<String> stringToCharacters(String str) {
+		return str.codePoints().mapToObj(Character::toString).collect(Collectors.toList());
+	}
+	
+	private String charactersToString(List<String> characters) {
 		String str = "";
 		for (String character : characters) {
 			str += character;
 		}
 		return str;
-	}
-	
-	private List<String> stringToCharacters(String str) {
-		return str.codePoints().mapToObj(Character::toString).collect(Collectors.toList());
 	}
 }
