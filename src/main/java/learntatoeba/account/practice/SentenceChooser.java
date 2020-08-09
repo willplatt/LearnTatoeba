@@ -182,16 +182,13 @@ public class SentenceChooser {
 		UnicodeString remainingToAnnotate = trimmedSentence;
 		while (remainingToAnnotate.length() > 0) {
 			UnicodeString phrase = getLongestPhrasePrefix(remainingToAnnotate);
-			String phraseAnnotation = getPhraseAnnotation(phrase);
-			annotation += phraseAnnotation;
+			annotation += getPhraseAnnotation(phrase);
 			remainingToAnnotate = remainingToAnnotate.getUnicodeSubstring(phrase.length());
 			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToAnnotate);
-			int annotationOverrun = phraseAnnotation.length() - phrase.length();
-			int numberOfSpaces = Math.max(0, wordSeparatorLength - annotationOverrun);
-			annotation += " ".repeat(numberOfSpaces);
+			annotation += " ".repeat(wordSeparatorLength);
 			remainingToAnnotate = remainingToAnnotate.getUnicodeSubstring(wordSeparatorLength);
 		}
-		annotation += " ".repeat(Math.max(0, unicodeSentence.length() - annotation.length()));
+		annotation += " ".repeat(unicodeSentence.length() - annotation.length());
 		return convertAnnotationToFullwidthWhereNecessary(annotation, unicodeSentence);
 	}
 	
@@ -228,7 +225,7 @@ public class SentenceChooser {
 	
 	private String getPhraseAnnotation(UnicodeString phrase) {
 		String status = String.valueOf(vocabManager.getStatusOfPhrase(phrase.toString()));
-		return status + "-".repeat(Math.max(0, phrase.length() - status.length()));
+		return status + "-".repeat(phrase.length() - status.length());
 	}
 	
 	private int indexOfFirstWordCharOrZero(UnicodeString str) {
@@ -278,7 +275,6 @@ public class SentenceChooser {
 				newAnnotation += annotation.charAt(i);
 			}
 		}
-		newAnnotation += annotation.substring(sentence.length());
 		return newAnnotation;
 	}
 	
