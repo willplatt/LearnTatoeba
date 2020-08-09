@@ -34,6 +34,7 @@ public class SentenceChooser {
 	private final RandomAccessFile nativeTranslationReader;
 	private final String wordCharRegex;
 	private final boolean isRightToLeft;
+	private final boolean treatFullwidthCharsAsWords;
 	private final double recurrenceProbability;
 	private final int sessionLength;
 	
@@ -50,6 +51,7 @@ public class SentenceChooser {
 		this.sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8);
 		this.wordCharRegex = "[" + unescapeJava(practiceLanguage.getWordCharRegExp()) + "]";
 		this.isRightToLeft = practiceLanguage.isRightToLeft();
+		this.treatFullwidthCharsAsWords = !practiceLanguage.getTatoebaCode().equals("kor");
 		this.recurrenceProbability = account.getRecurrenceProbability();
 		this.sessionLength = account.getSessionLength();
 	}
@@ -249,7 +251,12 @@ public class SentenceChooser {
 	private int lengthOfFirstWordIn(UnicodeString phrase) {
 		int index = 0;
 		while (index < phrase.length() && phrase.getCharacter(index).matches(wordCharRegex)) {
-			index++;
+			if (treatFullwidthCharsAsWords && phrase.getCharacter(index).matches(FULLWIDTH_CHAR_REGEX)) {
+				index++;
+				break;
+			} else {
+				index++;
+			}
 		}
 		return index;
 	}
@@ -257,7 +264,12 @@ public class SentenceChooser {
 	private UnicodeString removeLastWordFrom(UnicodeString phrase) {
 		int index = phrase.length();
 		while (index > 0 && phrase.getCharacter(index - 1).matches(wordCharRegex)) {
-			index--;
+			if (treatFullwidthCharsAsWords && phrase.getCharacter(index - 1).matches(FULLWIDTH_CHAR_REGEX)) {
+				index--;
+				break;
+			} else {
+				index--;
+			}
 		}
 		while (index > 0 && !phrase.getCharacter(index - 1).matches(wordCharRegex)) {
 			index--;
