@@ -15,7 +15,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class VocabManager {
-	private static final Set<String> VALID_STATUSES = Set.of("-", "1", "2", "3", "4", "5", "98", "99");
+	private static final Set<String> VALID_STATUSES = Set.of("0", "1", "2", "3", "4", "5", "8", "9");
+	private static final Set<String> VALID_FILE_STATUSES = Set.of("1", "2", "3", "4", "5", "98", "99");
 	
 	private final Map<String, Integer> phraseToStatusMap = new HashMap<>();
 	private final Map<String, Integer> statusUpdates = new HashMap<>();
@@ -69,7 +70,7 @@ public class VocabManager {
 				Integer updatedStatus = statusUpdates.get(phrase);
 				if (updatedStatus != null) {
 					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
-					line = line.substring(0, indexOfSecondToLastTab + 1) + updatedStatus + line.substring(indexOfLastTab);
+					line = line.substring(0, indexOfSecondToLastTab + 1) + statusToFileString(updatedStatus) + line.substring(indexOfLastTab);
 					statusUpdates.remove(phrase);
 				}
 				if (updatedStatus == null || updatedStatus != 0) {
@@ -80,7 +81,7 @@ public class VocabManager {
 				String phrase = entry.getKey();
 				int updatedStatus = entry.getValue();
 				if (updatedStatus != 0) {
-					String lineForPhrase = phrase + "\t\t\t\t" + updatedStatus + "\t" + phrase;
+					String lineForPhrase = phrase + "\t\t\t\t" + statusToFileString(updatedStatus) + "\t" + phrase;
 					backupWriter.write(lineForPhrase + "\n");
 				}
 			}
@@ -97,7 +98,7 @@ public class VocabManager {
 					String phrase = line.substring(indexOfLastTab + 1);
 					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
 					String status = line.substring(indexOfSecondToLastTab + 1, indexOfLastTab);
-					if (VALID_STATUSES.contains(status)) {
+					if (VALID_FILE_STATUSES.contains(status)) {
 						phraseToStatusMap.put(phrase, statusStringToInt(status));
 					}
 				}
@@ -115,7 +116,25 @@ public class VocabManager {
 		return true;
 	}
 	
+	private String statusToFileString(int status) {
+		switch (status) {
+			case 8:
+				return "98";
+			case 9:
+				return "99";
+			default:
+				return String.valueOf(status);
+		}
+	}
+	
 	private int statusStringToInt(String statusString) {
-		return statusString.equals("-") ? 0 : parseInt(statusString);
+		switch (statusString) {
+			case "98":
+				return 8;
+			case "99":
+				return 9;
+			default:
+				return parseInt(statusString);
+		}
 	}
 }

@@ -33,15 +33,15 @@ public class PracticeMenu extends Menu {
 				"The rest of the command is of the form \"phrase1: status1, phrase2: status2, ... phraseN: statusN\", which updates the statuses of phrases in your vocabulary. This should be blank if you do not wish to update any statuses.\n" +
 				"Note that if you want to apply a manual blacklist while updating statuses, you must separate the two parts of the command with a space like so: \"!b2 wood: 3\".\n" +
 				"\n" +
-				"A status must be a hyphen or a whole number from 1 to 5, or 98 or 99. A good way to choose statuses for your words and phrases is to treat them as having these meanings:\n" +
-				"\t-: Unseen or not wanting to learn yet\n" +
+				"A status must be a whole number from 0 to 5, or 8 or 9. A good way to choose statuses for your words and phrases is to treat them as having these meanings:\n" +
+				"\t0: Unseen or not wanting to learn yet\n" +
 				"\t1: Wanting to learn\n" +
 				"\t2: Seen multiple times and sometimes understood\n" +
 				"\t3: Known for several days and usually understood\n" +
 				"\t4: Virtually always understood across different contexts\n" +
 				"\t5: Fully and effortlessly understood\n" +
-				"\t98: Ignored (this can be used for names)\n" +
-				"\t99: Well-known (this can be used for words that are the same in your native language)\n" +
+				"\t8: Ignored (this can be used for names)\n" +
+				"\t9: Well-known (this can be used for words that are the same in your native language)\n" +
 				"So for example, \"chair: 2, coffee table: 3, stool: 1\" will record that you sometimes understand the word 'chair', you usually understand the phrase 'coffee table', and you are just starting to learn the word 'stool'.\n"
 		);
 		try {

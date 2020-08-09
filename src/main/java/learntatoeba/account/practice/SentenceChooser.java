@@ -168,12 +168,7 @@ public class SentenceChooser {
 	
 	private String getRightToLeftSentenceAnnotation(String sentence) {
 		if (Terminal.isEmulatingBidi()) {
-			String reversedLeftToRightAnnotation = new StringBuilder(getLeftToRightSentenceAnnotation(sentence)).reverse().toString();
-			return reversedLeftToRightAnnotation
-					.replace("89", "98")
-					.replace("\uFF18\uFF19", "\uFF19\uFF18")
-					.replace("\uFF189", "9\uFF18")
-					.replace("8\uFF19", "\uFF198");
+			return new StringBuilder(getLeftToRightSentenceAnnotation(sentence)).reverse().toString();
 		} else {
 			return "\u200F" + getLeftToRightSentenceAnnotation(sentence) + "\u200F";
 		}
@@ -223,7 +218,7 @@ public class SentenceChooser {
 	
 	private int getScoreForPhrase(String phrase) {
 		int status = vocabManager.getStatusOfPhrase(phrase);
-		if (status == 98 || status == 99) {
+		if (status == 8 || status == 9) {
 			status = 5;
 		}
 		int difference = Math.max(0, 4 - status);
@@ -233,9 +228,6 @@ public class SentenceChooser {
 	
 	private String getPhraseAnnotation(UnicodeString phrase) {
 		String status = String.valueOf(vocabManager.getStatusOfPhrase(phrase.toString()));
-		if (status.equals("0")) {
-			status = "-";
-		}
 		return status + "-".repeat(Math.max(0, phrase.length() - status.length()));
 	}
 	
@@ -296,6 +288,8 @@ public class SentenceChooser {
 				return '\uFF0D';
 			case ' ':
 				return '\u3000';
+			case '0':
+				return '\uFF10';
 			case '1':
 				return '\uFF11';
 			case '2':
