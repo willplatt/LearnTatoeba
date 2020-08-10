@@ -25,7 +25,7 @@ import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
 
 public class SentenceChooser {
 	private static final int MAX_SCORE_UPPER_LIMIT = 300;
-	private static final String FULLWIDTH_CHAR_REGEX = "[\u1100-\u11FF\u2E80-\u302D\u3030-\u303E\u3040-\u31FF\u3400-\uA4CF\uA500-\uA61F\uA960-\uA97F\uAC00-\uD7FF\uF900-\uFAFF\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6" + Character.toString(0x20000) + "-" + Character.toString(0x3134F) + "]";
+	private static final String FULLWIDTH_CHAR_REGEX = "[\u1100-\u11FF\u2E80-\u302D\u3030-\u303E\u3040-\u3247\u3250-\u3370\u3372-\u338E\u3391-\u339C\u339F-\u33A3\u33A6-\u33C9\u33CB-\u33FF\u3400-\uA4CF\uA500-\uA61F\uA960-\uA97F\uAC00-\uD7FF\uF900-\uFAFF\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6" + Character.toString(0x20000) + "-" + Character.toString(0x3134F) + "]";
 	
 	private final VocabManager vocabManager;
 	private final BlacklistManager blacklistManager;
