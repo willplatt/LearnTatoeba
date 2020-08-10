@@ -1,18 +1,22 @@
 package learntatoeba.account.practice;
 
-import learntatoeba.language.Language;
 import learntatoeba.account.Account;
+import learntatoeba.language.Language;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.text.Normalizer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.text.Normalizer.Form.NFKC;
 
 public class VocabManager {
 	private static final Set<String> VALID_STATUSES = Set.of("0", "1", "2", "3", "4", "5", "8", "9");
@@ -34,11 +38,12 @@ public class VocabManager {
 	}
 	
 	public int getStatusOfPhrase(String phrase) {
-		Integer updatedStatus = statusUpdates.get(phrase);
+		String normalizedPhrase = normalizePhrase(phrase);
+		Integer updatedStatus = statusUpdates.get(normalizedPhrase);
 		if (updatedStatus != null) {
 			return updatedStatus;
 		}
-		return phraseToStatusMap.getOrDefault(phrase, 0);
+		return phraseToStatusMap.getOrDefault(normalizedPhrase, 0);
 	}
 	
 	public boolean updateVocab(String updateCommand) {
@@ -49,7 +54,7 @@ public class VocabManager {
 		if (subcommandsAreValid(subcommands)) {
 			for (String subcommand : subcommands) {
 				String[] terms = subcommand.split(": ");
-				statusUpdates.put(terms[0], statusStringToInt(terms[1]));
+				statusUpdates.put(normalizePhrase(terms[0]), statusStringToInt(terms[1]));
 			}
 			return true;
 		} else {
@@ -66,7 +71,7 @@ public class VocabManager {
 			String line;
 			while ((line = vocabReader.readLine()) != null) {
 				int indexOfLastTab = line.lastIndexOf('\t');
-				String phrase = line.substring(indexOfLastTab + 1);
+				String phrase = normalizePhrase(line.substring(indexOfLastTab + 1));
 				Integer updatedStatus = statusUpdates.get(phrase);
 				if (updatedStatus != null) {
 					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
@@ -99,7 +104,7 @@ public class VocabManager {
 					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
 					String status = line.substring(indexOfSecondToLastTab + 1, indexOfLastTab);
 					if (VALID_FILE_STATUSES.contains(status)) {
-						phraseToStatusMap.put(phrase, statusStringToInt(status));
+						phraseToStatusMap.put(normalizePhrase(phrase), statusStringToInt(status));
 					}
 				}
 			}
@@ -114,6 +119,10 @@ public class VocabManager {
 			}
 		}
 		return true;
+	}
+	
+	private String normalizePhrase(String phrase) {
+		return Normalizer.normalize(phrase, NFKC);
 	}
 	
 	private String statusToFileString(int status) {
