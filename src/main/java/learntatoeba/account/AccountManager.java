@@ -152,6 +152,9 @@ public class AccountManager {
 		if (accountNames.size() > 999) {
 			Terminal.println("You already have the maximum number of accounts. You must delete one if you wish to create a new one.");
 			return false;
+		} else if (accountName.contains("\t")) {
+			Terminal.println("An account name can't include tabs.");
+			return false;
 		} else if (accountNames.contains(accountName)) {
 			Terminal.println("There is already an account with this name. Please choose another name.");
 			return false;

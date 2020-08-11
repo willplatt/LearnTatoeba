@@ -114,7 +114,7 @@ public class VocabManager {
 	private boolean subcommandsAreValid(String[] subcommands) {
 		for (String subcommand : subcommands) {
 			String[] terms = subcommand.split(": ");
-			if (terms.length != 2 || !VALID_STATUSES.contains(terms[1])) {
+			if (terms.length != 2 || !VALID_STATUSES.contains(terms[1]) || terms[0].contains("\t")) {
 				return false;
 			}
 		}
