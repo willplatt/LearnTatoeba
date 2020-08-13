@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UnicodeString {
-	private List<String> characters;
+	private final List<String> characters;
 	
 	public UnicodeString(String str) {
 		characters = stringToCharacters(str);
