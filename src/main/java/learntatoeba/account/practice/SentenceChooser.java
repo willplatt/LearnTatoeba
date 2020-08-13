@@ -2,7 +2,7 @@ package learntatoeba.account.practice;
 
 import learntatoeba.SentencesDirManager;
 import learntatoeba.Terminal;
-import learntatoeba.UnicodeString;
+import learntatoeba.StringSequence;
 import learntatoeba.account.Account;
 import learntatoeba.account.BlacklistDuration;
 import learntatoeba.language.Language;
@@ -19,6 +19,7 @@ import java.util.List;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static learntatoeba.SentencesDirManager.SUFFIX_OF_SENTENCE_FILES;
+import static learntatoeba.StringSequence.ItemType.CHARACTER;
 import static learntatoeba.account.practice.SentenceFileSearcher.getByteIndexOnLineWithId;
 import static learntatoeba.account.practice.SentenceFileSearcher.readLineAt;
 import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
@@ -155,14 +156,14 @@ public class SentenceChooser {
 	}
 	
 	private int getScoreForSentence(String sentence) {
-		UnicodeString remainingToScore = trimOuterPunctuation(new UnicodeString(sentence));
+		StringSequence remainingToScore = trimOuterPunctuation(new StringSequence(sentence, CHARACTER));
 		int score = 0;
 		while (remainingToScore.length() > 0) {
-			UnicodeString phrase = getLongestPhrasePrefix(remainingToScore);
+			StringSequence phrase = getLongestPhrasePrefix(remainingToScore);
 			score += getScoreForPhrase(phrase.toString());
-			remainingToScore = remainingToScore.getUnicodeSubstring(phrase.length());
+			remainingToScore = remainingToScore.subsequence(phrase.length());
 			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToScore);
-			remainingToScore = remainingToScore.getUnicodeSubstring(wordSeparatorLength);
+			remainingToScore = remainingToScore.subsequence(wordSeparatorLength);
 		}
 		return score;
 	}
@@ -176,38 +177,38 @@ public class SentenceChooser {
 	}
 	
 	private String getLeftToRightSentenceAnnotation(String sentence) {
-		UnicodeString unicodeSentence = new UnicodeString(sentence);
-		UnicodeString trimmedSentence = trimOuterPunctuation(unicodeSentence);
+		StringSequence unicodeSentence = new StringSequence(sentence, CHARACTER);
+		StringSequence trimmedSentence = trimOuterPunctuation(unicodeSentence);
 		int charactersTrimmedFromStart = unicodeSentence.indexOf(trimmedSentence);
 		String annotation = " ".repeat(charactersTrimmedFromStart);
-		UnicodeString remainingToAnnotate = trimmedSentence;
+		StringSequence remainingToAnnotate = trimmedSentence;
 		while (remainingToAnnotate.length() > 0) {
-			UnicodeString phrase = getLongestPhrasePrefix(remainingToAnnotate);
+			StringSequence phrase = getLongestPhrasePrefix(remainingToAnnotate);
 			annotation += getPhraseAnnotation(phrase);
-			remainingToAnnotate = remainingToAnnotate.getUnicodeSubstring(phrase.length());
+			remainingToAnnotate = remainingToAnnotate.subsequence(phrase.length());
 			int wordSeparatorLength = indexOfFirstWordCharOrZero(remainingToAnnotate);
 			annotation += " ".repeat(wordSeparatorLength);
-			remainingToAnnotate = remainingToAnnotate.getUnicodeSubstring(wordSeparatorLength);
+			remainingToAnnotate = remainingToAnnotate.subsequence(wordSeparatorLength);
 		}
 		annotation += " ".repeat(unicodeSentence.length() - annotation.length());
 		return fixAnnotationWidth(annotation, unicodeSentence);
 	}
 	
-	private UnicodeString trimOuterPunctuation(UnicodeString sentence) {
+	private StringSequence trimOuterPunctuation(StringSequence sentence) {
 		int start = 0;
 		int end = sentence.length();
-		while (start < end && !sentence.getCharacter(start).matches(wordCharRegex)) {
+		while (start < end && !sentence.item(start).matches(wordCharRegex)) {
 			start++;
 		}
-		while (start < end && !sentence.getCharacter(end - 1).matches(wordCharRegex)) {
+		while (start < end && !sentence.item(end - 1).matches(wordCharRegex)) {
 			end--;
 		}
-		return sentence.getUnicodeSubstring(start, end);
+		return sentence.subsequence(start, end);
 	}
 	
-	private UnicodeString getLongestPhrasePrefix(UnicodeString sentenceFragment) {
+	private StringSequence getLongestPhrasePrefix(StringSequence sentenceFragment) {
 		int wordLength = lengthOfFirstWordIn(sentenceFragment);
-		UnicodeString phrase = sentenceFragment;
+		StringSequence phrase = sentenceFragment;
 		while (phrase.length() != wordLength && vocabManager.getStatusOfPhrase(phrase.toString()) == 0) {
 			phrase = removeLastWordFrom(phrase);
 		}
@@ -224,24 +225,24 @@ public class SentenceChooser {
 		return 5 * differenceSquared;
 	}
 	
-	private String getPhraseAnnotation(UnicodeString phrase) {
+	private String getPhraseAnnotation(StringSequence phrase) {
 		String status = String.valueOf(vocabManager.getStatusOfPhrase(phrase.toString()));
 		return status + "-".repeat(phrase.length() - status.length());
 	}
 	
-	private int indexOfFirstWordCharOrZero(UnicodeString str) {
+	private int indexOfFirstWordCharOrZero(StringSequence str) {
 		for (int i = 0; i < str.length(); i++) {
-			if (str.getCharacter(i).matches(wordCharRegex)) {
+			if (str.item(i).matches(wordCharRegex)) {
 				return i;
 			}
 		}
 		return 0;
 	}
 	
-	private int lengthOfFirstWordIn(UnicodeString phrase) {
+	private int lengthOfFirstWordIn(StringSequence phrase) {
 		int index = 0;
-		while (index < phrase.length() && phrase.getCharacter(index).matches(wordCharRegex)) {
-			if (treatFullwidthCharsAsWords && phrase.getCharacter(index).matches(FULLWIDTH_CHAR_REGEX)) {
+		while (index < phrase.length() && phrase.item(index).matches(wordCharRegex)) {
+			if (treatFullwidthCharsAsWords && phrase.item(index).matches(FULLWIDTH_CHAR_REGEX)) {
 				index++;
 				break;
 			} else {
@@ -251,26 +252,26 @@ public class SentenceChooser {
 		return index;
 	}
 	
-	private UnicodeString removeLastWordFrom(UnicodeString phrase) {
+	private StringSequence removeLastWordFrom(StringSequence phrase) {
 		int index = phrase.length();
-		while (index > 0 && phrase.getCharacter(index - 1).matches(wordCharRegex)) {
-			if (treatFullwidthCharsAsWords && phrase.getCharacter(index - 1).matches(FULLWIDTH_CHAR_REGEX)) {
+		while (index > 0 && phrase.item(index - 1).matches(wordCharRegex)) {
+			if (treatFullwidthCharsAsWords && phrase.item(index - 1).matches(FULLWIDTH_CHAR_REGEX)) {
 				index--;
 				break;
 			} else {
 				index--;
 			}
 		}
-		while (index > 0 && !phrase.getCharacter(index - 1).matches(wordCharRegex)) {
+		while (index > 0 && !phrase.item(index - 1).matches(wordCharRegex)) {
 			index--;
 		}
-		return phrase.getUnicodeSubstring(0, index);
+		return phrase.subsequence(0, index);
 	}
 	
-	private String fixAnnotationWidth(String annotation, UnicodeString sentence) {
+	private String fixAnnotationWidth(String annotation, StringSequence sentence) {
 		String newAnnotation = "";
 		for (int i = 0; i < sentence.length(); i++) {
-			String sentenceCharacter = sentence.getCharacter(i);
+			String sentenceCharacter = sentence.item(i);
 			char annotationChar = annotation.charAt(i);
 			if (sentenceCharacter.matches("\\p{Zs}")) {
 				newAnnotation += sentenceCharacter;
