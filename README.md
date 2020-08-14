@@ -15,8 +15,8 @@ This should help you infer the meanings of new words, and then you can look at t
 
 LT uses a status from 1 to 5 to keep track of how well you know a word.
 When you come across a new word, you can add it to your vocabulary with a status of 1.
-If you come across that word after several minutes and remember its meaning, bump the status up to 2.
-If you see it again the next day and still remember the meaning, why not increase it to 3?
+If you come across that word again after several minutes and remember its meaning, bump the status up to 2.
+If you see it several times the next day and still remember the meaning, why not increase it to 3?
 Updating the status not only helps you see your progress, but it also helps LT choose the right sentences for where you’re at.
 
 **Extra features:**
@@ -62,10 +62,12 @@ If you’re still having difficulty, use a terminal with better multilingual sup
 
 For the best experience, use a terminal supporting bi-directional text, such as [mlterm](https://sourceforge.net/projects/mlterm/).
 
-If your terminal doesn’t support bi-directional text, you can still fix the sentence printing by run the `.jar` file with the `bidi` argument:
+If your terminal doesn’t support bi-directional text, you can still fix the sentence printing by running the `.jar` file with the `bidi` argument:
 ```
 java -jar LearnTatoeba.jar bidi
 ```
+
+However, if your terminal doesn’t support bi-directional text you’ll still have to put up with your input displaying backwards—but don’t worry, it will still be processed correctly.
 
 If a right-to-left language is still displaying left-to-right then see [the first known issue](#known-issues) below.
 
