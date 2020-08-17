@@ -9,9 +9,9 @@ import learntatoeba.Terminal;
 import java.io.IOException;
 
 public class AddPracticeLanguageMenu extends Menu {
-	private Account account;
-	private Language newPracticeLanguage;
-	private Menu nextMenu;
+	private final Account account;
+	private final Language newPracticeLanguage;
+	private final Menu nextMenu;
 	
 	public AddPracticeLanguageMenu(Account account, Language newPracticeLanguage, Menu nextMenu) {
 		this.account = account;

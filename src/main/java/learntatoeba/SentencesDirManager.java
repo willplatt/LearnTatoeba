@@ -16,7 +16,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SentencesDirManager {
 	public static final File SENTENCES_DIR = new File(INSTALL_DIR, "sentences");
-	public static final File LINKS_FILE = new File(SENTENCES_DIR, "links.csv");
+	private static final File LINKS_FILE = new File(SENTENCES_DIR, "links.csv");
 	public static final String SUFFIX_OF_SENTENCE_FILES = "_sentences_detailed.tsv";
 	
 	public static boolean hasFileForLanguage(Language language) {
@@ -24,7 +24,7 @@ public class SentencesDirManager {
 		return sentencesFile.exists();
 	}
 	
-	public static void downloadSentenceLinks() throws IOException {
+	private static void downloadSentenceLinks() throws IOException {
 		boolean dirNowExists = DirCreator.createDirIfNecessary(SENTENCES_DIR);
 		if (!dirNowExists) {
 			throw new IOException("Directory \"" + SENTENCES_DIR + "\" could not be found or created.");

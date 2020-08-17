@@ -7,7 +7,7 @@ import learntatoeba.Menu;
 import learntatoeba.Terminal;
 
 public class NameNewAccountMenu extends Menu {
-	private Menu previousMenu;
+	private final Menu previousMenu;
 	
 	public NameNewAccountMenu(Menu previousMenu) {
 		this.previousMenu = previousMenu;

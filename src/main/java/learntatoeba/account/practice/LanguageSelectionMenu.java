@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 import static learntatoeba.account.AccountManager.getLanguagesForAccount;
 
 public class LanguageSelectionMenu extends Menu {
-	private Account account;
-	private Menu previousMenu;
+	private final Account account;
+	private final Menu previousMenu;
 	
 	public LanguageSelectionMenu(Account account, Menu previousMenu) {
 		this.account = account;
