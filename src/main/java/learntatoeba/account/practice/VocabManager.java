@@ -122,7 +122,7 @@ public class VocabManager {
 	}
 	
 	private String normalizePhrase(String phrase) {
-		return Normalizer.normalize(phrase, NFKC);
+		return Normalizer.normalize(phrase.toLowerCase(), NFKC);
 	}
 	
 	private String statusToFileString(int status) {
