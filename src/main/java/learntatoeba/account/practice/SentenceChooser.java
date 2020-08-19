@@ -1,8 +1,8 @@
 package learntatoeba.account.practice;
 
 import learntatoeba.SentencesDirManager;
-import learntatoeba.Terminal;
 import learntatoeba.StringSequence;
+import learntatoeba.Terminal;
 import learntatoeba.account.Account;
 import learntatoeba.account.BlacklistDuration;
 import learntatoeba.language.Language;
@@ -22,7 +22,6 @@ import static learntatoeba.SentencesDirManager.SUFFIX_OF_SENTENCE_FILES;
 import static learntatoeba.StringSequence.ItemType.CHARACTER;
 import static learntatoeba.account.practice.SentenceFileSearcher.getByteIndexOnLineWithId;
 import static learntatoeba.account.practice.SentenceFileSearcher.readLineAt;
-import static org.apache.commons.text.StringEscapeUtils.unescapeJava;
 
 public class SentenceChooser {
 	private static final int MAX_SCORE_UPPER_LIMIT = 300;
@@ -51,7 +50,7 @@ public class SentenceChooser {
 		this.nativeTranslationReader = new RandomAccessFile(translationsFile, "r");
 		this.sentencesFile =  new File(SentencesDirManager.SENTENCES_DIR, practiceLanguage.getTatoebaCode() + SUFFIX_OF_SENTENCE_FILES);
 		this.sentencesReader = Files.newBufferedReader(sentencesFile.toPath(), UTF_8);
-		this.wordCharRegex = "[" + unescapeJava(practiceLanguage.getWordCharRegExp()) + "]";
+		this.wordCharRegex = "[" + practiceLanguage.getWordCharRegExp() + "]";
 		this.isRightToLeft = practiceLanguage.isRightToLeft();
 		this.treatFullwidthCharsAsWords = !practiceLanguage.getTatoebaCode().equals("kor");
 		this.recurrenceProbability = account.getRecurrenceProbability();
