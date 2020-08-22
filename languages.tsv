@@ -1,59 +1,62 @@
-Abkhaz	abk	ab		
-Adyghe	ady			
-Afrihili	afh			
+Abkhaz	abk	ab	\p{IsCyrillic}	
+Adyghe	ady		\p{IsCyrillic}	
+Afrihili	afh		\-'a-zA-ZɛƐɔƆ	
 Afrikaans	afr	af		
-Ainu	ain			
+Ainu	ain		\u4E00-\u9FFF\uF900-\uFAFF\u3040-\u30FF\u31F0-\u31FF	
 Aklanon	akl			
 Albanian	sqi	sq		
-Algerian Arabic	arq	ar	\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
-Amharic	amh	am		
-Ancient Greek	grc			
-Arabic	ara	ar	\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Algerian Arabic	arq	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Amharic	amh	am	\u1200-\u135F\u1380-\u139F\u2D80-\u2DDF\uAB00-\uAB2F	
+Ancient Greek	grc		\p{IsGreek}	
+Ancient Hebrew	hbo	he	'\u0590-\u05FF	rtl
+Arabic	ara	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Aragonese	arg	an		
-Armenian	hye	hy		
-Assamese	asm	as		
-Assyrian Neo-Aramaic	aii			rtl
+Armenian	hye	hy	\p{IsArmenian}	
+Assamese	asm	as	\p{IsBengali}	
+Assyrian Neo-Aramaic	aii		\p{IsSyriac}\p{IsZinh}	rtl
 Asturian	ast			
-Awadhi	awa			
+Awadhi	awa		\p{IsDevanagari}\{IsKaithi}	
 Aymara	aym	ay		
-Azerbaijani	aze	az		
-Balinese	ban			
-Bambara	bam	bm		
+Azerbaijani	aze	az	\p{IsLatin}	
+Balinese	ban		\p{IsLatin}\p{IsBalinese}	
+Baluchi	bal	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Bambara	bam	bm	\p{IsLatin}	
 Banjar	bjn	ms		
-Bashkir	bak	ba		
+Bashkir	bak	ba	\p{IsCyrillic}	
 Basque	eus	eu		
 Bavarian	bar			
 Baybayanon	bvy			
-Belarusian	bel	be		
-Bengali	ben	bn		
-Berber	ber			
-Bhojpuri	bho			
+Belarusian	bel	be	\p{IsCyrillic}	
+Bengali	ben	bn	\p{IsBengali}	
+Berber	ber		\p{IsLatin}	
+Bhojpuri	bho		\p{IsDevanagari}	
 Bislama	bis	bi		
-Bodo	brx			
+Bodo	brx		\p{IsLatin}\p{IsDevanagari}	
 Bosnian	bos	bs		
 Breton	bre	br		
 Brithenig	bzt			
-Bulgarian	bul	bg		
-Burmese	mya	my		
-Buryat	bua			
+Bulgarian	bul	bg	\p{IsCyrillic}	
+Burmese	mya	my	\u1000-\u103F\u104C-\u108F\u109A-\u109D\uA9E0-\uAA7F	
+Buryat	bua		\p{IsCyrillic}	
 Cantonese	yue	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
 Catalan	cat	ca		
-Cayuga	cay			
+Cayuga	cay		\u0301\u0328':;ʔadeg-knor-uwyzęǫáéíóúADEG-KNOR-UWYZĘǪÁÉÍÓÚ	
 Cebuano	ceb			
 Central Bikol	bcl			
 Central Dusun	dtp			
 Central Huasteca Nahuatl	nch			
-Central Mnong	cmo			
-Chagatai	chg			
+Central Mnong	cmo		\u1780-\u17D3\u17D7-\u17DD	
+Chagatai	chg		\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF\p{IsLatin}	
 Chamorro	cha	ch		
 Chavacano	cbk			
-Chechen	che	ce		
-Cherokee	chr			
+Chechen	che	ce	\p{IsCyrillic}	
+Cherokee	chr		\p{IsCherokee}	
 Chinese Pidgin English	cpi			
+Chinook Jargon	chn			
 Chinyanja	nya	ny		
-Choctaw	cho			
-Chukchi	ckt			
-Chuvash	chv	cv		
+Choctaw	cho		\u0301\u0304\u030C\u0328\u0331ⁿ∅'a-cefhik-ps-uwyʋáąíīįóōǫłčšA-CEFHIK-PS-UWYƲÁĄÍĪĮÓŌǪŁČŠ	
+Chukchi	ckt		\p{IsCyrillic}	
+Chuvash	chv	cv	\p{IsCyrillic}	
 Coastal Kadazan	kzj			
 Cornish	cor	kw		
 Corsican	cos	co		
@@ -63,11 +66,12 @@ Cuyonon	cyo
 CycL	cycl			
 Czech	ces	cs		
 Danish	dan	da		
-Dhivehi	div	dv		
-Dungan	dng	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
+Dhivehi	div	dv	\p{IsThaana}	rtl
+Drents	drt			
+Dungan	dng	zh		
 Dutch	nld	nl		
-Dutton World Speedwords	dws			
-Egyptian Arabic	arz	ar	\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Dutton World Speedwords	dws		\-&a-zA-Z	
+Egyptian Arabic	arz	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Emilian	egl			
 English	eng	en		
 Erromintxela	emx			
@@ -101,7 +105,7 @@ Guadeloupean Creole French	gcf
 Guarani	grn	gn		
 Guerrero Nahuatl	ngu			
 Gujarati	guj	gu		
-Gulf Arabic	afb	ar	\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Gulf Arabic	afb	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Haitian Creole	hat	ht		
 Hakka Chinese	hak	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
 Hausa	hau	ha		
@@ -125,7 +129,7 @@ Ingrian	izh
 Interlingua	ina	ia		
 Interlingue	ile	ie		
 Inuktitut	ike	iu		
-Iraqi Arabic	acm	ar	\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Iraqi Arabic	acm	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Irish	gle	ga		
 Isan	tts			
 Italian	ita	it		
@@ -216,7 +220,7 @@ Moksha	mdf
 Mon	mnw			
 Mongolian	mon	mn		
 Morisyen	mfe			
-Moroccan Arabic	ary	ar	\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Moroccan Arabic	ary	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Naga (Tangshang)	nst			
 Nahuatl	nah			
 Nauruan	nau	na		
@@ -228,7 +232,7 @@ Nigerian Fulfulde	fuv	ff
 Niuean	niu			
 Nogai	nog			
 North Frisian	frr			
-North Levantine Arabic	apc	ar	\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+North Levantine Arabic	apc	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 North Moluccan Malay	max			
 Northern Sami	sme	se		
 Norwegian Bokmål	nob	nb		

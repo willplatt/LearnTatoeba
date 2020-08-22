@@ -52,6 +52,8 @@ public class LanguageManager {
 				return "Amharic";
 			case "ancient greek":
 				return "Ancient Greek";
+			case "ancient hebrew":
+				return "Ancient Hebrew";
 			case "arabic":
 				return "Arabic";
 			case "aragonese":
@@ -74,6 +76,8 @@ public class LanguageManager {
 				return "Azerbaijani";
 			case "balinese":
 				return "Balinese";
+			case "baluchi":
+				return "Baluchi";
 			case "bambara":
 				return "Bambara";
 			case "banjar":
@@ -141,6 +145,9 @@ public class LanguageManager {
 				return "Cherokee";
 			case "chinese pidgin english":
 				return "Chinese Pidgin English";
+			case "chinook jargon":
+			case "chinook":
+				return "Chinook Jargon";
 			case "chinyanja":
 			case "chichewa":
 			case "chewa":
@@ -175,6 +182,12 @@ public class LanguageManager {
 			case "divehi":
 			case "maldivian":
 				return "Dhivehi";
+			case "drents":
+			case "drèents":
+			case "dreins":
+			case "dreints":
+			case "drints":
+				return "drents";
 			case "dungan":
 				return "Dungan";
 			case "dutch":
