@@ -5,11 +5,11 @@ Afrikaans	afr	af
 Ainu	ain		\u4E00-\u9FFF\uF900-\uFAFF\u3040-\u30FF\u31F0-\u31FF	
 Aklanon	akl			
 Albanian	sqi	sq		
-Algerian Arabic	arq	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Algerian Arabic	arq	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Amharic	amh	am	\u1200-\u135F\u1380-\u139F\u2D80-\u2DDF\uAB00-\uAB2F	
 Ancient Greek	grc		\p{IsGreek}	
 Ancient Hebrew	hbo	he	'\u0590-\u05FF	rtl
-Arabic	ara	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Arabic	ara	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Aragonese	arg	an		
 Armenian	hye	hy	\p{IsArmenian}	
 Assamese	asm	as	\p{IsBengali}	
@@ -19,7 +19,7 @@ Awadhi	awa		\p{IsDevanagari}\{IsKaithi}
 Aymara	aym	ay		
 Azerbaijani	aze	az	\p{IsLatin}	
 Balinese	ban		\p{IsLatin}\p{IsBalinese}	
-Baluchi	bal	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Baluchi	bal	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Bambara	bam	bm	\p{IsLatin}	
 Banjar	bjn	ms		
 Bashkir	bak	ba	\p{IsCyrillic}	
@@ -46,7 +46,7 @@ Central Bikol	bcl
 Central Dusun	dtp			
 Central Huasteca Nahuatl	nch			
 Central Mnong	cmo		\u1780-\u17D3\u17D7-\u17DD	
-Chagatai	chg		\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF\p{IsLatin}	
+Chagatai	chg		\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF\p{IsLatin}	rtl
 Chamorro	cha	ch		
 Chavacano	cbk			
 Chechen	che	ce	\p{IsCyrillic}	
@@ -71,44 +71,44 @@ Drents	drt
 Dungan	dng	zh		
 Dutch	nld	nl		
 Dutton World Speedwords	dws		\-&a-zA-Z	
-Egyptian Arabic	arz	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Egyptian Arabic	arz	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Emilian	egl			
 English	eng	en		
 Erromintxela	emx			
-Erzya	myv			
+Erzya	myv		\p{IsCyrillic}	
 Esperanto	epo	eo		
 Estonian	est	et		
-Evenki	evn			
-Ewe	ewe	ee		
+Evenki	evn		\p{IsCyrillic}	
+Ewe	ewe	ee	\p{IsLatin}	
 Extremaduran	ext			
 Faroese	fao	fo		
-Fiji Hindi	hif			
+Fiji Hindi	hif		\p{IsDevanagari}\p{isKaithi}\p{IsLatin}	
 Fijian	fij	fj		
 Finnish	fin	fi		
 French	fra	fr		
 Frisian	fry	fy		
 Friulian	fur			
-Ga	gaa			
+Ga	gaa		\p{isLatin}	
 Gagauz	gag			
 Galician	glg	gl		
 Gan Chinese	gan	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
-Garhwali	gbm			
-Georgian	kat	ka		
+Garhwali	gbm		\p{IsDevanagari}	
+Georgian	kat	ka	\p{IsGeorgian}	
 German	deu	de		
 Gheg Albanian	aln	sq		
 Gilbertese	gil			
-Gothic	got			
-Greek	ell	el		
+Gothic	got		\uD800\uDF30-\uD800\uDF40\uD800\uDF42-\uD800\uDF49	
+Greek	ell	el	\p{IsGreek}	
 Greenlandic	kal	kl		
 Gronings	gos			
 Guadeloupean Creole French	gcf			
 Guarani	grn	gn		
 Guerrero Nahuatl	ngu			
-Gujarati	guj	gu		
-Gulf Arabic	afb	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Gujarati	guj	gu	\p{IsGujarati}	
+Gulf Arabic	afb	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Haitian Creole	hat	ht		
 Hakka Chinese	hak	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
-Hausa	hau	ha		
+Hausa	hau	ha	\p{IsLatin}	
 Hawaiian	haw			
 Hebrew	heb	he	'\u0590-\u05FF	rtl
 Hiligaynon	hil			
@@ -129,7 +129,7 @@ Ingrian	izh
 Interlingua	ina	ia		
 Interlingue	ile	ie		
 Inuktitut	ike	iu		
-Iraqi Arabic	acm	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Iraqi Arabic	acm	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Irish	gle	ga		
 Isan	tts			
 Italian	ita	it		
@@ -220,7 +220,7 @@ Moksha	mdf
 Mon	mnw			
 Mongolian	mon	mn		
 Morisyen	mfe			
-Moroccan Arabic	ary	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+Moroccan Arabic	ary	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Naga (Tangshang)	nst			
 Nahuatl	nah			
 Nauruan	nau	na		
@@ -232,7 +232,7 @@ Nigerian Fulfulde	fuv	ff
 Niuean	niu			
 Nogai	nog			
 North Frisian	frr			
-North Levantine Arabic	apc	ar	\u0600-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+North Levantine Arabic	apc	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 North Moluccan Malay	max			
 Northern Sami	sme	se		
 Norwegian Bokmål	nob	nb		
@@ -327,7 +327,7 @@ Tatar	tat	tt
 Telugu	tel	te		
 Temuan	tmw	ms		
 Tetun	tet			
-Thai	tha	th		
+Thai	tha	th	\p{IsThai}	
 Tibetan	bod	bo		
 Tigre	tig			
 Tigrinya	tir	ti		
