@@ -8,7 +8,7 @@ Albanian	sqi	sq
 Algerian Arabic	arq	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Amharic	amh	am	\u1200-\u135F\u1380-\u139F\u2D80-\u2DDF\uAB00-\uAB2F	
 Ancient Greek	grc		\p{IsGreek}	
-Ancient Hebrew	hbo	he	'\u0590-\u05FF	rtl
+Ancient Hebrew	hbo	iw	'\u0590-\u05FF	rtl
 Arabic	ara	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Aragonese	arg	an		
 Armenian	hye	hy	\p{IsArmenian}	
@@ -109,11 +109,11 @@ Gulf Arabic	afb	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u
 Haitian Creole	hat	ht		
 Hakka Chinese	hak	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
 Hausa	hau	ha	\p{IsLatin}	
-Hawaiian	haw			
-Hebrew	heb	he	'\u0590-\u05FF	rtl
+Hawaiian	haw		\u02BB\p{IsLatin}	
+Hebrew	heb	iw	'\u0590-\u05FF	rtl
 Hiligaynon	hil			
-Hill Mari	mrj			
-Hindi	hin	hi		
+Hill Mari	mrj		\-\p{IsCyrillic}	
+Hindi	hin	hi	\p{IsDevanagari}	
 Hmong Daw (White)	mww			
 Hmong Njua (Green)	hnj			
 Ho	hoc			
@@ -131,45 +131,46 @@ Interlingue	ile	ie
 Inuktitut	ike	iu		
 Iraqi Arabic	acm	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Irish	gle	ga		
-Isan	tts			
+Isan	tts		\p{IsThai}	
 Italian	ita	it		
 Jamaican Patois	jam			
 Japanese	jpn	ja	\u4E00-\u9FFF\uF900-\uFAFF\u3040-\u30FF\u31F0-\u31FF	
-Javanese	jav	jv		
-Jewish Babylonian Aramaic	tmr			rtl
-Jewish Palestinian Aramaic	jpa			rtl
+Javanese	jav	jv	\uA980-\uA9C0\p{IsLatin}	
+Jewish Babylonian Aramaic	tmr	iw	\u0590-\u05FF	rtl
+Jewish Palestinian Aramaic	jpa	iw	\u0590-\u05FF	rtl
 Jin Chinese	cjy	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
-Juhuri (Judeo-Tat)	jdt			
-K'iche'	quc			
-Kabyle	kab			
-Kalmyk	xal			
+Juhuri (Judeo-Tat)	jdt		\p{IsCyrillic}	
+K'iche'	quc		\u2019\p{IsLatin}	
+Kabyle	kab		\-\p{IsLatin}	
+Kalmyk	xal		\-\p{IsCyrillic}	
 Kamba	kam			
-Kannada	kan	kn		
+Kannada	kan	kn	\u0C80-\u0C83\u0C85-\u0CE3\u0CF1\u0CF2	
 Kapampangan	pam			
-Karachay-Balkar	krc			
-Karakalpak	kaa			
+Karachay-Balkar	krc	tr	\-\p{IsCyrillic}	
+Karakalpak	kaa	tr	'\p{IsLatin}\p{IsCyrillic}	
+Karakhanid	xqa	tr	\p{IsLatin}\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Karelian	krl			
-Kashmiri	kas	ks		
+Kashmiri	kas	ks	\p{IsLatin}\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Kashubian	csb			
-Kazakh	kaz	kk		
+Kazakh	kaz	kk	\-\p{IsCyrillic}	
 Kekchi (Q'eqchi')	kek			
 Keningau Murut	kxi			
-Khakas	kjh			
+Khakas	kjh		\-\p{IsCyrillic}	
 Khasi	kha			
-Khmer	khm	km		
+Khmer	khm	km	\-\p{IsLatin}\u1780-\u17D3\u17D7-\u17DD	
 Kinyarwanda	kin	rw		
 Kirundi	run	rn		
 Klingon	tlh			
-Kölsch	ksh			
-Komi-Permyak	koi	kv		
-Komi-Zyrian	kpv	kv		
-Konkani (Goan)	gom			
+Kölsch	ksh		\p{isLatin}	
+Komi-Permyak	koi	kv	\-\p{IsCyrillic}	
+Komi-Zyrian	kpv	kv	\p{IsCyrillic}	
+Konkani (Goan)	gom		\p{IsDevanagari}	
 Korean	kor	ko	\u4E00-\u9FFF\uF900-\uFAFF\u1100-\u11FF\u3130-\u318F\uAC00-\uD7A0	
 Kotava	avk			
-Kumyk	kum			
+Kumyk	kum		\-\p{IsCyrillic}	
 Kurdish	kur	ku		
-Kven Finnish	fkv			
-Kyrgyz	kir	ky		
+Kven Finnish	fkv	fi		
+Kyrgyz	kir	ky	\p{IsCyrillic}	
 Láadan	ldn			
 Ladin	lld			
 Ladino	lad			

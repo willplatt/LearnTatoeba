@@ -367,6 +367,9 @@ public class LanguageManager {
 				return "Karachay-Balkar";
 			case "karakalpak":
 				return "Karakalpak";
+			case "karakhanid":
+			case "khaqani turkic":
+				return "Karakhanid";
 			case "karelian":
 				return "Karelian";
 			case "kashmiri":
