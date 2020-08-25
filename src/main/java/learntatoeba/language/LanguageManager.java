@@ -62,10 +62,10 @@ public class LanguageManager {
 				return "Armenian";
 			case "assamese":
 				return "Assamese";
-			case "assyrian neo\u002daramaic":
+			case "assyrian neo-aramaic":
 			case "assyrian aramaic":
 			case "assyrian":
-				return "Assyrian Neo\u002dAramaic";
+				return "Assyrian Neo-Aramaic";
 			case "asturian":
 				return "Asturian";
 			case "awadhi":
@@ -287,15 +287,15 @@ public class LanguageManager {
 				return "Hill Mari";
 			case "hindi":
 				return "Hindi";
-			case "hmong daw \u0028white\u0029":
+			case "hmong daw (white)":
 			case "hmong daw":
 			case "white hmong":
-				return "Hmong Daw \u0028White\u0029";
-			case "hmong njua \u0028green\u0029":
+				return "Hmong Daw (White)";
+			case "hmong njua (green)":
 			case "hmong njua":
 			case "green hmong":
 			case "blue hmong":
-				return "Hmong Njua \u0028Green\u0029";
+				return "Hmong Njua (Green)";
 			case "ho":
 				return "Ho";
 			case "hungarian":
@@ -344,15 +344,15 @@ public class LanguageManager {
 				return "Jewish Palestinian Aramaic";
 			case "jin chinese":
 				return "Jin Chinese";
-			case "juhuri \u0028judeo\u002dtat\u0029":
+			case "juhuri (judeo-tat)":
 			case "juhuri":
 			case "judeo-tat":
-				return "Juhuri \u0028Judeo\u002dTat\u0029";
-			case "k\u0027iche\u0027":
+				return "Juhuri (Judeo-Tat)";
+			case "k'iche'":
 			case "qatzijob'al":
 			case "quiché":
 			case "quiche":
-				return "K\u0027iche\u0027";
+				return "K'iche'";
 			case "kabyle":
 				return "Kabyle";
 			case "kalmyk":
@@ -363,8 +363,8 @@ public class LanguageManager {
 				return "Kannada";
 			case "kapampangan":
 				return "Kapampangan";
-			case "karachay\u002dbalkar":
-				return "Karachay\u002dBalkar";
+			case "karachay-balkar":
+				return "Karachay-Balkar";
 			case "karakalpak":
 				return "Karakalpak";
 			case "karelian":
@@ -375,10 +375,11 @@ public class LanguageManager {
 				return "Kashubian";
 			case "kazakh":
 				return "Kazakh";
-			case "kekchi \u0028q\u0027eqchi\u0027\u0029":
+			case "kekchi (q'eqchi')":
 			case "kekchi":
+			case "k'ekchi'":
 			case "q'eqchi'":
-				return "Kekchi \u0028Q\u0027eqchi\u0027\u0029";
+				return "Kekchi (Q'eqchi')";
 			case "keningau murut":
 			case "central murut":
 				return "Keningau Murut";
@@ -399,14 +400,14 @@ public class LanguageManager {
 			case "koelsch":
 			case "colognian":
 				return "K\u00f6lsch";
-			case "komi\u002dpermyak":
-				return "Komi\u002dPermyak";
-			case "komi\u002dzyrian":
-				return "Komi\u002dZyrian";
-			case "konkani \u0028goan\u0029":
+			case "komi-permyak":
+				return "Komi-Permyak";
+			case "komi-zyrian":
+				return "Komi-Zyrian";
+			case "konkani (goan)":
 			case "konkani":
 			case "goan konkani":
-				return "Konkani \u0028Goan\u0029";
+				return "Konkani (Goan)";
 			case "korean":
 				return "Korean";
 			case "kotava":
@@ -457,10 +458,10 @@ public class LanguageManager {
 				return "Lombard";
 			case "louisiana creole":
 				return "Louisiana Creole";
-			case "low german \u0028low saxon\u0029":
+			case "low german (low saxon)":
 			case "low german":
 			case "low saxon":
-				return "Low German \u0028Low Saxon\u0029";
+				return "Low German (Low Saxon)";
 			case "lower sorbian":
 				return "Lower Sorbian";
 			case "luganda":
@@ -477,10 +478,10 @@ public class LanguageManager {
 				return "Malagasy";
 			case "malay":
 				return "Malay";
-			case "malay \u0028vernacular\u0029":
+			case "malay (vernacular)":
 			case "vernacular malay":
 			case "malay vernacular":
-				return "Malay \u0028Vernacular\u0029";
+				return "Malay (Vernacular)";
 			case "malayalam":
 				return "Malayalam";
 			case "maltese":
@@ -503,13 +504,13 @@ public class LanguageManager {
 			case "meadow mari":
 			case "eastern mari":
 				return "Meadow Mari";
-			case "mi\u0027kmaq":
+			case "mi'kmaq":
 			case "miꞌgmaq":
 			case "micmac":
 			case "lnu":
 			case "miꞌkmaw":
 			case "miꞌgmaw":
-				return "Mi\u0027kmaq";
+				return "Mi'kmaq";
 			case "middle english":
 				return "Middle English";
 			case "middle french":
@@ -534,11 +535,11 @@ public class LanguageManager {
 				return "Morisyen";
 			case "moroccan arabic":
 				return "Moroccan Arabic";
-			case "naga \u0028tangshang\u0029":
+			case "naga (tangshang)":
 			case "tangsa":
 			case "tangsa naga":
 			case "tangshang naga":
-				return "Naga \u0028Tangshang\u0029";
+				return "Naga (Tangshang)";
 			case "nahuatl":
 				return "Nahuatl";
 			case "nauruan":
@@ -578,10 +579,10 @@ public class LanguageManager {
 				return "Nyungar";
 			case "occitan":
 				return "Occitan";
-			case "odia \u0028oriya\u0029":
+			case "odia (oriya)":
 			case "odia":
 			case "oriya":
-				return "Odia \u0028Oriya\u0029";
+				return "Odia (Oriya)";
 			case "ojibwe":
 				return "Ojibwe";
 			case "okinawan":
@@ -642,14 +643,14 @@ public class LanguageManager {
 				return "Portuguese";
 			case "pulaar":
 				return "Pulaar";
-			case "punjabi \u0028eastern\u0029":
+			case "punjabi (eastern)":
 			case "punjabi eastern":
 			case "eastern punjabi":
-				return "Punjabi \u0028Eastern\u0029";
-			case "punjabi \u0028western\u0029":
+				return "Punjabi (Eastern)";
+			case "punjabi (western)":
 			case "punjabi western":
 			case "western punjabi":
-				return "Punjabi \u0028Western\u0029";
+				return "Punjabi (Western)";
 			case "quechua":
 				return "Quechua";
 			case "quenya":
@@ -781,10 +782,10 @@ public class LanguageManager {
 				return "Tokelauan";
 			case "toki pona":
 				return "Toki Pona";
-			case "tonga \u0028zambezi\u0029":
+			case "tonga (zambezi)":
 			case "zambezi":
 			case "chitonga":
-				return "Tonga \u0028Zambezi\u0029";
+				return "Tonga (Zambezi)";
 			case "tongan":
 				return "Tongan";
 			case "tsonga":
