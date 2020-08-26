@@ -8,7 +8,7 @@ Albanian	sqi	sq
 Algerian Arabic	arq	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Amharic	amh	am	\u1200-\u135F\u1380-\u139F\u2D80-\u2DDF\uAB00-\uAB2F	
 Ancient Greek	grc		\p{IsGreek}	
-Ancient Hebrew	hbo	iw	'\u0590-\u05FF	rtl
+Ancient Hebrew	hbo	iw	'\u0590-\u05FF\uFB1D-\uFB28\uFB2A-\uFB4F	rtl
 Arabic	ara	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Aragonese	arg	an		
 Armenian	hye	hy	\p{IsArmenian}	
@@ -110,7 +110,7 @@ Haitian Creole	hat	ht
 Hakka Chinese	hak	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
 Hausa	hau	ha	\p{IsLatin}	
 Hawaiian	haw		\u02BB\p{IsLatin}	
-Hebrew	heb	iw	'\u0590-\u05FF	rtl
+Hebrew	heb	iw	'\u0590-\u05FF\uFB1D-\uFB28\uFB2A-\uFB4F	rtl
 Hiligaynon	hil			
 Hill Mari	mrj		\-\p{IsCyrillic}	
 Hindi	hin	hi	\p{IsDevanagari}	
@@ -136,11 +136,11 @@ Italian	ita	it
 Jamaican Patois	jam			
 Japanese	jpn	ja	\u4E00-\u9FFF\uF900-\uFAFF\u3040-\u30FF\u31F0-\u31FF	
 Javanese	jav	jv	\uA980-\uA9C0\p{IsLatin}	
-Jewish Babylonian Aramaic	tmr	iw	\u0590-\u05FF	rtl
-Jewish Palestinian Aramaic	jpa	iw	\u0590-\u05FF	rtl
+Jewish Babylonian Aramaic	tmr	iw	\u0590-\u05FF\uFB1D-\uFB28\uFB2A-\uFB4F	rtl
+Jewish Palestinian Aramaic	jpa	iw	\u0590-\u05FF\uFB1D-\uFB28\uFB2A-\uFB4F	rtl
 Jin Chinese	cjy	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
 Juhuri (Judeo-Tat)	jdt		\p{IsCyrillic}	
-K'iche'	quc		\u2019\p{IsLatin}	
+K'iche'	quc			
 Kabyle	kab		\-\p{IsLatin}	
 Kalmyk	xal		\-\p{IsCyrillic}	
 Kamba	kam			
@@ -173,17 +173,17 @@ Kven Finnish	fkv	fi
 Kyrgyz	kir	ky	\p{IsCyrillic}	
 Láadan	ldn			
 Ladin	lld			
-Ladino	lad			
+Ladino	lad		\-'\u0590-\u05FF\uFB1D-\uFB28\uFB2A-\uFB4F\p{IsLatin}	rtl
 Lakota	lkt			
-Lao	lao	lo		
+Lao	lao	lo	\u0E81-\u0ECD\u0EDC-\u0EDF	
 Latgalian	ltg	lv		
 Latin	lat	la		
 Latvian	lvs	lv		
-Laz	lzz			
+Laz	lzz		\p{IsGeorgian}	
 Ligurian	lij			
 Lingala	lin	ln		
-Lingua Franca Nova	lfn			
-Literary Chinese	lzh	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
+Lingua Franca Nova	lfn		\p{IsLatin}\p{IsCyrillic}	
+Literary Chinese	lzh	zh	\u4E00-\u9FFF\uF900-\uFAFF	
 Lithuanian	lit	lt		
 Livonian	liv			
 Lojban	jbo		,'a-gA-Gi-pI-Pr-vR-Vx-zX-Z	
