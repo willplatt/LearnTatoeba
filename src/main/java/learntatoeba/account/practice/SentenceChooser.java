@@ -112,7 +112,7 @@ public class SentenceChooser {
 	public void close() {
 		try {
 			vocabManager.pushUpdatesToFile();
-			Terminal.println("Updates saved to file.");
+			Terminal.println("Vocab updates saved to file.");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("There was a problem writing your vocab updates to the file. Your vocab changes for this session may not have been saved.");
@@ -272,7 +272,7 @@ public class SentenceChooser {
 		for (int i = 0; i < sentence.length(); i++) {
 			String sentenceCharacter = sentence.item(i);
 			char annotationChar = annotation.charAt(i);
-			if (sentenceCharacter.matches("\\p{Zs}")) {
+			if (annotationChar == ' ' && sentenceCharacter.matches("\\p{Zs}")) {
 				newAnnotation += sentenceCharacter;
 			} else if (sentenceCharacter.matches(FULLWIDTH_CHAR_REGEX)) {
 				newAnnotation += convertCharToFullwidth(annotationChar);
