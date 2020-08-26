@@ -1,7 +1,7 @@
 package learntatoeba.language;
 
 public class Language {
-	private static final String DEFAULT_WORD_CHAR_REG_EXP = "\\-'a-zA-ZÀ-ÖØ-ö\\u00F8-\\u01BF\\u01C4-\\u024F\\u0370-\\u052F\\u1E00-\\u1FFF";
+	private static final String DEFAULT_WORD_CHAR_REG_EXP = "\\-'’a-zA-ZÀ-ÖØ-ö\\u00F8-\\u01BF\\u01C4-\\u024F\\u0370-\\u052F\\u1E00-\\u1FFF";
 	
 	private final String name;
 	private final String tatoebaCode;
