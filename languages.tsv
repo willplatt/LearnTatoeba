@@ -193,33 +193,33 @@ Low German (Low Saxon)	nds
 Lower Sorbian	dsb			
 Luganda	lug	lg		
 Luxembourgish	ltz	lb		
-Macedonian	mkd	mk		
+Macedonian	mkd	mk	\p{IsCyrillic}	
 Madurese	mad			
-Maithili	mai			
+Maithili	mai		\p{IsDevanagari}	
 Malagasy	mlg	mg		
 Malay	zsm	ms		
 Malay (Vernacular)	zlm	ms		
-Malayalam	mal	ml		
+Malayalam	mal	ml	\p{IsMalayalam}	
 Maltese	mlt	mt		
 Mambae	mgm			
-Manchu	mnc			
+Manchu	mnc		\u1806\u1807\u180E\u1820-\u18AA	
 Mandarin Chinese	cmn	zh	\u4E00-\u9FFF\uF900-\uFAFF	
-Manx	glv	gv		
+Manx	glv	gv	\-'‘’\p{IsLatin}	
 Maori	mri	mi		
-Marathi	mar	mr		
-Marshallese	mah	mh		
-Meadow Mari	mhr			
+Marathi	mar	mr	\p{IsDevanagari}	
+Marshallese	mah	mh	\u0304\u0327\p{IsLatin}	
+Meadow Mari	mhr		\p{IsCyrillic}	
 Mi'kmaq	mic			
 Middle English	enm			
 Middle French	frm			
-Min Nan Chinese	nan	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
+Min Nan Chinese	nan	zh	\p{IsLatin}\u2F00-\u2FD5\u4E00-\u9FFF\uF900-\uFAFF	
 Minangkabau	min	ms		
-Mingrelian	xmf			
+Mingrelian	xmf		\p{IsGeorgian}	
 Mirandese	mwl			
-Mohawk	moh			
-Moksha	mdf			
-Mon	mnw			
-Mongolian	mon	mn		
+Mohawk	moh		:'’\p{IsLatin}	
+Moksha	mdf		\-\p{IsCyrillic}	
+Mon	mnw		\u1000-\u103F\u104C-\u108F\u109A-\u109D\uA9E0-\uAA7F	
+Mongolian	mon	mn	\p{IsCyrillic}\u1806\u1807\u180E\u1820-\u18AA	
 Morisyen	mfe			
 Moroccan Arabic	ary	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Naga (Tangshang)	nst			
