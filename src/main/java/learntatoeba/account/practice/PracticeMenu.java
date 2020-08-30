@@ -42,7 +42,9 @@ public class PracticeMenu extends Menu {
 				"\t5: Fully and effortlessly understood\n" +
 				"\t8: Ignored (this can be used for names)\n" +
 				"\t9: Well-known (this can be used for words that are the same in your native language)\n" +
-				"So for example, \"chair: 2, coffee table: 3, stool: 1\" will record that you sometimes understand the word 'chair', you usually understand the phrase 'coffee table', and you are just starting to learn the word 'stool'.\n"
+				"So for example, \"chair: 2, coffee table: 3, stool: 1\" will record that you sometimes understand the word 'chair', you usually understand the phrase 'coffee table', and you are just starting to learn the word 'stool'.\n" +
+				"\n" +
+				"If you're an FLTR user, when updating the status of a phrase you can also save a (and overwrite a previous) translation and romanization of the phrase like so: \"chair: 5{translation}[romanization], coffee table: 2{translation}, stool: 4[romanization]\". (A phrase with a status of 0 is not stored, so cannot have a translation or romanization associated with it.)\n"
 		);
 		try {
 			sentenceChooser = new SentenceChooser(account, language);

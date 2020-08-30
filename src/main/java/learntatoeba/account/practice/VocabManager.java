@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.Normalizer;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -19,11 +17,10 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.text.Normalizer.Form.NFKC;
 
 public class VocabManager {
-	private static final Set<String> VALID_STATUSES = Set.of("0", "1", "2", "3", "4", "5", "8", "9");
 	private static final Set<String> VALID_FILE_STATUSES = Set.of("1", "2", "3", "4", "5", "98", "99");
 	
 	private final Map<String, Integer> phraseToStatusMap = new HashMap<>();
-	private final Map<String, Integer> statusUpdates = new HashMap<>();
+	private final Map<String, VocabUpdate> vocabUpdates = new HashMap<>();
 	private final File vocabFile;
 	private final File backupVocabFile;
 	
@@ -34,30 +31,30 @@ public class VocabManager {
 	}
 	
 	public boolean isEmpty() {
-		return phraseToStatusMap.isEmpty() && statusUpdates.isEmpty();
+		return phraseToStatusMap.isEmpty() && vocabUpdates.isEmpty();
 	}
 	
 	public int getStatusOfPhrase(String phrase) {
 		String normalizedPhrase = normalizePhrase(phrase);
-		Integer updatedStatus = statusUpdates.get(normalizedPhrase);
-		if (updatedStatus != null) {
-			return updatedStatus;
+		VocabUpdate vocabUpdate = vocabUpdates.get(normalizedPhrase);
+		if (vocabUpdate != null) {
+			return vocabUpdate.getStatus();
 		}
 		return phraseToStatusMap.getOrDefault(normalizedPhrase, 0);
 	}
 	
 	public boolean updateVocab(String updateCommand) {
-		if (updateCommand.length() == 0) {
-			return true;
-		}
-		String[] subcommands = updateCommand.toLowerCase().split(", ");
-		if (subcommandsAreValid(subcommands)) {
-			for (String subcommand : subcommands) {
-				String[] terms = subcommand.split(": ");
-				statusUpdates.put(normalizePhrase(terms[0]), statusStringToInt(terms[1]));
+		try {
+			List<VocabUpdate> updates = parseCommandIntoVocabUpdates(updateCommand);
+			for (VocabUpdate update : updates) {
+				String normalizedPhrase = normalizePhrase(update.getPhrase());
+				if (vocabUpdates.containsKey(normalizedPhrase)) {
+					update = vocabUpdates.get(normalizedPhrase).mergeWithNewerUpdate(update);
+				}
+				vocabUpdates.put(normalizedPhrase, update);
 			}
 			return true;
-		} else {
+		} catch (IllegalArgumentException | IndexOutOfBoundsException e) {
 			return false;
 		}
 	}
@@ -70,23 +67,34 @@ public class VocabManager {
 		     BufferedWriter backupWriter = Files.newBufferedWriter(backupVocabFile.toPath(), UTF_8)) {
 			String line;
 			while ((line = vocabReader.readLine()) != null) {
-				int indexOfLastTab = line.lastIndexOf('\t');
-				String phrase = normalizePhrase(line.substring(indexOfLastTab + 1));
-				Integer updatedStatus = statusUpdates.get(phrase);
-				if (updatedStatus != null) {
-					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
-					line = line.substring(0, indexOfSecondToLastTab + 1) + statusToFileString(updatedStatus) + line.substring(indexOfLastTab);
-					statusUpdates.remove(phrase);
+				String[] values = line.split("\t", -1);
+				String normalizedPhrase = normalizePhrase(values[5]);
+				VocabUpdate update = vocabUpdates.get(normalizedPhrase);
+				if (update != null) {
+					values[0] = update.getPhrase();
+					if (update.getTranslation() != null) {
+						values[1] = update.getTranslation();
+					}
+					if (update.getRomanization() != null) {
+						values[3] = update.getRomanization();
+					}
+					values[4] = statusToFileString(update.getStatus());
+					values[5] = normalizedPhrase;
+					line = String.join("\t", values);
+					vocabUpdates.remove(normalizedPhrase);
 				}
-				if (updatedStatus == null || updatedStatus != 0) {
+				if (update == null || update.getStatus() != 0) {
 					backupWriter.write(line + "\n");
 				}
 			}
-			for (Map.Entry<String, Integer> entry : statusUpdates.entrySet()) {
-				String phrase = entry.getKey();
-				int updatedStatus = entry.getValue();
-				if (updatedStatus != 0) {
-					String lineForPhrase = phrase + "\t\t\t\t" + statusToFileString(updatedStatus) + "\t" + phrase;
+			for (Map.Entry<String, VocabUpdate> entry : vocabUpdates.entrySet()) {
+				String normalizedPhrase = entry.getKey();
+				VocabUpdate update = entry.getValue();
+				int status = update.getStatus();
+				String translation = update.getTranslation() == null ? "" : update.getTranslation();
+				String romanization = update.getRomanization() == null ? "" : update.getRomanization();
+				if (status != 0) {
+					String lineForPhrase = update.getPhrase() + "\t" + translation + "\t\t" + romanization + "\t" + statusToFileString(status) + "\t" + normalizedPhrase;
 					backupWriter.write(lineForPhrase + "\n");
 				}
 			}
@@ -111,14 +119,32 @@ public class VocabManager {
 		}
 	}
 	
-	private boolean subcommandsAreValid(String[] subcommands) {
-		for (String subcommand : subcommands) {
-			String[] terms = subcommand.split(": ");
-			if (terms.length != 2 || !VALID_STATUSES.contains(terms[1]) || terms[0].contains("\t")) {
-				return false;
+	private List<VocabUpdate> parseCommandIntoVocabUpdates(String command) {
+		List<VocabUpdate> updates = new ArrayList<>();
+		while (command.length() > 0) {
+			String translation = null;
+			String romanization = null;
+			String[] split = command.split(": ", 2);
+			String phrase = split[0];
+			command = split[1];
+			String status = command.substring(0, 1);
+			command = command.substring(1);
+			if (command.startsWith("{")) {
+				translation = command.substring(1, command.indexOf('}'));
+				command = command.substring(translation.length() + 2);
+			}
+			if (command.startsWith("[")) {
+				romanization = command.substring(1, command.indexOf(']'));
+				command = command.substring(romanization.length() + 2);
+			}
+			updates.add(new VocabUpdate(phrase, status, translation, romanization));
+			if (command.startsWith(", ")) {
+				command = command.substring(2);
+			} else if (command.length() != 0) {
+				throw new IllegalArgumentException("Invalid update command. Expected \", \" or end of command, but instead found \"" + command + "\".");
 			}
 		}
-		return true;
+		return updates;
 	}
 	
 	private String normalizePhrase(String phrase) {
