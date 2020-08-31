@@ -135,7 +135,7 @@ Isan	tts		\p{IsThai}
 Italian	ita	it		
 Jamaican Patois	jam			
 Japanese	jpn	ja	\u4E00-\u9FFF\uF900-\uFAFF\u3040-\u30FF\u31F0-\u31FF	
-Javanese	jav	jv	\uA980-\uA9C0\p{IsLatin}	
+Javanese	jav	jw	\uA980-\uA9C0\p{IsLatin}	
 Jewish Babylonian Aramaic	tmr	iw	\u0590-\u05FF\uFB1D-\uFB28\uFB2A-\uFB4F	rtl
 Jewish Palestinian Aramaic	jpa	iw	\u0590-\u05FF\uFB1D-\uFB28\uFB2A-\uFB4F	rtl
 Jin Chinese	cjy	zh	\u4E00-\u9FFF\uF900-\uFAFF\u3100-\u312F	
@@ -225,20 +225,22 @@ Moroccan Arabic	ary	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06D
 Naga (Tangshang)	nst			
 Nahuatl	nah			
 Nauruan	nau	na		
-Navajo	nav	nv		
-Nepali	npi	ne		
-Newari	new			
-Ngeq	ngt			
+Navajo	nav	nv	'’\u02BC\u0301\p{IsLatin}	
+Nepali	npi	ne	\p{IsDevanagari}	
+Newari	new		\p{IsDevanagari}	
+Ngeq	ngt		\-\u0313\p{IsLatin}\p{IsLao}	
 Nigerian Fulfulde	fuv	ff		
 Niuean	niu			
-Nogai	nog			
+Nogai	nog		\-\p{IsCyrillic}\p{IsLatin}	
 North Frisian	frr			
-North Levantine Arabic	apc	ar	\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
+North Levantine Arabic	apc	ar	\-\p{IsLatin}235-9\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 North Moluccan Malay	max			
+Northern Haida	hdn			
 Northern Sami	sme	se		
 Norwegian Bokmål	nob	nb		
 Norwegian Nynorsk	nno	nn		
 Novial	nov			
+Nuosu	iii		\uA000-\uA48F	
 Nyungar	nys			
 Occitan	oci	oc		
 Odia (Oriya)	ori	or		
