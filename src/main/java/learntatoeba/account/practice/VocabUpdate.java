@@ -18,6 +18,7 @@ public class VocabUpdate {
 				((translation != null || romanization != null) && status.equals("0"))) {
 			throw new IllegalArgumentException("Illegal constructor parameters for VocabUpdate");
 		}
+		assert sentenceFragment == null || !sentenceFragment.contains("\t");
 		this.phrase = phrase;
 		this.status = Integer.parseInt(status);
 		this.sentenceFragment = sentenceFragment;

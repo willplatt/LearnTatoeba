@@ -136,6 +136,9 @@ public class VocabManager {
 			String[] split = command.split(": ", 2);
 			String phrase = split[0];
 			command = split[1];
+			if (!isValidPhrase(phrase)) {
+				throw new IllegalArgumentException("Invalid update command. Phrases must begin and end with word characters");
+			}
 			String status = command.substring(0, 1);
 			String sentenceFragment = sentenceContainsPhrase(sentence, phrase) ? sentence : null;
 			command = command.substring(1);
@@ -155,6 +158,13 @@ public class VocabManager {
 			}
 		}
 		return updates;
+	}
+	
+	private boolean isValidPhrase(String phrase) {
+		StringSequence unicodePhrase = new StringSequence(phrase, CHARACTER);
+		return unicodePhrase.length() > 0 &&
+				unicodePhrase.item(0).matches(wordCharRegex) &&
+				unicodePhrase.finalItem().matches(wordCharRegex);
 	}
 	
 	private boolean sentenceContainsPhrase(String sentence, String phrase) {
