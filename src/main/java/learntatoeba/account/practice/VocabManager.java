@@ -1,5 +1,6 @@
 package learntatoeba.account.practice;
 
+import learntatoeba.StringSequence;
 import learntatoeba.account.Account;
 import learntatoeba.language.Language;
 
@@ -15,6 +16,8 @@ import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.text.Normalizer.Form.NFKC;
+import static learntatoeba.StringSequence.ItemType.CHARACTER;
+import static learntatoeba.account.practice.SentenceChooser.FULLWIDTH_CHAR_REGEX;
 
 public class VocabManager {
 	private static final Set<String> VALID_FILE_STATUSES = Set.of("1", "2", "3", "4", "5", "98", "99");
@@ -23,10 +26,12 @@ public class VocabManager {
 	private final Map<String, VocabUpdate> vocabUpdates = new HashMap<>();
 	private final File vocabFile;
 	private final File backupVocabFile;
+	private final String wordCharRegex;
 	
 	public VocabManager(Account account, Language practiceLanguage) throws IOException {
 		vocabFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Words.csv");
 		backupVocabFile = new File(account.getVocabDirectory(), practiceLanguage.getName() + "_Words.bak");
+		wordCharRegex = "[" + practiceLanguage.getWordCharRegExp() + "]";
 		readVocab();
 	}
 	
@@ -35,7 +40,7 @@ public class VocabManager {
 	}
 	
 	public int getStatusOfPhrase(String phrase) {
-		String normalizedPhrase = normalizePhrase(phrase);
+		String normalizedPhrase = normalize(phrase);
 		VocabUpdate vocabUpdate = vocabUpdates.get(normalizedPhrase);
 		if (vocabUpdate != null) {
 			return vocabUpdate.getStatus();
@@ -43,11 +48,11 @@ public class VocabManager {
 		return phraseToStatusMap.getOrDefault(normalizedPhrase, 0);
 	}
 	
-	public boolean updateVocab(String updateCommand) {
+	public boolean updateVocab(String updateCommand, String sentence) {
 		try {
-			List<VocabUpdate> updates = parseCommandIntoVocabUpdates(updateCommand);
+			List<VocabUpdate> updates = parseCommandIntoVocabUpdates(updateCommand, sentence);
 			for (VocabUpdate update : updates) {
-				String normalizedPhrase = normalizePhrase(update.getPhrase());
+				String normalizedPhrase = normalize(update.getPhrase());
 				if (vocabUpdates.containsKey(normalizedPhrase)) {
 					update = vocabUpdates.get(normalizedPhrase).mergeWithNewerUpdate(update);
 				}
@@ -68,12 +73,15 @@ public class VocabManager {
 			String line;
 			while ((line = vocabReader.readLine()) != null) {
 				String[] values = line.split("\t", -1);
-				String normalizedPhrase = normalizePhrase(values[5]);
+				String normalizedPhrase = normalize(values[5]);
 				VocabUpdate update = vocabUpdates.get(normalizedPhrase);
 				if (update != null) {
 					values[0] = update.getPhrase();
 					if (update.getTranslation() != null) {
 						values[1] = update.getTranslation();
+					}
+					if (update.getSentenceFragment() != null) {
+						values[2] = update.getSentenceFragment();
 					}
 					if (update.getRomanization() != null) {
 						values[3] = update.getRomanization();
@@ -91,10 +99,11 @@ public class VocabManager {
 				String normalizedPhrase = entry.getKey();
 				VocabUpdate update = entry.getValue();
 				int status = update.getStatus();
+				String sentenceFragment = update.getSentenceFragment() == null ? "" : update.getSentenceFragment();
 				String translation = update.getTranslation() == null ? "" : update.getTranslation();
 				String romanization = update.getRomanization() == null ? "" : update.getRomanization();
 				if (status != 0) {
-					String lineForPhrase = update.getPhrase() + "\t" + translation + "\t\t" + romanization + "\t" + statusToFileString(status) + "\t" + normalizedPhrase;
+					String lineForPhrase = update.getPhrase() + "\t" + translation + "\t" + sentenceFragment + "\t" + romanization + "\t" + statusToFileString(status) + "\t" + normalizedPhrase;
 					backupWriter.write(lineForPhrase + "\n");
 				}
 			}
@@ -112,14 +121,14 @@ public class VocabManager {
 					int indexOfSecondToLastTab = line.lastIndexOf('\t', indexOfLastTab - 1);
 					String status = line.substring(indexOfSecondToLastTab + 1, indexOfLastTab);
 					if (VALID_FILE_STATUSES.contains(status)) {
-						phraseToStatusMap.put(normalizePhrase(phrase), statusStringToInt(status));
+						phraseToStatusMap.put(normalize(phrase), statusStringToInt(status));
 					}
 				}
 			}
 		}
 	}
 	
-	private List<VocabUpdate> parseCommandIntoVocabUpdates(String command) {
+	private List<VocabUpdate> parseCommandIntoVocabUpdates(String command, String sentence) {
 		List<VocabUpdate> updates = new ArrayList<>();
 		while (command.length() > 0) {
 			String translation = null;
@@ -128,6 +137,7 @@ public class VocabManager {
 			String phrase = split[0];
 			command = split[1];
 			String status = command.substring(0, 1);
+			String sentenceFragment = sentenceContainsPhrase(sentence, phrase) ? sentence : null;
 			command = command.substring(1);
 			if (command.startsWith("{")) {
 				translation = command.substring(1, command.indexOf('}'));
@@ -137,7 +147,7 @@ public class VocabManager {
 				romanization = command.substring(1, command.indexOf(']'));
 				command = command.substring(romanization.length() + 2);
 			}
-			updates.add(new VocabUpdate(phrase, status, translation, romanization));
+			updates.add(new VocabUpdate(phrase, status, sentenceFragment, translation, romanization));
 			if (command.startsWith(", ")) {
 				command = command.substring(2);
 			} else if (command.length() != 0) {
@@ -147,8 +157,25 @@ public class VocabManager {
 		return updates;
 	}
 	
-	private String normalizePhrase(String phrase) {
-		return Normalizer.normalize(phrase.toLowerCase(), NFKC);
+	private boolean sentenceContainsPhrase(String sentence, String phrase) {
+		StringSequence normalizedPhrase = new StringSequence(normalize(phrase), CHARACTER);
+		StringSequence normalizedSentence = new StringSequence(normalize(sentence), CHARACTER);
+		int indexOfPhrase = normalizedSentence.indexOf(normalizedPhrase);
+		if (indexOfPhrase >= 0) {
+			if (indexOfPhrase == 0 ||
+					!normalizedSentence.item(indexOfPhrase - 1).matches(wordCharRegex) ||
+					normalizedPhrase.item(0).matches(FULLWIDTH_CHAR_REGEX)) {
+				int endOfPhrase = indexOfPhrase + normalizedPhrase.length();
+				return endOfPhrase == normalizedSentence.length() ||
+						!normalizedSentence.item(endOfPhrase).matches(wordCharRegex) ||
+						normalizedPhrase.finalItem().matches(FULLWIDTH_CHAR_REGEX);
+			}
+		}
+		return false;
+	}
+	
+	private String normalize(String str) {
+		return Normalizer.normalize(str.toLowerCase(), NFKC);
 	}
 	
 	private String statusToFileString(int status) {

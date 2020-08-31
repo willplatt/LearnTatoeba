@@ -24,8 +24,9 @@ import static learntatoeba.account.practice.SentenceFileSearcher.getByteIndexOnL
 import static learntatoeba.account.practice.SentenceFileSearcher.readLineAt;
 
 public class SentenceChooser {
+	static final String FULLWIDTH_CHAR_REGEX = "[\u1100-\u11FF\u2E80-\u302D\u3030-\u303E\u3040-\u3247\u3250-\u3370\u3372-\u338E\u3391-\u339C\u339F-\u33A3\u33A6-\u33C9\u33CB-\u33FF\u3400-\uA4CF\uA500-\uA61F\uA960-\uA97F\uAC00-\uD7FF\uF900-\uFAFF\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6" + Character.toString(0x20000) + "-" + Character.toString(0x3134F) + "]";
+	
 	private static final int MAX_SCORE_UPPER_LIMIT = 300;
-	private static final String FULLWIDTH_CHAR_REGEX = "[\u1100-\u11FF\u2E80-\u302D\u3030-\u303E\u3040-\u3247\u3250-\u3370\u3372-\u338E\u3391-\u339C\u339F-\u33A3\u33A6-\u33C9\u33CB-\u33FF\u3400-\uA4CF\uA500-\uA61F\uA960-\uA97F\uAC00-\uD7FF\uF900-\uFAFF\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6" + Character.toString(0x20000) + "-" + Character.toString(0x3134F) + "]";
 	private static final String ZERO_WIDTH_CHAR_REGEX = "[\\p{Mn}\\p{Me}\\p{Cf}\u2028\u2029\u1923-\u1938]";
 	
 	private final VocabManager vocabManager;
@@ -102,11 +103,11 @@ public class SentenceChooser {
 			e.printStackTrace();
 			System.err.println("There was a problem modifying the blacklist file.");
 		}
-		return updateVocab(vocabCommand);
+		return vocabManager.updateVocab(vocabCommand, sentence.getText());
 	}
 	
 	public boolean updateVocab(String updateCommand) {
-		return vocabManager.updateVocab(updateCommand);
+		return vocabManager.updateVocab(updateCommand, "");
 	}
 	
 	public void close() {

@@ -7,10 +7,11 @@ public class VocabUpdate {
 	
 	private final String phrase;
 	private final int status;
+	private final String sentenceFragment;
 	private final String translation;
 	private final String romanization;
 	
-	public VocabUpdate(String phrase, String status, String translation, String romanization) {
+	public VocabUpdate(String phrase, String status, String sentenceFragment, String translation, String romanization) {
 		if (phrase.contains("\t") || !VALID_STATUSES.contains(status) ||
 				(translation != null && translation.contains("\t")) ||
 				(romanization != null && romanization.contains("\t")) ||
@@ -19,6 +20,7 @@ public class VocabUpdate {
 		}
 		this.phrase = phrase;
 		this.status = Integer.parseInt(status);
+		this.sentenceFragment = sentenceFragment;
 		this.translation = translation;
 		this.romanization = romanization;
 	}
@@ -29,6 +31,10 @@ public class VocabUpdate {
 	
 	public int getStatus() {
 		return status;
+	}
+	
+	public String getSentenceFragment() {
+		return sentenceFragment;
 	}
 	
 	public String getTranslation() {
@@ -42,8 +48,9 @@ public class VocabUpdate {
 	public VocabUpdate mergeWithNewerUpdate(VocabUpdate newUpdate) {
 		String newPhrase = newUpdate.getPhrase();
 		String newStatus = String.valueOf(newUpdate.getStatus());
+		String newSentenceFragment = newUpdate.getSentenceFragment() == null ? sentenceFragment : newUpdate.getSentenceFragment();
 		String newTranslation = newUpdate.getTranslation() == null ? translation : newUpdate.getTranslation();
 		String newRomanization = newUpdate.getRomanization() == null ? romanization : newUpdate.getRomanization();
-		return new VocabUpdate(newPhrase, newStatus, newTranslation, newRomanization);
+		return new VocabUpdate(newPhrase, newStatus, newSentenceFragment, newTranslation, newRomanization);
 	}
 }
