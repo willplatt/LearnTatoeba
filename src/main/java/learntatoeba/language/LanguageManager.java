@@ -567,6 +567,8 @@ public class LanguageManager {
 				return "North Levantine Arabic";
 			case "north moluccan malay":
 				return "North Moluccan Malay";
+			case "northern haida":
+				return "Northern Haida";
 			case "northern sami":
 				return "Northern Sami";
 			case "norwegian bokm\u00e5l":
@@ -578,6 +580,12 @@ public class LanguageManager {
 				return "Norwegian Nynorsk";
 			case "novial":
 				return "Novial";
+			case "nuosu":
+			case "nosu":
+			case "northern yi":
+			case "liangshan yui":
+			case "sichuan yi":
+				return "Nuosu";
 			case "nyungar":
 				return "Nyungar";
 			case "occitan":
