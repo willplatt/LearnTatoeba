@@ -242,12 +242,13 @@ Norwegian Nynorsk	nno	nn
 Novial	nov			
 Nuosu	iii		\uA000-\uA48F	
 Nyungar	nys			
+O'odham	ood		:'\u02BC\p{IsLatin}	
 Occitan	oci	oc		
-Odia (Oriya)	ori	or		
-Ojibwe	oji	oj		
-Okinawan	ryu			
-Old Aramaic	oar			rtl
-Old East Slavic	orv			
+Odia (Oriya)	ori	or	\u0B01-\u0B63\u0B71	
+Ojibwe	oji	oj	'\p{IsLatin}\p{IsCans}	
+Okinawan	ryu		\u4E00-\u9FFF\uF900-\uFAFF\u3040-\u30FF\u31F0-\u31FF	
+Old Aramaic	oar		'\u0308\u0590-\u05FF\uFB1D-\uFB28\uFB2A-\uFB4F\p{IsSyriac}	rtl
+Old East Slavic	orv		ı\p{IsCyrillic}	
 Old English	ang			
 Old French	fro			
 Old Norse	non			
@@ -255,10 +256,10 @@ Old Prussian	prg
 Old Saxon	osx			
 Old Spanish	osp			
 Old Tupi	tpw			
-Old Turkish	otk			
+Old Turkish	otk		\p{IsOrkh}	rtl
 Orizaba Nahuatl	nlv			
-Ossetian	oss	os		
-Ottoman Turkish	ota			
+Ossetian	oss	os	æÆ\p{IsCyrillic}	
+Ottoman Turkish	ota		'\p{IsLatin}\u0610-\u061A\u0620-\u065F\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06EF\u06FA-\u06FC\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF	rtl
 Palatine German	pfl			
 Palauan	pau			
 Pangasinan	pag			

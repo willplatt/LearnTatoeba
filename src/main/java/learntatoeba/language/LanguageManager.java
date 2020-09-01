@@ -588,6 +588,9 @@ public class LanguageManager {
 				return "Nuosu";
 			case "nyungar":
 				return "Nyungar";
+			case "o'odham":
+			case "papago-pima":
+				return "O'odham";
 			case "occitan":
 				return "Occitan";
 			case "odia (oriya)":
@@ -595,6 +598,9 @@ public class LanguageManager {
 			case "oriya":
 				return "Odia (Oriya)";
 			case "ojibwe":
+			case "ojibwa":
+			case "ojibway":
+			case "otchipwe":
 				return "Ojibwe";
 			case "okinawan":
 				return "Okinawan";
@@ -619,6 +625,7 @@ public class LanguageManager {
 			case "old turkish":
 				return "Old Turkish";
 			case "orizaba nahuatl":
+			case "orizaba aztec":
 				return "Orizaba Nahuatl";
 			case "ossetian":
 			case "ossetic":
